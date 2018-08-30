@@ -3,7 +3,7 @@ from typing import Dict, List
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from src.utils import SpotifyUtils
+from src.utils import SpotUtils
 
 
 class PlaylistGrabber:
@@ -18,7 +18,7 @@ class PlaylistGrabber:
 
     def extract_tracks(self, uri: str) -> List[Dict]:
         playlist = self.download(uri)
-        return [SpotifyUtils.extract_track(item["track"]) for item in playlist["tracks"]["items"]]
+        return [SpotUtils.extract_track(item["track"]) for item in playlist["tracks"]["items"]]
 
 
 if __name__ == "__main__":

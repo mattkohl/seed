@@ -3,7 +3,7 @@ from typing import Dict, List
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from src.utils import SpotifyUtils
+from src.utils import SpotUtils
 
 
 class ArtistGrabber:
@@ -21,7 +21,7 @@ class ArtistGrabber:
         return self.sp.artist(uri)
 
     def albums(self, uri: str) -> List[Dict]:
-        return [SpotifyUtils.extract_album(a) for a in self.sp.artist_albums(uri, "album", "US")["items"]]
+        return [SpotUtils.extract_album(a) for a in self.sp.artist_albums(uri, "album", "US")["items"]]
 
 
 if __name__ == "__main__":
