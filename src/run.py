@@ -1,8 +1,8 @@
 import random
 from pprint import pprint
 from src.spot.playlists import PlaylistGrabber
-from src.gen.utils import GenUtils
-from src.gen.parser import GenParser
+from src.geni.utils import GenUtils
+from src.geni.parser import GenParser
 
 
 def main():
