@@ -3,7 +3,7 @@ from typing import Dict, List
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from src.utils import SpotUtils
+from src.spot.utils import SpotUtils
 
 
 class ArtistGrabber:
