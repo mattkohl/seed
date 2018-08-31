@@ -17,14 +17,13 @@ def main():
 
     tracks = sp.extract_tracks(test_uri)
     track = random.choice(tracks)
-
     artist, song_title = track["artists"][0]["name"], track["title"]
     test_url = GenUtils.link(artist, song_title)
     lyrics = gp.download(test_url)
     if lyrics is not None:
         track.update({"genUrl": test_url, "lyrics": lyrics})
         pprint(track)
-        kp.publish_message(producer, "track", "hh", str(track))
+        kp.publish_message(producer, "lyrics", "hh", str(track))
 
 
 if __name__ == "__main__":
