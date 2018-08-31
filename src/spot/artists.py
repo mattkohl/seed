@@ -6,7 +6,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from src.spot.utils import SpotUtils
 
 
-class ArtistGrabber:
+class SpotArtist:
 
     client_credentials_manager = SpotifyClientCredentials()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -27,5 +27,5 @@ class ArtistGrabber:
 if __name__ == "__main__":
     from pprint import pprint
     test_uri = "spotify:artist:13ubrt8QOOCPljQ2FL1Kca"
-    ag = ArtistGrabber()
-    pprint(ag.albums(test_uri))
+    sa = SpotArtist()
+    pprint(sa.albums(test_uri))

@@ -9,7 +9,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from src.spot.utils import SpotUtils
 
 
-class PlaylistGrabber:
+class SpotPlaylist:
 
     client_credentials_manager = SpotifyClientCredentials()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -52,5 +52,5 @@ class PlaylistGrabber:
 if __name__ == "__main__":
     from pprint import pprint
     test_uri = "spotify:user:matt.kohl-gb:playlist:2d1Q2cY735lRoXC8cC6DDJ"
-    pg = PlaylistGrabber()
-    pprint(pg.extract_tracks(test_uri))
+    sp = SpotPlaylist()
+    pprint(sp.extract_tracks(test_uri))

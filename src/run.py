@@ -1,13 +1,13 @@
 import random
 from pprint import pprint
-from src.spot.playlists import PlaylistGrabber
+from src.spot.playlists import SpotPlaylist
 from src.geni.utils import GenUtils
 from src.geni.parser import GenParser
 
 
 def main():
     test_uri = "spotify:user:matt.kohl-gb:playlist:2d1Q2cY735lRoXC8cC6DDJ"
-    pg = PlaylistGrabber()
+    pg = SpotPlaylist()
     tracks = pg.extract_tracks(test_uri)
     track = random.choice(tracks)
     artist, song_title = track["artists"][0]["name"], track["title"]
