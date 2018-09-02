@@ -2,6 +2,8 @@ beautifulsoup4==4.6.3
 certifi==2018.8.24
 chardet==3.0.4
 idna==2.7
+kafka-python==1.4.3
+musicbrainzngs==0.6
 mypy==0.620
 requests==2.19.1
 spotipy==2.4.4
