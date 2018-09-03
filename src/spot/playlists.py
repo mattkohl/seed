@@ -30,7 +30,7 @@ class SpotPlaylist:
             print(lines)
             return ast.literal_eval("\n".join(lines))
 
-    def cache_response(self, fn: str, txt: str):
+    def cache_response(self, fn: str, txt: str) -> None:
         with open(f"{self.cache}/{fn}", "w") as f:
             f.write(str(txt))
 

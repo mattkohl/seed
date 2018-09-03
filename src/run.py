@@ -6,7 +6,7 @@ from src.geni.parser import GenParser
 from src.bus import Producer
 
 
-def main():
+def main() -> None:
     sp = SpotPlaylist()
     gp = GenParser()
     kp = Producer()

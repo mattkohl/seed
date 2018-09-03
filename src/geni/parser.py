@@ -5,7 +5,7 @@ import requests
 class GenParser:
 
     @staticmethod
-    def download(url):
+    def download(url) -> str:
         try:
             page = requests.get(url)
             html = BeautifulSoup(page.text, "html.parser")

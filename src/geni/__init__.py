@@ -1,23 +1,13 @@
 import ast
-from kafka import KafkaConsumer
 from pprint import pprint
 from src.geni.utils import GenUtils
 from src.geni.parser import GenParser
-from src.bus import Producer
-
-
-class Consumer:
-
-    queue = KafkaConsumer("track",
-                          auto_offset_reset='earliest',
-                          bootstrap_servers=['localhost:9092'],
-                          api_version=(0, 10),
-                          consumer_timeout_ms=1000)
+from src.bus import Producer, Consumer
 
 
 if __name__ == "__main__":
 
-    kc = Consumer()
+    kc = Consumer("track")
     gp = GenParser()
     kp = Producer()
     producer = kp.connect()

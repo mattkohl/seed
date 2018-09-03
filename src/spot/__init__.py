@@ -1,23 +1,13 @@
 import random
-from kafka import KafkaConsumer
-from src.bus import Producer
+from src.bus import Producer, Consumer
 from src.geni.parser import GenParser
 from src.spot.playlists import SpotPlaylist
-
-
-class Consumer:
-
-    queue = KafkaConsumer("playlist",
-                          auto_offset_reset='earliest',
-                          bootstrap_servers=['localhost:9092'],
-                          api_version=(0, 10),
-                          consumer_timeout_ms=1000)
 
 
 if __name__ == "__main__":
 
     sp = SpotPlaylist()
-    kc = Consumer()
+    kc = Consumer("playlist")
     gp = GenParser()
     kp = Producer()
     producer = kp.connect()
