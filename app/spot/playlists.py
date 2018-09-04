@@ -6,7 +6,7 @@ import time
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from src.spot.utils import SpotUtils
+from app.spot.utils import SpotUtils
 
 
 class SpotPlaylist:
@@ -27,7 +27,6 @@ class SpotPlaylist:
     def open_cached(self, fn: str) -> Dict:
         with open(f"{self.cache}/{fn}") as f:
             lines = f.readlines()
-            print(lines)
             return ast.literal_eval("\n".join(lines))
 
     def cache_response(self, fn: str, txt: str) -> None:
@@ -37,12 +36,8 @@ class SpotPlaylist:
     def download(self, uri: str) -> Dict:
         username = uri.split(':')[2]
         playlist_id = uri.split(':')[4]
-        if self.cached(playlist_id):
-            return self.open_cached(playlist_id)
-        else:
-            pl = self.sp.user_playlist(username, playlist_id)
-            self.cache_response(playlist_id, pl)
-            return pl
+        pl = self.sp.user_playlist(username, playlist_id)
+        return pl
 
     def extract_tracks(self, uri: str) -> List[Dict]:
         playlist = self.download(uri)
