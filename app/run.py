@@ -1,4 +1,4 @@
-from app.geni import GenConsumer
+from app.gen import GenConsumer
 from app.spot import SpotConsumer
 from app.bus import Producer
 
