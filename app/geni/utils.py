@@ -33,10 +33,21 @@ class GenUtils:
         return slug
 
     @staticmethod
+    def prune(song_title: str) -> str:
+        st = re.sub("\s\(with.*?\)$", "", song_title, re.I)
+        st = re.sub("\s\(feat.*?\)$", "", song_title, re.I)
+        st = re.sub(" - Feat.*?$", "", song_title, re.I)
+        st = re.sub(" feat\. .*?$", "", song_title, re.I)
+        st = re.sub(" - .*?Version$", "", song_title, re.I)
+        st = re.sub(" - Bonus .*?$", "", song_title, re.I)
+        return st
+
+    @staticmethod
     def link(artist: str, song_title: str) -> str:
         h = "https"
         g = "genius"
         c = "com"
         artist = "The " + artist[:-4] if artist.endswith(", The") else artist
+        song_title = GenUtils.prune(song_title)
         slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
         return f"{h}://{g}.{c}/{slug}"
