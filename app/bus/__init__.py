@@ -36,9 +36,8 @@ class Producer(threading.Thread):
         producer = None
         try:
             producer = KafkaProducer(bootstrap_servers=[f"{KAFKA_HOST}:{KAFKA_PORT}"], api_version=(0, 10))
-        except Exception as ex:
-            print("Exception while connecting Kafka Producer")
-            print(str(ex))
+        except KafkaError as ex:
+            print(f"Exception while connecting Kafka Producer: {ex}")
         finally:
             return producer
 

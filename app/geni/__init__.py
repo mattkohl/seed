@@ -4,6 +4,9 @@ from app.geni.utils import GenUtils
 from app.geni.parser import GenParser
 from app.bus import Producer, Consumer
 
+import logging
+from logging.handlers import RotatingFileHandler
+
 
 class GenConsumer(Consumer):
 
