@@ -1,7 +1,7 @@
 import ast
 import time
-from app.gen.utils import GenUtils
-from app.gen.parser import GenParser
+from app.geni.utils import GenUtils
+from app.geni.parser import GenParser
 from app.bus import Producer, Consumer
 
 
