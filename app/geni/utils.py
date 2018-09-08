@@ -34,12 +34,12 @@ class GenUtils:
 
     @staticmethod
     def prune(song_title: str) -> str:
-        st = re.sub("\s\(with.*?\)$", "", song_title, re.I)
-        st = re.sub("\s\(feat.*?\)$", "", song_title, re.I)
-        st = re.sub(" - Feat.*?$", "", song_title, re.I)
-        st = re.sub(" feat\. .*?$", "", song_title, re.I)
-        st = re.sub(" - .*?Version$", "", song_title, re.I)
-        st = re.sub(" - Bonus .*?$", "", song_title, re.I)
+        st = re.sub("\s\(with.*?\)", "", song_title, re.I)
+        st = re.sub("\s\(feat.*?\)", "", st, re.I)
+        st = re.sub(" - feat.*?$", "", st, re.I)
+        st = re.sub(" feat\. .*?$", "", st, re.I)
+        st = re.sub(" - .*?version$", "", st, re.I)
+        st = re.sub(" - bonus .*?$", "", st, re.I)
         return st
 
     @staticmethod
