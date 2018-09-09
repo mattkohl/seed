@@ -6,7 +6,7 @@ import time
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from app.spot.utils import SpotUtils
+from spot.utils import SpotUtils
 
 
 class SpotPlaylist:

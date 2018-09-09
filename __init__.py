@@ -4,9 +4,9 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask
 from kafka.errors import KafkaError
 
-from app.geni import GenConsumer
-from app.spot import SpotConsumer
-from app.bus import Producer
+from geni import GenConsumer
+from spot import SpotConsumer
+from bus import Producer
 
 handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
@@ -39,3 +39,7 @@ def go(playlist_uri) -> str:
         application.logger.error(str(e))
         return str(e)
     return playlist_uri
+
+
+if __name__ == "__main__":
+    application.run()
