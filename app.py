@@ -39,7 +39,3 @@ def go(playlist_uri) -> str:
         application.logger.error(str(e))
         return str(e)
     return playlist_uri
-
-
-if __name__ == "__main__":
-    application.run()
