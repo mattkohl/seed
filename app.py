@@ -1,6 +1,7 @@
 import os
 import logging
-from logging.handlers import RotatingFileHandler
+from logging import StreamHandler
+
 from dotenv import load_dotenv
 from flask import Flask
 from kafka.errors import KafkaError
@@ -11,8 +12,9 @@ from bus import Producer
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
-
-handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=1)
+log_formatter = '[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s'
+handler = StreamHandler()
+handler.formatter(logging.Formatter(log_formatter, '%m-%d %H:%M:%S'))
 handler.setLevel(logging.INFO)
 
 application = Flask(__name__)
