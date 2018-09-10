@@ -16,6 +16,7 @@ mypy==0.620
 pluggy==0.7.1
 py==1.6.0
 pytest==3.8.0
+python-dotenv==0.9.1
 requests==2.19.1
 six==1.11.0
 spotipy==2.4.4
