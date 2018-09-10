@@ -16,8 +16,3 @@ class SpotConsumer(Consumer):
             tracks = self.sp.extract_tracks(uri)
             for track in tracks:
                 self.producer.publish_message(self.producer.connect(), "track", "hh", str(track))
-
-
-if __name__ == "__main__":
-    kafka_producer = Producer()
-    SpotConsumer("playlist", kafka_producer).run()

@@ -1,15 +1,9 @@
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-
 from dotenv import load_dotenv
-
-import sys
-import click
-
 from flask import Flask
 from kafka.errors import KafkaError
-
 from geni import GenConsumer
 from spot import SpotConsumer
 from bus import Producer

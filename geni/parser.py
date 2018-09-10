@@ -10,7 +10,7 @@ class GenParser:
             page = requests.get(url)
             html = BeautifulSoup(page.text, "html.parser")
             lyrics = html.find("div", class_="lyrics").get_text()
-        except Exception as e:
+        except ValueError as e:
             print(f"Nothing found at {url}: {e}")
         else:
             return lyrics

@@ -22,10 +22,3 @@ class SpotArtist:
 
     def albums(self, uri: str) -> List[Dict]:
         return [SpotUtils.extract_album(a) for a in self.sp.artist_albums(uri, "album", "US")["items"]]
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-    test_uri = "spotify:artist:13ubrt8QOOCPljQ2FL1Kca"
-    sa = SpotArtist()
-    pprint(sa.albums(test_uri))

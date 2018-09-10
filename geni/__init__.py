@@ -23,8 +23,3 @@ class GenConsumer(Consumer):
             else:
                 self.producer.publish_message(self.producer.connect(), "failedLyrics", "hh", url)
             time.sleep(2)
-
-
-if __name__ == "__main__":
-    kafka_producer = Producer()
-    GenConsumer("track", kafka_producer).run()
