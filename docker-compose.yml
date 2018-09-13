@@ -28,8 +28,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
 
   postgres:
-    restart: always
     image: postgres:10
+    restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
