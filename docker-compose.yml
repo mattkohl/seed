@@ -26,6 +26,8 @@ services:
       - "9092:9092"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+    volumes:
+      - kafka_logs:/var/lib/kafka
 
   postgres:
     image: postgres:10
@@ -42,3 +44,5 @@ services:
 volumes:
   persistence:
     name: persistence
+  kafka_logs:
+    name: kafka_logs
