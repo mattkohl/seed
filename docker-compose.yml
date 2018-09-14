@@ -43,6 +43,4 @@ services:
 
 volumes:
   persistence:
-    name: persistence
   kafka_logs:
-    name: kafka_logs
