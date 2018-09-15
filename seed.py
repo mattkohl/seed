@@ -1,34 +1,20 @@
 import os
 from kafka.errors import KafkaError
-from geni import GenConsumer
-from spot import SpotConsumer
-from bus import Producer
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from config import config
-
-
-db = SQLAlchemy()
-
-
-def create_app(config_name):
-    app = Flask(__name__)
-    app.config.from_object(config[config_name])
-    config[config_name].init_app(app)
-
-    db.init_app(app)
-    return app
+import app.geni
+import app.spot
+import app.bus
+from app import create_app
 
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 
-kp = Producer()
+kp = app.bus.Producer()
 producer = kp.connect()
 
 tasks = [
-    GenConsumer("track", kp),
-    SpotConsumer("playlist", kp)
+    app.geni.GenConsumer("track", kp),
+    app.spot.SpotConsumer("playlist", kp)
 ]
 
 for t in tasks:

@@ -1,6 +1,6 @@
 import ast
-from mb.artists import MBArtist
-from bus import Producer, Consumer
+from app.mb.artists import MBArtist
+from app.bus import Producer, Consumer
 
 
 class MBConsumer(Consumer):

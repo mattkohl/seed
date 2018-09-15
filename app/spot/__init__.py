@@ -1,5 +1,5 @@
-from bus import Producer, Consumer
-from spot.playlists import SpotPlaylist
+from app.bus import Producer, Consumer
+from app.spot.playlists import SpotPlaylist
 
 
 class SpotConsumer(Consumer):

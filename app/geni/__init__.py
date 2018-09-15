@@ -1,8 +1,8 @@
 import ast
 import time
-from geni.utils import GenUtils
-from geni.parser import GenParser
-from bus import Producer, Consumer
+from app.geni import GenUtils
+from app.geni.parser import GenParser
+from app.bus import Producer, Consumer
 
 
 class GenConsumer(Consumer):
