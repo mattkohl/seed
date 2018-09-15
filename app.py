@@ -1,17 +1,26 @@
 import os
-
-from dotenv import load_dotenv
-from flask import Flask
 from kafka.errors import KafkaError
 from geni import GenConsumer
 from spot import SpotConsumer
 from bus import Producer
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from config import config
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
 
-application = Flask(__name__)
+db = SQLAlchemy()
+
+
+def create_app(config_name):
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    db.init_app(app)
+    return app
+
+
+application = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 
 kp = Producer()
