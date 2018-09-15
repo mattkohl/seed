@@ -1,11 +1,11 @@
 import ast
-from app.mb.artists import MBArtist
+from . import artists
 from app.bus import Producer, Consumer
 
 
 class MBConsumer(Consumer):
 
-    mba = MBArtist()
+    mba = artists.MBArtist()
 
     def __init__(self, topic: str, kp: Producer):
         Consumer.__init__(self, topic)

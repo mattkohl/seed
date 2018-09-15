@@ -1,10 +1,10 @@
 from app.bus import Producer, Consumer
-from app.spot.playlists import SpotPlaylist
+from . import playlists
 
 
 class SpotConsumer(Consumer):
 
-    sp = SpotPlaylist()
+    sp = playlists.SpotPlaylist()
 
     def __init__(self, topic: str, kp: Producer):
         Consumer.__init__(self, topic)

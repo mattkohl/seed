@@ -1,7 +1,7 @@
 import ast
 import time
-from app.geni import GenUtils
-from app.geni.parser import GenParser
+from . import utils
+from . import parser
 from app.bus import Producer, Consumer
 
 
@@ -15,8 +15,8 @@ class GenConsumer(Consumer):
         for msg in self.queue:
             track = ast.literal_eval(msg.value.decode('utf-8'))
             artist, song_title = track["artists"][0]["name"], track["title"]
-            url = GenUtils.link(artist, song_title)
-            lyrics = GenParser.download(url)
+            url = utils.GenUtils.link(artist, song_title)
+            lyrics = parser.GenParser.download(url)
             if lyrics:
                 track.update({"genUrl": url, "lyrics": lyrics})
                 self.producer.publish_message(self.producer.connect(), "lyrics", "hh", str(track))
