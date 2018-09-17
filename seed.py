@@ -1,12 +1,14 @@
 import os
 from kafka.errors import KafkaError
+from flask_migrate import Migrate, upgrade
 import app.geni
 import app.spot
 import app.bus
-from app import create_app
+from app import create_app, db
 
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
+migrate = Migrate(application, db)
 
 
 kp = app.bus.Producer()
