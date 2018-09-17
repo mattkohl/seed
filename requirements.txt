@@ -18,7 +18,7 @@ more-itertools==4.3.0
 musicbrainzngs==0.6
 mypy==0.620
 pluggy==0.7.1
-psycopg2==2.7.5
+psycopg2-binary==2.7.5
 py==1.6.0
 pytest==3.8.0
 python-dateutil==2.7.3
