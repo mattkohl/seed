@@ -3,7 +3,7 @@ FROM python:3.6-alpine
 ENV FLASK_APP seed.py
 ENV FLASK_CONFIG docker
 
-RUN apk add --no-cache --update gcc build-base
+RUN apk add --no-cache --update gcc build-base postgresql-dev python3-dev
 
 WORKDIR /home/seed
 
