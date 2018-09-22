@@ -23,11 +23,6 @@ for t in tasks:
     t.start()
 
 
-@application.cli.command()
-def deploy():
-    upgrade()  # migrate database to latest revision
-
-
 @application.route("/")
 def index() -> str:
     return "Index"

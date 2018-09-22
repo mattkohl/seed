@@ -2,7 +2,7 @@
 source venv/bin/activate
 
 while true; do
-    flask deploy
+    flask db upgrade
     if [[ "$?" == "0" ]]; then
         break
     fi
@@ -10,4 +10,4 @@ while true; do
     sleep 5
 done
 
-exec gunicorn -b :5000 --access-logfile - --error-logfile - seed:application
+exec gunicorn -b :5001 --access-logfile - --error-logfile - seed:application
