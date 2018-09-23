@@ -2,6 +2,7 @@
 source venv/bin/activate
 
 while true; do
+    flask db migrate
     flask db upgrade
     if [[ "$?" == "0" ]]; then
         break
