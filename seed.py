@@ -28,8 +28,13 @@ def index() -> str:
     return "Index"
 
 
+@application.route("/test/<name>")
+def test(name: str) -> str:
+    return name
+
+
 @application.route("/go/<playlist_uri>")
-def go(playlist_uri) -> str:
+def go(playlist_uri: str) -> str:
     try:
         kp.publish_message(producer, "playlist", "hh", playlist_uri)
     except KafkaError as e:
