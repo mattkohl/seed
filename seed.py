@@ -1,6 +1,6 @@
 import os
 from kafka.errors import KafkaError
-from flask_migrate import Migrate, upgrade
+from flask_migrate import Migrate
 import app.geni
 import app.spot
 import app.bus
