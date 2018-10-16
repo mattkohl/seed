@@ -28,7 +28,7 @@ class Producer(threading.Thread):
             except KafkaError as e:
                 print(e)
             else:
-                print(f"{record_metadata.topic}:{record_metadata.partition}:{record_metadata.offset}")
+                print(f"{record_metadata.topic}:{record_metadata.partition}:{record_metadata.offset}:{key}:{value[:99]}")
                 producer.flush()
 
     @staticmethod

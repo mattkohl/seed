@@ -16,7 +16,7 @@ producer = kp.connect()
 
 tasks = [
     app.geni.GenConsumer("track", kp),
-    app.spot.SpotConsumer("playlist", kp)
+    app.spot.PlaylistConsumer("playlist", kp)
 ]
 
 for t in tasks:
