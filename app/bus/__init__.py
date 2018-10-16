@@ -1,17 +1,12 @@
 import os
 import threading
 import multiprocessing
-import logging
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import KafkaError
 
 
 KAFKA_HOST = os.getenv("KAFKA_HOST", "localhost")
 KAFKA_PORT = os.getenv("KAFKA_PORT", "9092")
-
-logger = logging.getLogger()
-console = logging.StreamHandler()
-logger.addHandler(console)
 
 
 class Producer(threading.Thread):
@@ -31,7 +26,7 @@ class Producer(threading.Thread):
             try:
                 record_metadata = future.get(timeout=10)
             except KafkaError as e:
-                logger.error(e)
+                print(e)
             else:
                 print(f"{record_metadata.topic}:{record_metadata.partition}:{record_metadata.offset}:{key}:{value[:99]}")
                 producer.flush()
@@ -42,7 +37,7 @@ class Producer(threading.Thread):
         try:
             producer = KafkaProducer(bootstrap_servers=[f"{KAFKA_HOST}:{KAFKA_PORT}"], api_version=(0, 10))
         except KafkaError as ex:
-            logger.error(f"Exception while connecting Kafka Producer: {ex}")
+            print(f"Exception while connecting Kafka Producer: {ex}")
         finally:
             return producer
 
@@ -68,8 +63,8 @@ class Consumer(multiprocessing.Process):
                                      auto_offset_reset='smallest',
                                      consumer_timeout_ms=1000)
         except Exception as ex:
-            logger.error(f"Exception while connecting Kafka Consumer {self.topic}")
-            logger.error(str(ex))
+            print(f"Exception while connecting Kafka Consumer {self.topic}")
+            print(str(ex))
         finally:
             while not self.stop_event.is_set():
                 for message in consumer:

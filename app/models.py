@@ -3,13 +3,13 @@ from . import db
 
 
 song_artist = db.Table('SongArtist',
-                       db.Column('song_id', db.Integer, db.ForeignKey('song.id'), primary_key=True),
-                       db.Column('artist_id', db.Integer, db.ForeignKey('artist.id'), primary_key=True))
+                       db.Column('song_id', db.Integer, db.ForeignKey('songs.id'), primary_key=True),
+                       db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True))
 
 
 album_artist = db.Table('AlbumArtist',
-                        db.Column('album_id', db.Integer, db.ForeignKey('album.id'), primary_key=True),
-                        db.Column('artist_id', db.Integer, db.ForeignKey('artist.id'), primary_key=True))
+                        db.Column('album_id', db.Integer, db.ForeignKey('albums.id'), primary_key=True),
+                        db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True))
 
 
 class Artist(db.Model):
@@ -18,11 +18,14 @@ class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
     name = db.Column(db.Text)
-    songs = db.relationship('Song', secondary=song_artist, lazy='subquery', backref=db.backref('artists', lazy=True))
-    albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('artists', lazy=True))
+    songs = db.relationship('Song', secondary=song_artist, lazy='subquery', backref=db.backref('songs_artists', lazy=True))
+    albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy=True))
 
     def __repr__(self):
         return f"<Artist {self.name}>"
+
+    def __str__(self):
+        return f"ARTIST: {self.name} ({self.spot_uri})"
 
 
 class Album(db.Model):
@@ -34,10 +37,13 @@ class Album(db.Model):
     spot_uri = db.Column(db.Text)
     name = db.Column(db.Text)
     artists = db.relationship('Artist', secondary=album_artist, lazy='subquery',
-                              backref=db.backref('albums', lazy=True))
+                              backref=db.backref('artists_albums', lazy=True))
 
     def __repr__(self):
         return f"<Album {self.name}>"
+
+    def __str__(self):
+        return f"ALBUM: {self.name} ({self.spot_uri})"
 
 
 class Song(db.Model):
@@ -51,7 +57,10 @@ class Song(db.Model):
     preview_url = db.Column(db.Text)
     lyrics = db.Column(db.Text)
     artists = db.relationship('Artist', secondary=song_artist, lazy='subquery',
-                              backref=db.backref('songs', lazy=True))
+                              backref=db.backref('artists_songs', lazy=True))
 
     def __repr__(self):
-        return f"<Album {self.name}>"
+        return f"<Song {self.name}>"
+
+    def __str__(self):
+        return f"SONG: {self.name} ({self.spot_uri})"

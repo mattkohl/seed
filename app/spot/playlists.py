@@ -6,18 +6,13 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from app.spot.utils import SpotUtils
 
 
-logger = logging.getLogger()
-console = logging.StreamHandler()
-logger.addHandler(console)
-
-
 class SpotPlaylist:
 
     client_credentials_manager = SpotifyClientCredentials()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     def download(self, uri: str) -> Dict:
-        logger.info(uri)
+        print(uri)
         username = uri.split(':')[2]
         playlist_id = uri.split(':')[4]
         pl = self.sp.user_playlist(username, playlist_id)

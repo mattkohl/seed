@@ -1,9 +1,11 @@
 import os
 from kafka.errors import KafkaError
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 import app.geni
 import app.spot
 import app.bus
+import app.persist
+from app.models import Artist
 from app import create_app, db
 
 
@@ -16,7 +18,8 @@ producer = kp.connect()
 
 tasks = [
     app.geni.GenConsumer("track", kp),
-    app.spot.PlaylistConsumer("playlist", kp)
+    app.spot.PlaylistConsumer("playlist", kp),
+    app.persist.PersistArtistConsumer("artist", kp)
 ]
 
 for t in tasks:
@@ -28,9 +31,20 @@ def index() -> str:
     return "Index"
 
 
-@application.route("/test/<name>")
-def test(name: str) -> str:
-    return name
+@application.route("/clear")
+def clear() -> str:
+    results = Artist.query.all()
+    count = Artist.query.count()
+    for r in results:
+        db.session.delete(r)
+    db.session.commit()
+    return f"Deleted {count} records"
+
+
+@application.route("/artists")
+def artists() -> str:
+    results = Artist.query.all()
+    return "\n".join([str(a) for a in results])
 
 
 @application.route("/go/<playlist_uri>")
@@ -41,3 +55,8 @@ def go(playlist_uri: str) -> str:
         application.logger.error(str(e))
         return str(e)
     return playlist_uri
+
+
+@application.cli.command()
+def deploy():
+    upgrade()
