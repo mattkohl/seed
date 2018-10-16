@@ -31,14 +31,13 @@ def index() -> str:
     return "Index"
 
 
-@application.route("/clear")
+@application.route("/artists/clear")
 def clear() -> str:
-    results = Artist.query.all()
     count = Artist.query.count()
-    for r in results:
+    for r in Artist.query.all():
         db.session.delete(r)
     db.session.commit()
-    return f"Deleted {count} records"
+    return f"Deleted {count} Artist records"
 
 
 @application.route("/artists")
