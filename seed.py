@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 import app.geni
 import app.spot
 import app.bus
+import app.persist
+from app.models import Artist
 from app import create_app, db
 
 
@@ -16,7 +18,8 @@ producer = kp.connect()
 
 tasks = [
     app.geni.GenConsumer("track", kp),
-    app.spot.PlaylistConsumer("playlist", kp)
+    app.spot.PlaylistConsumer("playlist", kp),
+    # app.persist.PersistArtistConsumer("artist", kp)
 ]
 
 for t in tasks:
@@ -31,6 +34,12 @@ def index() -> str:
 @application.route("/test/<name>")
 def test(name: str) -> str:
     return name
+
+
+@application.route("/artists")
+def artists() -> str:
+    results = Artist.query.all()
+    return "\n".join(a for a in results)
 
 
 @application.route("/go/<playlist_uri>")
