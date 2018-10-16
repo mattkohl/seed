@@ -2,7 +2,7 @@ from app.bus import Producer, Consumer
 from . import playlists
 
 
-class SpotConsumer(Consumer):
+class PlaylistConsumer(Consumer):
 
     sp = playlists.SpotPlaylist()
 
@@ -15,4 +15,6 @@ class SpotConsumer(Consumer):
             uri = msg.value.decode('utf-8')
             tracks = self.sp.extract_tracks(uri)
             for track in tracks:
+                for artist in track["artists"]:
+                    self.producer.publish_message(self.producer.connect(), "artist", "hh", str(artist))
                 self.producer.publish_message(self.producer.connect(), "track", "hh", str(track))
