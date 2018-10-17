@@ -5,7 +5,7 @@ import app.geni
 import app.spot
 import app.bus
 import app.persist
-from app.models import Artist
+from app.models import Artist, Song
 from app import create_app, db
 
 
@@ -32,7 +32,7 @@ def index() -> str:
 
 
 @application.route("/artists/clear")
-def clear() -> str:
+def clear_artists() -> str:
     count = Artist.query.count()
     for r in Artist.query.all():
         db.session.delete(r)
@@ -44,6 +44,21 @@ def clear() -> str:
 def artists() -> str:
     results = Artist.query.all()
     return "\n".join([str(a) for a in results])
+
+
+@application.route("/songs")
+def songs() -> str:
+    results = Song.query.all()
+    return "\n".join([str(a) for a in results])
+
+
+@application.route("/songs/clear")
+def clear_songs() -> str:
+    count = Song.query.count()
+    for r in Song.query.all():
+        db.session.delete(r)
+    db.session.commit()
+    return f"Deleted {count} Song records"
 
 
 @application.route("/go/<playlist_uri>")

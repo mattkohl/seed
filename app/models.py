@@ -63,4 +63,4 @@ class Song(db.Model):
         return f"<Song {self.name}>"
 
     def __str__(self):
-        return f"SONG: {self.name} ({self.spot_uri})"
+        return f"SONG: {self.name} [{self.album.name}] ({self.spot_uri})"
