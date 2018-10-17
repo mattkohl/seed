@@ -10,6 +10,7 @@ class GenUtils:
         slug = re.sub("^[\-']]", "", slug)
         slug = re.sub("\s", "-", slug)
         slug = re.sub("\.", "", slug)
+        slug = re.sub("!", "", slug)
         slug = re.sub("[:/]", "", slug)
         slug = re.sub("\$", "-", slug)
         slug = re.sub("\*", "", slug)
