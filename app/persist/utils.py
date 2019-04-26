@@ -1,9 +1,10 @@
+from app import db
 
 
 class PersistUtils:
 
     @staticmethod
-    def get_or_create(session, model, **kwargs):
+    def get_or_create(session, model, **kwargs) -> db.Model:
         instance = session.query(model).filter_by(**kwargs).first()
         if instance:
             return instance

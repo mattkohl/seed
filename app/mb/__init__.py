@@ -1,22 +1,15 @@
-import ast
+from typing import Dict
+
 from . import artists
-from app.bus import Producer, Consumer
 
 
-class MBConsumer(Consumer):
+class MBConsumer:
 
-    mba = artists.MBArtist()
-
-    def __init__(self, topic: str, kp: Producer):
-        Consumer.__init__(self, topic)
-        self.producer = kp
-
-    def run(self):
-        for msg in self.queue:
-            track = ast.literal_eval(msg.value.decode('utf-8'))
-            artist = track["artists"][0]["name"]
-            results = self.mba.search(artist)
-            if results and results[0]["ext:score"] == "100":
-                mb_id = results[0]["id"]
-                track.update({"mbId": mb_id})
-                self.producer.publish_message(self.producer.connect(), "mb", "hh", str(track))
+    @staticmethod
+    def run(track: Dict) -> Dict:
+        artist = track["artists"][0]["name"]
+        results = artists.MBArtist().search(artist)
+        if results and results[0]["ext:score"] == "100":
+            mb_id = results[0]["id"]
+            track.update({"mbId": mb_id})
+        return track

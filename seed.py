@@ -1,29 +1,11 @@
 import os
-from kafka.errors import KafkaError
 from flask_migrate import Migrate, upgrade
-import app.geni
-import app.spot
-import app.bus
-import app.persist
 from app.models import Artist, Song
 from app import create_app, db
 
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(application, db)
-
-
-kp = app.bus.Producer()
-producer = kp.connect()
-
-tasks = [
-    app.geni.GenConsumer("track", kp),
-    app.spot.PlaylistConsumer("playlist", kp),
-    app.persist.PersistArtistConsumer("artist", kp)
-]
-
-for t in tasks:
-    t.start()
 
 
 @application.route("/")

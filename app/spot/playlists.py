@@ -12,11 +12,16 @@ class SpotPlaylist:
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     def download(self, uri: str) -> Dict:
-        print(uri)
         username = uri.split(':')[2]
         playlist_id = uri.split(':')[4]
-        pl = self.sp.user_playlist(username, playlist_id)
-        return pl
+        try:
+            pl = self.sp.user_playlist(username, playlist_id)
+        except Exception as e:
+            logging.error(f"Unable to download playlist {playlist_id}: {e}")
+            return dict()
+        else:
+            logging.info(f"Downloaded playlist {playlist_id}")
+            return pl
 
     def extract_tracks(self, uri: str) -> List[Dict]:
         playlist = self.download(uri)
