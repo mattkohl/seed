@@ -25,4 +25,5 @@ class SpotPlaylist:
 
     def extract_tracks(self, uri: str) -> List[Dict]:
         playlist = self.download(uri)
-        return [SpotUtils.extract_track(item["track"]) for item in playlist["tracks"]["items"]]
+        for item in playlist["tracks"]["items"]:
+            yield SpotUtils.extract_track(item["track"])

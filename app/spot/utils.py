@@ -23,9 +23,11 @@ class SpotUtils:
         available keys: 'album', 'artists', 'available_markets', 'disc_number', 'duration_ms', 'episode', 'explicit', 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url', 'track', 'track_number', 'type', 'uri'
         """
         return {
-            "title": raw["name"],
+            "name": raw["name"],
             "uri": raw["uri"],
             "popularity": raw["popularity"],
+            "preview_url": raw["preview_url"],
+            "lyrics": "",
             "album": SpotUtils.extract_album(raw["album"]),
             "artists": [SpotUtils.extract_artist(a) for a in raw["artists"]]
         }

@@ -1,7 +1,9 @@
+from flask import Response
 import os
 from flask_migrate import Migrate, upgrade
 from app.models import Artist, Song
 from app import create_app, db
+from app.pipeline.tasks import Tasks
 
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -44,15 +46,11 @@ def clear_songs() -> str:
 
 
 @application.route("/go/<playlist_uri>")
-def go(playlist_uri: str) -> str:
-    try:
-        kp.publish_message(producer, "playlist", "hh", playlist_uri)
-    except KafkaError as e:
-        application.logger.error(str(e))
-        return str(e)
-    return playlist_uri
+def go(playlist_uri: str):
+    return Response(Tasks.playlist(playlist_uri), content_type='application/json')
 
 
 @application.cli.command()
 def deploy():
     upgrade()
+    db.create_all()
