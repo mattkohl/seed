@@ -2,12 +2,12 @@ from datetime import datetime
 from . import db
 
 
-song_artist = db.Table('SongArtist',
+song_artist = db.Table('song_artist',
                        db.Column('song_id', db.Integer, db.ForeignKey('songs.id'), primary_key=True),
                        db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True))
 
 
-album_artist = db.Table('AlbumArtist',
+album_artist = db.Table('album_artist',
                         db.Column('album_id', db.Integer, db.ForeignKey('albums.id'), primary_key=True),
                         db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True))
 
