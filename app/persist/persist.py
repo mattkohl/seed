@@ -19,18 +19,17 @@ class Persist:
             print(str(e))
 
     @staticmethod
-    def persist_song(track: Dict) -> Song:
-        try:
-            name, uri, popularity, preview_url = track["name"], track["uri"], track["popularity"], track["preview_url"]
-            current = create_app('docker')
-            with current.app_context():
-                artists = [PersistUtils.get_or_create(db.session, Artist, name=artist['name'], spot_uri=artist['uri']) for artist in track["artists"]]
-                song = PersistUtils.get_or_create(db.session, Song, name=name, spot_uri=uri, popularity=popularity, preview_url=preview_url)
-                for artist in artists:
-                    song.artists.append(artist)
-                db.session.add(song)
-                db.session.commit()
-                return song
+    def persist_song(track: Dict):
 
-        except Exception as e:
-            print(f"ERROR: {e}")
+        name, uri, popularity, preview_url = track["name"], track["uri"], track["popularity"], track["preview_url"]
+        current = create_app('docker')
+
+        with current.app_context():
+            song = PersistUtils.get_or_create(db.session, Song, name=name, spot_uri=uri, popularity=popularity, preview_url=preview_url)
+            artists = [PersistUtils.get_or_create(db.session, Artist, name=artist['name'], spot_uri=artist['uri']) for artist in track["artists"]]
+            db.session.add(song)
+            db.session.commit()
+            for artist in artists:
+                song.artists.append(artist)
+
+

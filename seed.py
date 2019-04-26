@@ -1,4 +1,4 @@
-from flask import Response
+from flask import Response, jsonify
 import os
 from flask_migrate import Migrate, upgrade
 from app.models import Artist, Song
@@ -33,7 +33,8 @@ def artists() -> str:
 @application.route("/songs")
 def songs() -> str:
     results = Song.query.all()
-    return "\n".join([str(a) for a in results])
+    print(results)
+    return jsonify("foo")
 
 
 @application.route("/songs/clear")
@@ -53,4 +54,3 @@ def go(playlist_uri: str):
 @application.cli.command()
 def deploy():
     upgrade()
-    db.create_all()
