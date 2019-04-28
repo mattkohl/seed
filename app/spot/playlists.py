@@ -3,6 +3,7 @@ import logging
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
+from app.spot.models import Track
 from app.spot.utils import SpotUtils
 
 
@@ -23,7 +24,7 @@ class SpotPlaylist:
             logging.info(f"Downloaded playlist {playlist_id}")
             return pl
 
-    def extract_tracks(self, uri: str) -> List[Dict]:
+    def extract_tracks(self, uri: str) -> List[Track]:
         playlist = self.download(uri)
         for item in playlist["tracks"]["items"]:
             yield SpotUtils.extract_track(item["track"])

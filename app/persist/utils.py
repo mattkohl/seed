@@ -27,10 +27,13 @@ class AlchemyEncoder(json.JSONEncoder):
             fields = {}
             for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
                 data = obj.__getattribute__(field)
+                print("=====> ", field, ": ", data)
+
                 try:
                     json.dumps(data)
                     fields[field] = data
-                except TypeError:
+                except TypeError as e:
+                    print(e)
                     fields[field] = None
             return fields
 

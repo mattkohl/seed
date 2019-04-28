@@ -9,5 +9,6 @@ class Tasks:
     @staticmethod
     def playlist(uri: str):
         for result in PlaylistConsumer.run(uri):
+            print(result)
             Persist.persist_song(result)
             yield json.dumps(result)

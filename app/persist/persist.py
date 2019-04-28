@@ -1,8 +1,9 @@
 from typing import Dict
 
 from app import create_app, db
-from app.models import Artist, Song
+from app.models import Artist, Song, Album
 from app.persist.utils import PersistUtils
+from app.spot.models import Track
 
 
 class Persist:
@@ -19,17 +20,16 @@ class Persist:
             print(str(e))
 
     @staticmethod
-    def persist_song(track: Dict):
+    def persist_song(track: Track):
 
-        name, uri, popularity, preview_url = track["name"], track["uri"], track["popularity"], track["preview_url"]
         current = create_app('docker')
-
         with current.app_context():
-            song = PersistUtils.get_or_create(db.session, Song, name=name, spot_uri=uri, popularity=popularity, preview_url=preview_url)
-            artists = [PersistUtils.get_or_create(db.session, Artist, name=artist['name'], spot_uri=artist['uri']) for artist in track["artists"]]
+            _album = PersistUtils.get_or_create(db.session, Album, name=track.album.name, spot_uri=track.album.uri,
+                                                release_date=track.album.release_date)
+            song = PersistUtils.get_or_create(db.session, Song, name=track.name, spot_uri=track.uri, popularity=track.popularity, preview_url=track.preview_url, album_id=_album.id)
+            artists = [PersistUtils.get_or_create(db.session, Artist, name=artist.name, spot_uri=artist.uri) for artist in track.artists]
             db.session.add(song)
-            db.session.commit()
             for artist in artists:
                 song.artists.append(artist)
-
-
+                artist.albums.append(_album)
+            db.session.commit()

@@ -1,13 +1,20 @@
-from flask import Response, jsonify
+import json
 import os
-from flask_migrate import Migrate, upgrade
-from app.models import Artist, Song
-from app import create_app, db
-from app.pipeline.tasks import Tasks
 
+from flask import Response
+from flask_migrate import Migrate, upgrade
+from app import create_app, db
+from app.models import Artist, Album, Song
+from app.persist.utils import AlchemyEncoder
+from app.pipeline.tasks import Tasks
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(application, db)
+
+
+@application.cli.command()
+def deploy():
+    upgrade()
 
 
 @application.route("/")
@@ -15,42 +22,46 @@ def index() -> str:
     return "Index"
 
 
-@application.route("/artists/clear")
-def clear_artists() -> str:
-    count = Artist.query.count()
-    for r in Artist.query.all():
-        db.session.delete(r)
-    db.session.commit()
-    return f"Deleted {count} Artist records"
-
-
 @application.route("/artists")
-def artists() -> str:
+def artists():
     results = Artist.query.all()
-    return "\n".join([str(a) for a in results])
+    return Response(response=json.dumps(results, cls=AlchemyEncoder), content_type='application/json')
+
+
+@application.route("/albums")
+def albums():
+    results = Album.query.all()
+    return Response(response=json.dumps(results, cls=AlchemyEncoder), content_type='application/json')
 
 
 @application.route("/songs")
-def songs() -> str:
+def songs():
     results = Song.query.all()
-    print(results)
-    return jsonify("foo")
+    return Response(response=json.dumps(results, cls=AlchemyEncoder), content_type='application/json')
 
 
-@application.route("/songs/clear")
-def clear_songs() -> str:
-    count = Song.query.count()
-    for r in Song.query.all():
-        db.session.delete(r)
+@application.route("/clear")
+def clear() -> str:
+    song_count = Song.query.count()
+    artist_count = Artist.query.count()
+    album_count = Album.query.count()
+    message = f"Deleted {song_count} Songs, {artist_count} Artists, & {album_count} Albums"
+    Song.query.delete()
+    Artist.query.delete()
+    Album.query.delete()
     db.session.commit()
-    return f"Deleted {count} Song records"
+    return message
+
+
+@application.route("/clear/artists")
+def clear_artists() -> str:
+    artist_count = Artist.query.count()
+    message = f"Deleted {artist_count} Artists"
+    Artist.query.delete()
+    db.session.commit()
+    return message
 
 
 @application.route("/go/<playlist_uri>")
 def go(playlist_uri: str):
     return Response(Tasks.playlist(playlist_uri), content_type='application/json')
-
-
-@application.cli.command()
-def deploy():
-    upgrade()

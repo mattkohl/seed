@@ -3,13 +3,13 @@ from . import db
 
 
 song_artist = db.Table('song_artist',
-                       db.Column('song_id', db.Integer, db.ForeignKey('songs.id'), primary_key=True),
-                       db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True))
+                       db.Column('song_id', db.Integer, db.ForeignKey('songs.id', ondelete="CASCADE"), primary_key=True),
+                       db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
 album_artist = db.Table('album_artist',
-                        db.Column('album_id', db.Integer, db.ForeignKey('albums.id'), primary_key=True),
-                        db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True))
+                        db.Column('album_id', db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"), primary_key=True),
+                        db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
 class Artist(db.Model):
@@ -36,6 +36,7 @@ class Album(db.Model):
     release_date = db.Column(db.DateTime)
     spot_uri = db.Column(db.Text)
     name = db.Column(db.Text)
+    songs = db.relationship('Song', backref='album', lazy=True)
     artists = db.relationship('Artist', secondary=album_artist, lazy='subquery',
                               backref=db.backref('artists_albums', lazy=True))
 
@@ -52,7 +53,7 @@ class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
     name = db.Column(db.Text)
-    album = db.Column(db.Integer, db.ForeignKey('albums.id'))
+    album_id = db.Column(db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"))
     popularity = db.Column(db.Integer)
     preview_url = db.Column(db.Text)
     lyrics = db.Column(db.Text)
@@ -63,4 +64,4 @@ class Song(db.Model):
         return f"<Song {self.name}>"
 
     def __str__(self):
-        return f"SONG: {self.name} [{self.album.name}] ({self.spot_uri})"
+        return f"SONG: {self.title} [{self.album.name}] ({self.spot_uri})"
