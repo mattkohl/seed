@@ -27,6 +27,9 @@ class Artist(db.Model):
     def __str__(self):
         return f"ARTIST: {self.name} ({self.spot_uri})"
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Album(db.Model):
     __tablename__ = "albums"
@@ -45,6 +48,9 @@ class Album(db.Model):
 
     def __str__(self):
         return f"ALBUM: {self.name} ({self.spot_uri})"
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Song(db.Model):
@@ -65,3 +71,6 @@ class Song(db.Model):
 
     def __str__(self):
         return f"SONG: {self.title} [{self.album.name}] ({self.spot_uri})"
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

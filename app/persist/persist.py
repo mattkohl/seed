@@ -26,8 +26,11 @@ class Persist:
         with current.app_context():
             _album = PersistUtils.get_or_create(db.session, Album, name=track.album.name, spot_uri=track.album.uri,
                                                 release_date=track.album.release_date)
-            song = PersistUtils.get_or_create(db.session, Song, name=track.name, spot_uri=track.uri, popularity=track.popularity, preview_url=track.preview_url, album_id=_album.id)
-            artists = [PersistUtils.get_or_create(db.session, Artist, name=artist.name, spot_uri=artist.uri) for artist in track.artists]
+            song = PersistUtils.get_or_create(db.session, Song, name=track.name, spot_uri=track.uri,
+                                              popularity=track.popularity, preview_url=track.preview_url,
+                                              album_id=_album.id)
+            artists = [PersistUtils.get_or_create(db.session, Artist, name=artist.name, spot_uri=artist.uri) for artist
+                       in track.artists]
             db.session.add(song)
             for artist in artists:
                 song.artists.append(artist)

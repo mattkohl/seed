@@ -1,11 +1,9 @@
-import json
 import os
 
-from flask import Response
+from flask import Response, jsonify, json
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.models import Artist, Album, Song
-from app.persist.utils import AlchemyEncoder
 from app.pipeline.tasks import Tasks
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -24,20 +22,20 @@ def index() -> str:
 
 @application.route("/artists")
 def artists():
-    results = Artist.query.all()
-    return Response(response=json.dumps(results, cls=AlchemyEncoder), content_type='application/json')
+    results = [s.as_dict() for s in Artist.query.all()]
+    return jsonify(results)
 
 
 @application.route("/albums")
 def albums():
-    results = Album.query.all()
-    return Response(response=json.dumps(results, cls=AlchemyEncoder), content_type='application/json')
+    results = [s.as_dict() for s in Album.query.all()]
+    return jsonify(results)
 
 
 @application.route("/songs")
 def songs():
-    results = Song.query.all()
-    return Response(response=json.dumps(results, cls=AlchemyEncoder), content_type='application/json')
+    results = [s.as_dict() for s in Song.query.all()]
+    return jsonify(results)
 
 
 @application.route("/clear")
