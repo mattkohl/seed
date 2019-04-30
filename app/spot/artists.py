@@ -3,7 +3,7 @@ from typing import Dict, List
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from app.spot.models import Album
+from app.spot.models import AlbumTuple
 from app.spot.utils import SpotUtils
 
 
@@ -21,7 +21,7 @@ class SpotArtist:
     def download(self, uri: str) -> Dict:
         return self.sp.artist(uri)
 
-    def extract_albums(self, uri: str) -> List[Album]:
+    def extract_albums(self, uri: str) -> List[AlbumTuple]:
         for item in self.sp.artist_albums(uri, "album", "US")["items"]:
             print(item)
             yield SpotUtils.extract_album(item)
