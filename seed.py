@@ -1,6 +1,6 @@
 import os
 
-from flask import Response, jsonify, json
+from flask import Response, jsonify
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.models import Artist, Album, Song
@@ -22,7 +22,7 @@ def index() -> str:
 
 @application.route("/artists")
 def artists():
-    results = [s.as_dict() for s in Artist.query.all()]
+    results = [o.as_dict() for o in Artist.query.all()]
     return jsonify(results)
 
 
@@ -62,4 +62,4 @@ def clear_artists() -> str:
 
 @application.route("/go/<playlist_uri>")
 def go(playlist_uri: str):
-    return Response(Tasks.playlist(playlist_uri), content_type='application/json')
+    return Response(Tasks.extract_tracks_from_playlist(playlist_uri), content_type='application/json')

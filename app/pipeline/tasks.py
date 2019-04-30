@@ -7,7 +7,7 @@ from app.persist.persist import Persist
 class Tasks:
 
     @staticmethod
-    def playlist(uri: str):
+    def extract_tracks_from_playlist(uri: str):
         for result in PlaylistConsumer.run(uri):
             Persist.persist_song(result)
             _album = result.album._asdict()
