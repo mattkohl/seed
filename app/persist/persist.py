@@ -1,3 +1,5 @@
+from typing import Dict
+
 from app import create_app, db
 from app.models import Artist, Track, Album
 from app.persist.utils import PersistUtils
@@ -5,6 +7,14 @@ from app.spot.models import TrackTuple
 
 
 class Persist:
+
+    @staticmethod
+    def update_track(_track: Track, lyrics: str):
+        current = create_app('docker')
+        with current.app_context():
+            _track.lyrics = lyrics
+            db.session.add(_track)
+            db.session.commit()
 
     @staticmethod
     def persist_track(track: TrackTuple):

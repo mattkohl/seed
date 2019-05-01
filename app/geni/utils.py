@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 
 class GenUtils:
@@ -44,11 +45,12 @@ class GenUtils:
         return st
 
     @staticmethod
-    def link(artist: str, song_title: str) -> str:
+    def link(artists: List[str], song_title: str) -> str:
         h = "https"
         g = "genius"
         c = "com"
-        artist = "The " + artist[:-4] if artist.endswith(", The") else artist
+        _artist = artists[0]
+        artist = "The " + _artist[:-4] if _artist.endswith(", The") else _artist
         song_title = GenUtils.prune(song_title)
         slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
         return f"{h}://{g}.{c}/{slug}"

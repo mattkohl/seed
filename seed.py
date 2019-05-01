@@ -50,7 +50,7 @@ def album(uri):
     _album = result.as_dict()
     _artists = [_artist.as_dict() for _artist in result.artists]
     _tracks = [_track.as_dict() for _track in result.tracks]
-    _album.update({"albums": _tracks, "artists": _artists})
+    _album.update({"tracks": _tracks, "artists": _artists})
     return jsonify(_album)
 
 
@@ -68,6 +68,22 @@ def track(uri):
     _album = result.album.as_dict()
     _track.update({"album": _album, "artists": _artists})
     return jsonify(_track)
+
+
+@application.route("/tracks/<uri>/lyrics")
+def track_lyrics(uri):
+    result = Track.query.filter_by(spot_uri=uri).first()
+    _track = result.as_dict()
+    _artists = [_artist.as_dict() for _artist in result.artists]
+    _album = result.album.as_dict()
+    _track.update({"album": _album, "artists": _artists})
+    if result.lyrics is not None:
+        return jsonify(_track)
+    else:
+        lyrics = Tasks.get_lyrics([_artist.name for _artist in result.artists], result.name)
+        Tasks.persist_lyrics(result.id, lyrics)
+        _track.update({"lyrics": lyrics})
+        return jsonify(_track)
 
 
 @application.route("/clear")

@@ -1,7 +1,9 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from flask import json
 
+from app.geni import utils, parser
+from app.models import Track
 from app.persist.persist import Persist
 from app.spot.models import TrackTuple
 from app.spot.playlists import SpotPlaylist
@@ -47,3 +49,14 @@ class Tasks:
         [Tasks.persist_track(t) for t in track_tuples]
         track_dicts = [t._asdict() for t in track_tuples]
         return track_dicts
+
+    @staticmethod
+    def get_lyrics(artists: List[str], title: str) -> Optional[str]:
+        url = utils.GenUtils.link(artists, title)
+        return parser.GenParser.download(url)
+
+    @staticmethod
+    def persist_lyrics(track_id: int, lyrics: str) -> None:
+        _track = Track.query.filter_by(id=track_id).first
+        Persist.update_track(_track, lyrics)
+

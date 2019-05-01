@@ -47,7 +47,7 @@ class SpotUtils:
         return TrackTuple(**_raw)
 
     @staticmethod
-    def extract_tracks(track_items: Dict) -> List[TrackTuple]:
+    def extract_tracks(track_items: Dict) -> List[Dict]:
         return [track_item["track"] for track_item in track_items["tracks"]["items"]]
 
     @staticmethod
