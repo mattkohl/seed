@@ -63,6 +63,8 @@ class Track(db.Model):
     popularity = db.Column(db.Integer)
     preview_url = db.Column(db.Text)
     lyrics = db.Column(db.Text)
+    lyrics_url = db.Column(db.Text)
+    lyrics_fetched = db.Column(db.DateTime, default=datetime.utcnow)
     artists = db.relationship('Artist', secondary=track_artist, lazy='subquery',
                               backref=db.backref('artists_tracks', lazy=True))
 

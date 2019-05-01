@@ -9,11 +9,10 @@ from app.spot.models import TrackTuple
 class Persist:
 
     @staticmethod
-    def update_track(_track: Track, lyrics: str):
+    def update_track(track_id: int, updates: Dict):
         current = create_app('docker')
         with current.app_context():
-            _track.lyrics = lyrics
-            db.session.add(_track)
+            db.session.query(Track).filter(Track.id == track_id).update(updates)
             db.session.commit()
 
     @staticmethod

@@ -12,7 +12,7 @@ class GenParser:
             page = requests.get(url)
             html = BeautifulSoup(page.text, "html.parser")
             lyrics = html.find("div", class_="lyrics").get_text()
-        except ValueError as e:
+        except Exception as e:
             print(f"Nothing found at {url}: {e}")
             return None
         else:

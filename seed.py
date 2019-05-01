@@ -1,6 +1,7 @@
+from datetime import datetime
 import os
 
-from flask import Response, jsonify
+from flask import jsonify
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.models import Artist, Album, Track
@@ -80,9 +81,11 @@ def track_lyrics(uri):
     if result.lyrics is not None:
         return jsonify(_track)
     else:
-        lyrics = Tasks.get_lyrics([_artist.name for _artist in result.artists], result.name)
-        Tasks.persist_lyrics(result.id, lyrics)
-        _track.update({"lyrics": lyrics})
+        url = Tasks.generate_lyrics_url([_artist.name for _artist in result.artists], result.name)
+        lyrics = Tasks.get_lyrics(url)
+        fetched = datetime.now()
+        Tasks.persist_lyrics(result.id, lyrics, url, fetched)
+        _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
         return jsonify(_track)
 
 

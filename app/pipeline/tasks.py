@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional
-
+from datetime import datetime
 from flask import json
 
 from app.geni import utils, parser
@@ -51,12 +51,16 @@ class Tasks:
         return track_dicts
 
     @staticmethod
-    def get_lyrics(artists: List[str], title: str) -> Optional[str]:
-        url = utils.GenUtils.link(artists, title)
+    def generate_lyrics_url(artists: List[str], title: str) -> str:
+        return utils.GenUtils.link(artists, title)
+
+    @staticmethod
+    def get_lyrics(url) -> Optional[str]:
         return parser.GenParser.download(url)
 
     @staticmethod
-    def persist_lyrics(track_id: int, lyrics: str) -> None:
-        _track = Track.query.filter_by(id=track_id).first
-        Persist.update_track(_track, lyrics)
+    def persist_lyrics(track_id: int, lyrics: Optional[str], url: str, fetched) -> None:
+        _track = Track.query.filter_by(id=track_id).first()
+        if lyrics:
+            Persist.update_track(_track.id, {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched: fetched})
 
