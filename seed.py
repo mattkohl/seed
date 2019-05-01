@@ -82,4 +82,5 @@ def clear() -> str:
 
 @application.route("/go/playlist/<playlist_uri>")
 def go_playlist(playlist_uri: str):
-    return Response(Tasks.extract_tracks_from_playlist(playlist_uri), content_type='application/json')
+    track_dicts = Tasks.run(playlist_uri)
+    return jsonify(track_dicts)

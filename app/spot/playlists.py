@@ -24,7 +24,7 @@ class SpotPlaylist:
             logging.info(f"Downloaded playlist {playlist_id}")
             return pl
 
-    def extract_tracks(self, uri: str) -> List[TrackTuple]:
-        playlist = self.download(uri)
-        for item in playlist["tracks"]["items"]:
-            yield SpotUtils.extract_track(item["track"])
+    @staticmethod
+    def extract_tracks(playlist: Dict) -> List[TrackTuple]:
+        for track_item in playlist["tracks"]["items"]:
+            yield SpotUtils.extract_track(track_item["track"])

@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Dict
+from typing import Dict, List
 
 from app.spot.models import AlbumTuple, ArtistTuple, TrackTuple
 
@@ -45,6 +45,10 @@ class SpotUtils:
         _raw.update({"album": _album, "artists": _artists})
 
         return TrackTuple(**_raw)
+
+    @staticmethod
+    def extract_tracks(track_items: Dict) -> List[TrackTuple]:
+        return [track_item["track"] for track_item in track_items["tracks"]["items"]]
 
     @staticmethod
     def clean_up_date(raw_date):
