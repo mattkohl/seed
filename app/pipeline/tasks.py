@@ -1,7 +1,9 @@
 from typing import Dict, List, Optional
 from datetime import datetime
 from flask import json
+from sqlalchemy.orm import joinedload
 
+from app import db
 from app.geni import utils, parser
 from app.models import Track
 from app.persist.persist import Persist
@@ -53,7 +55,8 @@ class Tasks:
     def persist_lyrics(track_id: int, lyrics: Optional[str], url: str, fetched) -> None:
         _track = Track.query.filter_by(id=track_id).first()
         if lyrics:
-            Persist.update_track(_track.id, {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched: fetched})
+            _updates = {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched: fetched}
+            Persist.update_track(_track.id, _updates)
 
     @staticmethod
     def run_playlist(playlist_uri) -> List[Dict]:
@@ -65,17 +68,20 @@ class Tasks:
         return track_dicts
 
     @staticmethod
-    def run_lyrics(track_uri: Optional[str] = None):
-        tracks = [Track.query.filter_by(spot_uri=track_uri).first()] if track_uri is not None else Track.query.filter_by(lyrics=None).all()
-        return [Tasks.run_lyric(t) for t in tracks]
+    def run_lyrics(track_uri: Optional[str] = None) -> List[Dict]:
+        if track_uri is not None:
+            return [Tasks.run_lyric(track_uri)]
+        else:
+            return [Tasks.run_lyric(_track.spot_uri) for _track in Track.query.filter_by(lyrics=None).all()]
 
     @staticmethod
-    def run_lyric(track: Track):
+    def run_lyric(track_uri: str) -> Dict:
+        track = db.session.query(Track).filter(Track.spot_uri==track_uri).first()
         url = Tasks.generate_lyrics_url([_artist.name for _artist in track.artists], track.name)
         try:
             lyrics = Tasks.get_lyrics(url)
         except Exception as e:
-            print(f"Could'nt connect to {url}: {e}")
+            print(f"Could not connect to {url}: {e}")
         else:
             fetched = datetime.now()
             Tasks.persist_lyrics(track.id, lyrics, url, fetched)

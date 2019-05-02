@@ -118,4 +118,4 @@ def go_lyrics():
 @application.route("/go/lyrics/<track_uri>")
 def go_lyric(track_uri):
     _tracks = Tasks.run_lyrics(track_uri)
-    return jsonify([t.as_dict() for t in _tracks])
+    return jsonify(_tracks)
