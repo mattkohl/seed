@@ -42,15 +42,6 @@ class Tasks:
         Persist.persist_track(track_tuple)
 
     @staticmethod
-    def run(playlist_uri) -> List[Dict]:
-        playlist = Tasks.get_playlist_tracks(playlist_uri)
-        track_dicts = Tasks.extract_tracks_from_playlist(playlist)
-        track_tuples = Tasks.tuplify_tracks(track_dicts)
-        [Tasks.persist_track(t) for t in track_tuples]
-        track_dicts = [t._asdict() for t in track_tuples]
-        return track_dicts
-
-    @staticmethod
     def generate_lyrics_url(artists: List[str], title: str) -> str:
         return utils.GenUtils.link(artists, title)
 
@@ -64,3 +55,30 @@ class Tasks:
         if lyrics:
             Persist.update_track(_track.id, {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched: fetched})
 
+    @staticmethod
+    def run_playlist(playlist_uri) -> List[Dict]:
+        playlist = Tasks.get_playlist_tracks(playlist_uri)
+        track_dicts = Tasks.extract_tracks_from_playlist(playlist)
+        track_tuples = Tasks.tuplify_tracks(track_dicts)
+        [Tasks.persist_track(t) for t in track_tuples]
+        track_dicts = [t._asdict() for t in track_tuples]
+        return track_dicts
+
+    @staticmethod
+    def run_lyrics(track_uri: Optional[str] = None):
+        tracks = [Track.query.filter_by(spot_uri=track_uri).first()] if track_uri is not None else Track.query.filter_by(lyrics=None).all()
+        return [Tasks.run_lyric(t) for t in tracks]
+
+    @staticmethod
+    def run_lyric(track: Track):
+        url = Tasks.generate_lyrics_url([_artist.name for _artist in track.artists], track.name)
+        try:
+            lyrics = Tasks.get_lyrics(url)
+        except Exception as e:
+            print(f"Could'nt connect to {url}: {e}")
+        else:
+            fetched = datetime.now()
+            Tasks.persist_lyrics(track.id, lyrics, url, fetched)
+            _track = track.as_dict()
+            _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
+            return _track

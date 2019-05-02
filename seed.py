@@ -82,10 +82,14 @@ def track_lyrics(uri):
         return jsonify(_track)
     else:
         url = Tasks.generate_lyrics_url([_artist.name for _artist in result.artists], result.name)
-        lyrics = Tasks.get_lyrics(url)
-        fetched = datetime.now()
-        Tasks.persist_lyrics(result.id, lyrics, url, fetched)
-        _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
+        try:
+            lyrics = Tasks.get_lyrics(url)
+        except Exception as e:
+            print(f"Could'nt connect to {url}: {e}")
+        else:
+            fetched = datetime.now()
+            Tasks.persist_lyrics(result.id, lyrics, url, fetched)
+            _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
         return jsonify(_track)
 
 
@@ -101,5 +105,17 @@ def clear() -> str:
 
 @application.route("/go/playlist/<playlist_uri>")
 def go_playlist(playlist_uri: str):
-    track_dicts = Tasks.run(playlist_uri)
+    track_dicts = Tasks.run_playlist(playlist_uri)
     return jsonify(track_dicts)
+
+
+@application.route("/go/lyrics")
+def go_lyrics():
+    _tracks = Tasks.run_lyrics()
+    return jsonify([t.as_dict() for t in _tracks])
+
+
+@application.route("/go/lyrics/<track_uri>")
+def go_lyric(track_uri):
+    _tracks = Tasks.run_lyrics(track_uri)
+    return jsonify([t.as_dict() for t in _tracks])
