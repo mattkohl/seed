@@ -105,17 +105,14 @@ def clear() -> str:
 
 @application.route("/go/playlist/<playlist_uri>")
 def go_playlist(playlist_uri: str):
-    track_dicts = Tasks.run_playlist(playlist_uri)
-    return jsonify(track_dicts)
+    return jsonify(Tasks.run_playlist(playlist_uri))
 
 
 @application.route("/go/lyrics")
 def go_lyrics():
-    _tracks = Tasks.run_lyrics()
-    return jsonify([t.as_dict() for t in _tracks])
+    return jsonify(Tasks.run_lyrics())
 
 
 @application.route("/go/lyrics/<track_uri>")
 def go_lyric(track_uri):
-    _tracks = Tasks.run_lyrics(track_uri)
-    return jsonify(_tracks)
+    return jsonify(Tasks.run_lyrics(track_uri))

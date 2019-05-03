@@ -75,16 +75,21 @@ class Tasks:
             return [Tasks.run_lyric(_track.spot_uri) for _track in Track.query.filter_by(lyrics=None).all()]
 
     @staticmethod
-    def run_lyric(track_uri: str) -> Dict:
-        track = db.session.query(Track).filter(Track.spot_uri==track_uri).first()
-        url = Tasks.generate_lyrics_url([_artist.name for _artist in track.artists], track.name)
+    def run_lyric(uri: str) -> Dict:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        _artists = [_artist.as_dict() for _artist in result.artists]
+        _album = result.album.as_dict()
+        _track.update({"album": _album, "artists": _artists})
+        url = Tasks.generate_lyrics_url([_artist.name for _artist in result.artists], result.name)
         try:
             lyrics = Tasks.get_lyrics(url)
         except Exception as e:
-            print(f"Could not connect to {url}: {e}")
+            print(f"Could'nt connect to {url}: {e}")
+            return {"error": f"Could'nt connect to {url}: {e}"}
         else:
             fetched = datetime.now()
-            Tasks.persist_lyrics(track.id, lyrics, url, fetched)
-            _track = track.as_dict()
+            Tasks.persist_lyrics(result.id, lyrics, url, fetched)
             _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
             return _track
+
