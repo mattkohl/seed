@@ -1,11 +1,10 @@
 from typing import Dict, List, Optional
 from datetime import datetime
 from flask import json
-from sqlalchemy.orm import joinedload
 
-from app import db
+from app.dbp.annotation import SpotlightAnnotation
 from app.geni import utils, parser
-from app.models import Track
+from app.models import Track, Artist
 from app.persist.persist import Persist
 from app.spot.models import TrackTuple
 from app.spot.playlists import SpotPlaylist
@@ -93,3 +92,7 @@ class Tasks:
             _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
             return _track
 
+    @staticmethod
+    def annotate_artists() -> List[Dict]:
+        result = Artist.query.filter_by(dbp_uri=None).first()
+        return SpotlightAnnotation.annotate_artists([result.name])

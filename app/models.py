@@ -18,6 +18,7 @@ class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
     name = db.Column(db.Text)
+    dbp_uri = db.Column(db.Text)
     tracks = db.relationship('Track', secondary=track_artist, lazy='subquery', backref=db.backref('tracks_artists', lazy=True))
     albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy=True))
 

@@ -116,3 +116,9 @@ def go_lyrics():
 @application.route("/go/lyrics/<track_uri>")
 def go_lyric(track_uri):
     return jsonify(Tasks.run_lyrics(track_uri))
+
+
+@application.route("/go/artists")
+def go_artists():
+    return jsonify(Tasks.annotate_artists())
+
