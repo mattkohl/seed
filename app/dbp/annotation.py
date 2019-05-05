@@ -1,20 +1,40 @@
-from typing import List
-
-import spotlight
+from typing import Dict
 
 
-SERVER = "https://api.dbpedia-spotlight.org/en"
+import requests
+from requests import Response
 
 
-class SpotlightAnnotation:
+TYPE_WHITELIST = ", ".join(
+    [
+        "DBpedia:Band",
+        "DBpedia:Place",
+        "DBpedia:Artist",
+        "DBpedia:Company"
+    ]
+)
+
+
+class Spotlight:
 
     @staticmethod
-    def annotate(text):
-        return spotlight.annotate(SERVER, text)
+    def annotate(text) -> Response:
+        url = "https://api.dbpedia-spotlight.org/en/annotate"
+        try:
+            params = {"text": text, "types": TYPE_WHITELIST}
+            response = requests.get(url=url, params=params)
+        except Exception as e:
+            print(f"Unable to resolve {url}: {e}")
+        else:
+            return response
 
     @staticmethod
-    def annotate_artists(names: List[str]):
-        template = f"""The hip-hop artists {", ".join(names)} recorded rap songs."""
-        print(template)
-        return spotlight.annotate(SERVER, template)
-
+    def candidates(text) -> Dict:
+        url = "https://api.dbpedia-spotlight.org/en/annotate"
+        try:
+            params = {"text": text, "types": TYPE_WHITELIST}
+            response = requests.get(url=url, params=params, headers={"accept": "application/json"})
+        except Exception as e:
+            print(f"Unable to resolve {url}: {e}")
+        else:
+            return response.json()

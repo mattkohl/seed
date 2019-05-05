@@ -1,8 +1,9 @@
 from typing import Dict, List, Optional
 from datetime import datetime
 from flask import json
+from requests import Response
 
-from app.dbp.annotation import SpotlightAnnotation
+from app.dbp.annotation import Spotlight
 from app.geni import utils, parser
 from app.models import Track, Artist
 from app.persist.persist import Persist
@@ -93,6 +94,12 @@ class Tasks:
             return _track
 
     @staticmethod
-    def annotate_artists() -> List[Dict]:
-        result = Artist.query.filter_by(dbp_uri=None).first()
-        return SpotlightAnnotation.annotate_artists([result.name])
+    def extract_candidate_links(uri) -> Dict:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        data = Spotlight.candidates(result.lyrics)
+        return data
+
+    @staticmethod
+    def annotate(uri) -> Response:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        return Spotlight.annotate(result.lyrics)
