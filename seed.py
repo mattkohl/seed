@@ -1,4 +1,3 @@
-from datetime import datetime
 import os
 
 from flask import jsonify
@@ -71,28 +70,6 @@ def track(uri):
     return jsonify(_track)
 
 
-@application.route("/tracks/<uri>/lyrics")
-def track_lyrics(uri):
-    result = Track.query.filter_by(spot_uri=uri).first()
-    _track = result.as_dict()
-    _artists = [_artist.as_dict() for _artist in result.artists]
-    _album = result.album.as_dict()
-    _track.update({"album": _album, "artists": _artists})
-    if result.lyrics is not None:
-        return jsonify(_track)
-    else:
-        url = Tasks.generate_lyrics_url([_artist.name for _artist in result.artists], result.name)
-        try:
-            lyrics = Tasks.get_lyrics(url)
-        except Exception as e:
-            print(f"Could'nt connect to {url}: {e}")
-        else:
-            fetched = datetime.now()
-            Tasks.persist_lyrics(result.id, lyrics, url, fetched)
-            _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
-        return jsonify(_track)
-
-
 @application.route("/clear")
 def clear() -> str:
     message = f"Deleted {Track.query.count()} Tracks, {Artist.query.count()} Artists, & {Album.query.count()} Albums"
@@ -103,25 +80,24 @@ def clear() -> str:
     return message
 
 
-@application.route("/go/playlist/<playlist_uri>")
-def go_playlist(playlist_uri: str):
+@application.route("/get_playlist/<playlist_uri>")
+def get_playlist(playlist_uri: str):
     return jsonify(Tasks.run_playlist(playlist_uri))
 
 
-@application.route("/go/lyrics")
-def go_lyrics():
-    return jsonify(Tasks.run_lyrics())
+@application.route("/scrape")
+def scrape_lyrics():
+    return jsonify(Tasks.scrape_lyrics())
 
 
 @application.route("/go/lyrics/<track_uri>")
-def go_lyric(track_uri):
-    return jsonify(Tasks.run_lyrics(track_uri))
+def scrape_lyric(track_uri):
+    return jsonify(Tasks.scrape_lyrics(track_uri))
 
 
 @application.route("/tracks/<uri>/annotate")
 def annotate(uri):
     response = Tasks.annotate(uri)
-    print(response.text)
     return response.text
 
 

@@ -68,14 +68,14 @@ class Tasks:
         return track_dicts
 
     @staticmethod
-    def run_lyrics(track_uri: Optional[str] = None) -> List[Dict]:
+    def scrape_lyrics(track_uri: Optional[str] = None) -> List[Dict]:
         if track_uri is not None:
-            return [Tasks.run_lyric(track_uri)]
+            return [Tasks.scrape_lyric(track_uri)]
         else:
-            return [Tasks.run_lyric(_track.spot_uri) for _track in Track.query.filter_by(lyrics=None).all()]
+            return [Tasks.scrape_lyric(_track.spot_uri) for _track in Track.query.filter_by(lyrics=None).all()]
 
     @staticmethod
-    def run_lyric(uri: str) -> Dict:
+    def scrape_lyric(uri: str) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         _artists = [_artist.as_dict() for _artist in result.artists]
