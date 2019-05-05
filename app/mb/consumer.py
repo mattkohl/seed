@@ -7,9 +7,9 @@ class MbConsumer:
 
     @staticmethod
     def run(track: Dict) -> Dict:
-        artist = track["artists"][0]["name"]
-        results = artists.MBArtist().search(artist)
-        if results and results[0]["ext:score"] == "100":
-            mb_id = results[0]["id"]
-            track.update({"mbId": mb_id})
+        _artists = track["artists"]
+        for _artist in _artists:
+            results = artists.MBArtist().search(_artist["name"])
+            if results and results[0]["ext:score"] == "100":
+                _artist.update(results[0])
         return track
