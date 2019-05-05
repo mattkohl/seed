@@ -55,7 +55,7 @@ class Tasks:
     def persist_lyrics(track_id: int, lyrics: Optional[str], url: str, fetched) -> None:
         _track = Track.query.filter_by(id=track_id).first()
         if lyrics:
-            _updates = {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched: fetched}
+            _updates = {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched_timestamp: fetched}
             Persist.update_track(_track.id, _updates)
 
     @staticmethod
@@ -90,7 +90,7 @@ class Tasks:
         else:
             fetched = datetime.now()
             Tasks.persist_lyrics(result.id, lyrics, url, fetched)
-            _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched": fetched})
+            _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched_timestamp": fetched})
             return _track
 
     @staticmethod

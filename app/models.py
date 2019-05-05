@@ -1,5 +1,6 @@
 from datetime import datetime
 from . import db
+from sqlalchemy.dialects.postgresql import JSON
 
 
 track_artist = db.Table('track_artist',
@@ -17,8 +18,10 @@ class Artist(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
-    name = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
+    mb_id = db.Column(db.Text)
+    mb_obj = db.Column(JSON)
+    name = db.Column(db.Text)
     tracks = db.relationship('Track', secondary=track_artist, lazy='subquery', backref=db.backref('tracks_artists', lazy=True))
     albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy=True))
 
@@ -61,11 +64,12 @@ class Track(db.Model):
     spot_uri = db.Column(db.Text)
     name = db.Column(db.Text)
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"))
-    popularity = db.Column(db.Integer)
     preview_url = db.Column(db.Text)
     lyrics = db.Column(db.Text)
     lyrics_url = db.Column(db.Text)
-    lyrics_fetched = db.Column(db.DateTime, default=datetime.utcnow)
+    lyrics_annotated = db.Column(db.Text)
+    lyrics_annotations_json = db.Column(JSON)
+    lyrics_fetched_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     artists = db.relationship('Artist', secondary=track_artist, lazy='subquery',
                               backref=db.backref('artists_tracks', lazy=True))
 
