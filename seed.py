@@ -87,21 +87,21 @@ def get_playlist(playlist_uri: str):
 
 @application.route("/scrape")
 def scrape_lyrics():
-    return jsonify(Tasks.scrape_lyrics())
+    return jsonify(Tasks.scrape_all_lyrics())
 
 
 @application.route("/go/lyrics/<track_uri>")
 def scrape_lyric(track_uri):
-    return jsonify(Tasks.scrape_lyrics(track_uri))
+    return jsonify(Tasks.scrape_track_lyrics(track_uri))
 
 
 @application.route("/tracks/<uri>/annotate")
 def annotate(uri):
-    response = Tasks.annotate(uri)
+    response = Tasks.annotate_track(uri)
     return response.text
 
 
 @application.route("/tracks/<uri>/extract_links")
 def extract_links(uri):
-    return jsonify(Tasks.extract_candidate_links(uri))
+    return jsonify(Tasks.extract_candidate_links_from_track(uri))
 

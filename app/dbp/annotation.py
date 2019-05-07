@@ -4,6 +4,8 @@ from typing import Dict
 import requests
 from requests import Response
 
+from app.dbp.models import AnnotationTuple, CandidatesTuple
+from app.utils import Utils
 
 TYPE_WHITELIST = ", ".join(
     [
@@ -26,7 +28,7 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
         else:
-            return response
+            return AnnotationTuple(**{Utils.clean_key(k): v for k, v in response})
 
     @staticmethod
     def candidates(text) -> Dict:
@@ -37,4 +39,4 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
         else:
-            return response.json()
+            return CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json()})

@@ -12,7 +12,12 @@ class MBArtist:
         """
         available keys: 'id', 'type', 'ext:score', 'name', 'sort-name', 'gender', 'life-span'
         """
-        return mb.search_artists(artist=name)["artist-list"]
+        try:
+            result = mb.search_artists(artist=name)["artist-list"]
+        except Exception as e:
+            print(f"Unable to connect to MB: {e}")
+        else:
+            return result
 
 
 if __name__ == "__main__":

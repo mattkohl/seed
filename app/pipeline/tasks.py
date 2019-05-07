@@ -10,6 +10,9 @@ from app.persist.persist import Persist
 from app.spot.models import TrackTuple
 from app.spot.playlists import SpotPlaylist
 from app.spot.utils import SpotUtils
+from app.mb import metadata
+from app.mb.models import ArtistTuple
+from app.utils import Utils
 
 
 class Tasks:
@@ -68,14 +71,11 @@ class Tasks:
         return track_dicts
 
     @staticmethod
-    def scrape_lyrics(track_uri: Optional[str] = None) -> List[Dict]:
-        if track_uri is not None:
-            return [Tasks.scrape_lyric(track_uri)]
-        else:
-            return [Tasks.scrape_lyric(_track.spot_uri) for _track in Track.query.filter_by(lyrics=None).all()]
+    def scrape_all_lyrics() -> List[Dict]:
+        return [Tasks.scrape_track_lyrics(_track.spot_uri) for _track in Track.query.filter_by(lyrics=None).all()]
 
     @staticmethod
-    def scrape_lyric(uri: str) -> Dict:
+    def scrape_track_lyrics(uri: str) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         _artists = [_artist.as_dict() for _artist in result.artists]
@@ -94,12 +94,19 @@ class Tasks:
             return _track
 
     @staticmethod
-    def extract_candidate_links(uri) -> Dict:
+    def extract_candidate_links_from_track(uri) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         data = Spotlight.candidates(result.lyrics)
         return data
 
     @staticmethod
-    def annotate(uri) -> Response:
+    def annotate_track(uri) -> Response:
         result = Track.query.filter_by(spot_uri=uri).first()
         return Spotlight.annotate(result.lyrics)
+
+    @staticmethod
+    def get_artist_metadata_from_mb(name: str) -> ArtistTuple:
+        results = metadata.MBArtist().search(name)
+        if results and results[0]["ext:score"] == "100":
+            cleaned = {Utils.clean_key(k): v for k, v in results[0]}
+            return ArtistTuple(**cleaned)
