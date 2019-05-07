@@ -28,7 +28,7 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
         else:
-            return AnnotationTuple(**{Utils.clean_key(k): v for k, v in response})
+            return AnnotationTuple(**{Utils.clean_key(k): v for k, v in response.items()})
 
     @staticmethod
     def candidates(text) -> Dict:
@@ -39,4 +39,4 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
         else:
-            return CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json()})
+            return CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})

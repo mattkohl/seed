@@ -38,6 +38,17 @@ def artist(uri):
         return jsonify(dict())
 
 
+@application.route("/artists/<uri>/mb_metadata")
+def get_mb_metadata(uri):
+    try:
+        result = Artist.query.filter_by(spot_uri=uri).first()
+        metadata = Tasks.get_artist_metadata_from_mb(result.name)
+    except Exception as e:
+        print(f"Could not source metadata for {uri}: {e}")
+    else:
+        return jsonify(metadata._asdict()) if metadata is not None else jsonify({"error": "job failed"})
+
+
 @application.route("/albums")
 def albums():
     results = [_album.as_dict() for _album in Album.query.all()]
@@ -104,4 +115,5 @@ def annotate(uri):
 @application.route("/tracks/<uri>/extract_links")
 def extract_links(uri):
     return jsonify(Tasks.extract_candidate_links_from_track(uri))
+
 

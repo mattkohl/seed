@@ -105,8 +105,11 @@ class Tasks:
         return Spotlight.annotate(result.lyrics)
 
     @staticmethod
-    def get_artist_metadata_from_mb(name: str) -> ArtistTuple:
+    def get_artist_metadata_from_mb(name: str) -> Optional[ArtistTuple]:
         results = metadata.MBArtist().search(name)
         if results and results[0]["ext:score"] == "100":
-            cleaned = {Utils.clean_key(k): v for k, v in results[0]}
+            cleaned = {Utils.clean_key(k): v for k, v in results[0].items()}
             return ArtistTuple(**cleaned)
+        else:
+            print(results)
+            return None
