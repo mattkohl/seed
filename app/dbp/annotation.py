@@ -1,5 +1,4 @@
-from typing import Dict
-
+from typing import Dict, Optional
 
 import requests
 from requests import Response
@@ -20,7 +19,7 @@ TYPE_WHITELIST = ", ".join(
 class Spotlight:
 
     @staticmethod
-    def annotate(text) -> Response:
+    def annotate(text) -> AnnotationTuple:
         url = "https://api.dbpedia-spotlight.org/en/annotate"
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
@@ -28,15 +27,18 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
         else:
-            return AnnotationTuple(**{Utils.clean_key(k): v for k, v in response.items()})
+            return AnnotationTuple(response.text)
 
     @staticmethod
-    def candidates(text) -> Dict:
+    def candidates(text) -> Optional[CandidatesTuple]:
         url = "https://api.dbpedia-spotlight.org/en/annotate"
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
             response = requests.get(url=url, params=params, headers={"accept": "application/json"})
+            done = CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
+            return None
         else:
-            return CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
+            return done
+

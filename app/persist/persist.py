@@ -19,6 +19,13 @@ class Persist:
             return instance
 
     @staticmethod
+    def update(model, _id: int, _updates: Dict):
+        current = create_app('docker')
+        with current.app_context():
+            db.session.query(model).filter(model.id == _id).update(_updates)
+            db.session.commit()
+
+    @staticmethod
     def update_track(track_id: int, updates: Dict):
         current = create_app('docker')
         with current.app_context():

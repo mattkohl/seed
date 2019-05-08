@@ -4,6 +4,7 @@ from flask import json
 from requests import Response
 
 from app.dbp.annotation import Spotlight
+from app.dbp.models import CandidatesTuple
 from app.geni import utils, parser
 from app.models import Track, Artist
 from app.persist.persist import Persist
@@ -62,6 +63,19 @@ class Tasks:
             Persist.update_track(_track.id, _updates)
 
     @staticmethod
+    def persist_dbp_uri(artist_id: int, dbp_uri: Optional[str]) -> None:
+        _artist = Track.query.filter_by(id=artist_id).first()
+        if dbp_uri:
+            _updates = {Artist.dbp_uri: dbp_uri}
+            Persist.update(Artist, _artist.id, _updates)
+
+    @staticmethod
+    def persist_mb_metadata(artist_id: int, artist_tuple: ArtistTuple) -> None:
+        _artist = Track.query.filter_by(id=artist_id).first()
+        _updates = {Artist.mb_id: artist_tuple.id, Artist.mb_obj: artist_tuple._asdict()}
+        Persist.update(Artist, _artist.id, _updates)
+
+    @staticmethod
     def run_playlist(playlist_uri) -> List[Dict]:
         playlist = Tasks.get_playlist_tracks(playlist_uri)
         track_dicts = Tasks.extract_tracks_from_playlist(playlist)
@@ -85,8 +99,8 @@ class Tasks:
         try:
             lyrics = Tasks.get_lyrics(url)
         except Exception as e:
-            print(f"Could'nt connect to {url}: {e}")
-            return {"error": f"Could'nt connect to {url}: {e}"}
+            print(f"Could not connect to {url}: {e}")
+            return {"error": f"Could not connect to {url}: {e}"}
         else:
             fetched = datetime.now()
             Tasks.persist_lyrics(result.id, lyrics, url, fetched)
@@ -94,22 +108,51 @@ class Tasks:
             return _track
 
     @staticmethod
-    def extract_candidate_links_from_track(uri) -> Dict:
-        result = Track.query.filter_by(spot_uri=uri).first()
-        data = Spotlight.candidates(result.lyrics)
-        return data
+    def extract_candidate_links_from_track(uri) -> Optional[CandidatesTuple]:
+        _track = Track.query.filter_by(spot_uri=uri).first()
+        return Spotlight.candidates(_track.lyrics)
 
     @staticmethod
     def annotate_track(uri) -> Response:
-        result = Track.query.filter_by(spot_uri=uri).first()
-        return Spotlight.annotate(result.lyrics)
+        _track = Track.query.filter_by(spot_uri=uri).first()
+        return Spotlight.annotate(_track.lyrics)
 
     @staticmethod
-    def get_artist_metadata_from_mb(name: str) -> Optional[ArtistTuple]:
-        results = metadata.MBArtist().search(name)
-        if results and results[0]["ext:score"] == "100":
-            cleaned = {Utils.clean_key(k): v for k, v in results[0].items()}
-            return ArtistTuple(**cleaned)
-        else:
-            print(results)
-            return None
+    def annotate_artist_and_track_names(artist_uri: str) -> Optional[CandidatesTuple]:
+        _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
+        _statements = [f"""On {_track.album.release_date.strftime('%d %b, %Y')} {_artist.name} released the hip-hop song, "{_track.name}" """ for _track in _artist.tracks]
+        message = "\n".join(_statements)
+        return Spotlight.candidates(message)
+
+    @staticmethod
+    def get_artist_dbp_uri(uri: str) -> Dict:
+        result = Artist.query.filter_by(spot_uri=uri).first()
+        _artist = result.as_dict()
+        if result.dbp_uri is None:
+            try:
+                candidates = Tasks.annotate_artist_and_track_names(uri)
+                dbp_uri = candidates.Resources[0]["@URI"]
+                Tasks.persist_dbp_uri(result.id,  dbp_uri)
+            except Exception as e:
+                print(f"Could not get DBP URI for {result.name}")
+            else:
+                _artist.update({"dbp_uri": dbp_uri})
+        return _artist
+
+    @staticmethod
+    def get_artist_mb_metadata(uri: str) -> Optional[ArtistTuple]:
+        result = Artist.query.filter_by(spot_uri=uri).first()
+        _artist = result.as_dict()
+        if result.mb_id is None:
+            try:
+                mb_results = metadata.MBArtist().search(result.name)
+                assert mb_results[0]["ext:score"] == "100"
+            except Exception as e:
+                print(f"Could not get MB metadata for {result.name}: {e}")
+            else:
+                cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
+                at = ArtistTuple(**cleaned)
+                Tasks.persist_mb_metadata(result.id, at)
+                _artist.update({"mb_id": at.id, "mb_obj": at._asdict()})
+        return _artist
+
