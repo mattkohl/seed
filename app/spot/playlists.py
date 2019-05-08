@@ -1,5 +1,4 @@
 from typing import Dict, List
-import logging
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -18,10 +17,10 @@ class SpotPlaylist:
         try:
             pl = self.sp.user_playlist(username, playlist_id)
         except Exception as e:
-            logging.error(f"Unable to download playlist {playlist_id}: {e}")
+            print(f"Unable to download playlist {playlist_id}: {e}")
             return dict()
         else:
-            logging.info(f"Downloaded playlist {playlist_id}")
+            print(f"Downloaded playlist {playlist_id}")
             return pl
 
     @staticmethod

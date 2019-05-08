@@ -5,6 +5,7 @@ from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.models import Artist, Album, Track
 from app.pipeline.tasks import Tasks
+from app.spot.artists import SpotArtist
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(application, db)
@@ -35,6 +36,21 @@ def artist(uri):
         _artist.update({"albums": _albums})
         return jsonify(_artist)
     except Exception as e:
+        return jsonify(dict())
+
+
+@application.route("/artists/<uri>/get_albums")
+def get_artist_albums(uri):
+    sp = SpotArtist()
+    try:
+        # result = Artist.query.filter_by(spot_uri=uri).first()
+        _albums = sp.download_albums(uri)
+        # _artist = result.as_dict()
+        # _albums = [_album.as_dict() for _album in result.albums]
+        # _artist.update({"albums": _albums})
+        return jsonify(_albums)
+    except Exception as e:
+        print(e)
         return jsonify(dict())
 
 

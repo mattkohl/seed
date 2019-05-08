@@ -1,5 +1,4 @@
 from typing import Dict, List
-
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -12,14 +11,16 @@ class SpotArtist:
     client_credentials_manager = SpotifyClientCredentials()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-    def search(self, name: str) -> List[Dict]:
-        """
-        available keys: 'external_urls', 'followers', 'genres', 'href', 'id', 'images', 'name', 'popularity', 'type', 'uri'
-        """
-        return self.sp.search(q=name, limit=20, type="artist")
-
-    def download(self, uri: str) -> Dict:
-        return self.sp.artist(uri)
+    def download_albums(self, uri: str) -> List[Dict]:
+        artist_id = uri.split(':')[-1]
+        try:
+            a = self.sp.artist_albums(artist_id=artist_id, album_type="album", country="US", limit=50)
+        except Exception as e:
+            print(f"Unable to download artist {artist_id} albums: {e}")
+            return list()
+        else:
+            print(f"Downloaded artist {artist_id} albums")
+            return a
 
     def extract_albums(self, uri: str) -> List[AlbumTuple]:
         for item in self.sp.artist_albums(uri, "album", "US")["items"]:

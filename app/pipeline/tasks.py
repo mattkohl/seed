@@ -120,7 +120,7 @@ class Tasks:
     @staticmethod
     def annotate_artist_and_track_names(artist_uri: str) -> Optional[CandidatesTuple]:
         _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
-        _statements = [f"""On {_track.album.release_date.strftime('%d %b, %Y')} {_artist.name} released the hip-hop song, "{_track.name}" """ for _track in _artist.tracks]
+        _statements = [f"""{_track.name} is a song by the hip-hop group {_artist.name}, released in {_track.album.release_date.strftime('%b, %Y')} on the album {_track.album.name}""" for _track in _artist.tracks]
         message = "\n".join(_statements)
         return Spotlight.candidates(message)
 
