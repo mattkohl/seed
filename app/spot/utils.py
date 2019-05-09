@@ -61,8 +61,18 @@ class SpotUtils:
         return [track_item["track"] for track_item in track_items["tracks"]["items"]]
 
     @staticmethod
-    def extract_tracks_from_album(track_items: Dict) -> List[Dict]:
-        return [track_item for track_item in track_items["items"]]
+    def tuplify_tracks(track_dicts: List[Dict], album: Optional[AlbumTuple]) -> List[TrackTuple]:
+        return [SpotUtils.tuplify_track(track_dict, album) for track_dict in track_dicts]
+
+    @staticmethod
+    def tuplify_track(d: Dict, album: Optional[AlbumTuple]) -> TrackTuple:
+        if album:
+            d.update({"album": album._asdict()})
+        _track = SpotUtils.extract_track(d)
+        _album = _track.album._asdict()
+        _artists = [_artist._asdict() for _artist in _track.artists]
+        _updated = _track._replace(artists=_artists, album=_album)
+        return _track
 
     @staticmethod
     def clean_up_date(raw_date):

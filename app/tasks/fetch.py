@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from app.dbp.annotation import Spotlight
 from app.dbp.models import CandidatesTuple
@@ -8,6 +8,7 @@ from app.mb import metadata
 from app.mb.models import ArtistTuple as MBArtistTuple
 from app.models import Artist, Track
 from app.spot.albums import SpotAlbum
+from app.spot.artists import SpotArtist
 from app.spot.playlists import SpotPlaylist
 from app.tasks.persist import TasksPersist
 from app.utils import Utils
@@ -18,10 +19,15 @@ class Fetch:
     @staticmethod
     def playlist_tracks(uri: str) -> Dict:
         sp = SpotPlaylist()
-        return sp.download(uri)
+        return sp.download_tracks(uri)
 
     @staticmethod
-    def album_tracks(uri: str) -> Dict:
+    def artist_albums(uri: str) -> List[Dict]:
+        sp = SpotArtist()
+        return sp.download_albums(uri)
+
+    @staticmethod
+    def album_tracks(uri: str) -> List[Dict]:
         sp = SpotAlbum()
         return sp.download_tracks(uri)
 

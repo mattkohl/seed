@@ -1,10 +1,10 @@
 from typing import Dict, List
 
-from app.models import Track
+from app.models import Track, Album
+from app.spot.utils import SpotUtils
 from app.tasks.fetch import Fetch
 from app.tasks.persist import TasksPersist
 from app.spot.artists import SpotArtist
-from app.tasks.transform import TasksTransform
 
 
 class Tasks:
@@ -12,8 +12,8 @@ class Tasks:
     @staticmethod
     def run_playlist(playlist_uri) -> List[Dict]:
         playlist = Fetch.playlist_tracks(playlist_uri)
-        track_dicts = TasksTransform.extract_tracks_from_playlist(playlist)
-        track_tuples = TasksTransform.tuplify_tracks(track_dicts)
+        track_dicts = SpotUtils.extract_tracks_from_playlist(playlist)
+        track_tuples = SpotUtils.tuplify_tracks(track_dicts, None)
         [TasksPersist.persist_track(t) for t in track_tuples]
         _track_dicts = [t._asdict() for t in track_tuples]
         return _track_dicts
@@ -27,14 +27,13 @@ class Tasks:
         return [a._asdict() for a in album_tuples]
 
     @staticmethod
-    def run_album_tracks(album_uri) -> List[Dict]:
-        _album = Fetch.album_tracks(album_uri)
-        print(_album)
-        # track_dicts = TasksTransform.extract_tracks_from_album(_album)
-        # track_tuples = TasksTransform.tuplify_tracks(track_dicts)
-        # [TasksPersist.persist_track(t) for t in track_tuples]
-        # _track_dicts = [t._asdict() for t in track_tuples]
-        return _album
+    def run_album_tracks(uri) -> List[Dict]:
+        result = Album.query.filter_by(spot_uri=uri).first()
+        track_dicts = Fetch.album_tracks(uri)
+        track_tuples = SpotUtils.tuplify_tracks(track_dicts, result.as_album_tuple())
+        [TasksPersist.persist_track(t) for t in track_tuples]
+        _track_dicts = [t._asdict() for t in track_tuples]
+        return track_dicts
 
     @staticmethod
     def scrape_all_lyrics() -> List[Dict]:

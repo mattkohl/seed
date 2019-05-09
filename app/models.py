@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from app.spot.models import AlbumTuple
 from . import db
 from sqlalchemy.dialects.postgresql import JSON
 
@@ -56,6 +58,9 @@ class Album(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def as_album_tuple(self):
+        return AlbumTuple(uri=self.spot_uri, release_date=f"{self.release_date:%Y-%m-%d}", release_date_string=self.release_date_string, name=self.name, artists=list())
 
 
 class Track(db.Model):

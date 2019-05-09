@@ -8,7 +8,7 @@ class SpotPlaylist:
     client_credentials_manager = SpotifyClientCredentials()
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-    def download(self, uri: str) -> Dict:
+    def download_tracks(self, uri: str) -> Dict:
         username = uri.split(':')[2]
         playlist_id = uri.split(':')[4]
         try:
