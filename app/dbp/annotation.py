@@ -26,11 +26,13 @@ class Spotlight:
             response = requests.get(url=url, params=params)
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
+            raise
         else:
+            print(response)
             return AnnotationTuple(response.text)
 
     @staticmethod
-    def candidates(text) -> Optional[CandidatesTuple]:
+    def candidates(text) -> CandidatesTuple:
         url = "https://api.dbpedia-spotlight.org/en/annotate"
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
@@ -38,7 +40,7 @@ class Spotlight:
             done = CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
         except Exception as e:
             print(f"Unable to resolve {url}: {e}")
-            return None
+            raise
         else:
             return done
 

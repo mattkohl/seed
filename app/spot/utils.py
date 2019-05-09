@@ -50,15 +50,19 @@ class SpotUtils:
             'popularity', 'preview_url', 'track', 'track_number', 'type', 'uri'
         """
         raw.pop("available_markets")
+        _raw = deepcopy(raw)
         _album = SpotUtils.extract_album(raw["album"])
         _artists = [SpotUtils.extract_artist(a) for a in raw["artists"]]
-        _raw = deepcopy(raw)
         _raw.update({"album": _album, "artists": _artists})
         return TrackTuple(**_raw)
 
     @staticmethod
-    def extract_tracks(track_items: Dict) -> List[Dict]:
+    def extract_tracks_from_playlist(track_items: Dict) -> List[Dict]:
         return [track_item["track"] for track_item in track_items["tracks"]["items"]]
+
+    @staticmethod
+    def extract_tracks_from_album(track_items: Dict) -> List[Dict]:
+        return [track_item for track_item in track_items["items"]]
 
     @staticmethod
     def clean_up_date(raw_date):

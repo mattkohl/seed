@@ -1,9 +1,6 @@
-from typing import Dict, List
+from typing import Dict
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-
-from app.spot.models import TrackTuple
-from app.spot.utils import SpotUtils
 
 
 class SpotPlaylist:
@@ -17,13 +14,8 @@ class SpotPlaylist:
         try:
             pl = self.sp.user_playlist(username, playlist_id)
         except Exception as e:
-            print(f"Unable to download playlist {playlist_id}: {e}")
-            return dict()
+            print(f"Unable to download playlist {playlist_id}:", e)
+            raise
         else:
             print(f"Downloaded playlist {playlist_id}")
             return pl
-
-    @staticmethod
-    def extract_tracks(playlist: Dict) -> List[TrackTuple]:
-        for track_item in playlist["tracks"]["items"]:
-            yield SpotUtils.extract_track(track_item["track"])

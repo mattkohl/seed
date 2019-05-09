@@ -1,11 +1,11 @@
 import os
 
-from flask import jsonify
+from flask import jsonify, Response
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.models import Artist, Album, Track
-from app.pipeline.tasks import Tasks
-from app.spot.artists import SpotArtist
+from app.tasks.pipeline import Tasks
+from app.tasks.fetch import Fetch
 
 application = create_app(os.getenv('FLASK_CONFIG') or 'default')
 migrate = Migrate(application, db)
@@ -40,7 +40,7 @@ def artist(uri):
         return jsonify(dict())
 
 
-@application.route("/artists/<uri>/get_albums")
+@application.route("/artists/<uri>/albums")
 def get_artist_albums(uri):
     try:
         _albums = Tasks.run_artist_albums(uri)
@@ -64,6 +64,11 @@ def album(uri):
     _tracks = [_track.as_dict() for _track in result.tracks]
     _album.update({"tracks": _tracks, "artists": _artists})
     return jsonify(_album)
+
+
+@application.route("/albums/<uri>/tracks")
+def album_tracks(uri):
+    return jsonify(Tasks.run_album_tracks(uri))
 
 
 @application.route("/tracks")
@@ -92,7 +97,7 @@ def clear() -> str:
     return message
 
 
-@application.route("/get_playlist/<playlist_uri>")
+@application.route("/playlists/<playlist_uri>")
 def get_playlist(playlist_uri: str):
     return jsonify(Tasks.run_playlist(playlist_uri))
 
@@ -102,40 +107,41 @@ def scrape_lyrics():
     return jsonify(Tasks.scrape_all_lyrics())
 
 
-@application.route("/go/lyrics/<track_uri>")
+@application.route("/tracks/<track_uri>/lyrics")
 def scrape_lyric(track_uri):
-    return jsonify(Tasks.scrape_track_lyrics(track_uri))
+    return jsonify(Fetch.track_lyrics(track_uri))
 
 
 @application.route("/tracks/<uri>/annotate")
 def annotate(uri):
-    response = Tasks.annotate_track(uri)
-    return response.text
+    return jsonify(Fetch.lyric_annotations(uri))
 
 
-@application.route("/tracks/<uri>/extract_links")
-def extract_links(uri):
-    result = Tasks.extract_candidate_links_from_track(uri)
-    if result is not None:
-        return jsonify(result)
-    else:
-        return jsonify({"Error": "no candidates found"})
+@application.route("/tracks/<uri>/annotations")
+def annotations(uri):
+    _track = Track.query.filter_by(spot_uri=uri).first()
+    return Response(_track.lyrics_annotated)
+
+
+@application.route("/tracks/<uri>/links")
+def get_lyric_links(uri):
+    return jsonify(Fetch.lyric_links(uri))
 
 
 @application.route("/dbp_annotate/<uri>")
 def dbp_annotate(uri):
-    candidates = Tasks.annotate_artist_and_track_names(uri)
+    candidates = Fetch.artist_and_track_name_annotations(uri)
     if candidates is not None:
         return jsonify(candidates._asdict())
     else:
         return jsonify({"Error": "no candidates found"})
 
 
-@application.route("/artists/<spot_uri>/get_dbp_uri")
+@application.route("/artists/<spot_uri>/dbp")
 def get_artist_dbp_uri(spot_uri):
-    return jsonify(Tasks.get_artist_dbp_uri(spot_uri))
+    return jsonify(Fetch.artist_dbp_uri(spot_uri))
 
 
-@application.route("/artists/<uri>/get_mb_metadata")
+@application.route("/artists/<uri>/mb")
 def get_mb_metadata(uri):
-    return jsonify(Tasks.get_artist_mb_metadata(uri))
+    return jsonify(Fetch.artist_mb_metadata(uri))
