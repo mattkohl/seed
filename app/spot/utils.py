@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from app.spot.models import AlbumTuple, ArtistTuple, TrackTuple
 
@@ -7,26 +7,38 @@ from app.spot.models import AlbumTuple, ArtistTuple, TrackTuple
 class SpotUtils:
 
     @staticmethod
-    def extract_album(raw: Dict) -> AlbumTuple:
+    def extract_album(raw: Dict) -> Optional[AlbumTuple]:
         """
         available keys:
             'album_type', 'artists', 'available_markets', 'external_urls',
             'href', 'id', 'images', 'name', 'release_date',
             'release_date_precision', 'total_tracks', 'type', 'uri'
         """
-        raw.pop("available_markets")
+        if "available_markets" in raw:
+            raw.pop("available_markets")
         _raw = deepcopy(raw)
         _release_date = _raw["release_date"]
-        _raw.update({"release_date": SpotUtils.clean_up_date(_release_date), "release_date_string": _release_date})
-        return AlbumTuple(**_raw)
+        try:
+            _artists = [SpotUtils.extract_artist(a) for a in raw["artists"]]
+            _raw.update({"artists": _artists, "release_date": SpotUtils.clean_up_date(_release_date), "release_date_string": _release_date})
+            _album_tuple = AlbumTuple(**_raw)
+        except Exception:
+            raise
+        else:
+            return _album_tuple
 
     @staticmethod
-    def extract_artist(raw: Dict) -> ArtistTuple:
+    def extract_artist(raw: Dict) -> Optional[ArtistTuple]:
         """
         available keys:
             'external_urls', 'href', 'id', 'name', 'type', 'uri'
         """
-        return ArtistTuple(**raw)
+        try:
+            _artist_tuple = ArtistTuple(**raw)
+        except Exception:
+            raise
+        else:
+            return _artist_tuple
 
     @staticmethod
     def extract_track(raw: Dict) -> TrackTuple:
@@ -40,10 +52,8 @@ class SpotUtils:
         raw.pop("available_markets")
         _album = SpotUtils.extract_album(raw["album"])
         _artists = [SpotUtils.extract_artist(a) for a in raw["artists"]]
-
         _raw = deepcopy(raw)
         _raw.update({"album": _album, "artists": _artists})
-
         return TrackTuple(**_raw)
 
     @staticmethod

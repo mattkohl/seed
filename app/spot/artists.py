@@ -14,15 +14,12 @@ class SpotArtist:
     def download_albums(self, uri: str) -> List[Dict]:
         artist_id = uri.split(':')[-1]
         try:
-            a = self.sp.artist_albums(artist_id=artist_id, album_type="album", country="US", limit=50)
+            print(f"Downloaded artist {artist_id} albums")
+            return self.sp.artist_albums(artist_id=artist_id, album_type="album", country="US", limit=50)["items"]
         except Exception as e:
             print(f"Unable to download artist {artist_id} albums: {e}")
             return list()
-        else:
-            print(f"Downloaded artist {artist_id} albums")
-            return a
 
-    def extract_albums(self, uri: str) -> List[AlbumTuple]:
-        for item in self.sp.artist_albums(uri, "album", "US")["items"]:
-            print(item)
-            yield SpotUtils.extract_album(item)
+    @staticmethod
+    def extract_albums(album_dicts: List[Dict]) -> List[AlbumTuple]:
+        return [SpotUtils.extract_album(item) for item in album_dicts]

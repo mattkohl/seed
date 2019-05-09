@@ -4,11 +4,12 @@ from flask import json
 from requests import Response
 
 from app.dbp.annotation import Spotlight
-from app.dbp.models import CandidatesTuple
+from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.geni import utils, parser
 from app.models import Track, Artist
 from app.persist.persist import Persist
-from app.spot.models import TrackTuple
+from app.spot.artists import SpotArtist
+from app.spot.models import TrackTuple, AlbumTuple
 from app.spot.playlists import SpotPlaylist
 from app.spot.utils import SpotUtils
 from app.mb import metadata
@@ -45,7 +46,11 @@ class Tasks:
 
     @staticmethod
     def persist_track(track_tuple: TrackTuple) -> None:
-        Persist.persist_track(track_tuple)
+        Persist.persist_track_tuple(track_tuple)
+
+    @staticmethod
+    def persist_album(album_tuple: AlbumTuple) -> None:
+        Persist.persist_album_tuple(album_tuple)
 
     @staticmethod
     def generate_lyrics_url(artists: List[str], title: str) -> str:
@@ -81,8 +86,16 @@ class Tasks:
         track_dicts = Tasks.extract_tracks_from_playlist(playlist)
         track_tuples = Tasks.tuplify_tracks(track_dicts)
         [Tasks.persist_track(t) for t in track_tuples]
-        track_dicts = [t._asdict() for t in track_tuples]
-        return track_dicts
+        _track_dicts = [t._asdict() for t in track_tuples]
+        return _track_dicts
+
+    @staticmethod
+    def run_artist_albums(artist_uri) -> List[Dict]:
+        sp = SpotArtist()
+        album_dicts = sp.download_albums(artist_uri)
+        album_tuples = sp.extract_albums(album_dicts)
+        [Tasks.persist_album(a) for a in album_tuples]
+        return [a._asdict() for a in album_tuples]
 
     @staticmethod
     def scrape_all_lyrics() -> List[Dict]:
@@ -113,7 +126,7 @@ class Tasks:
         return Spotlight.candidates(_track.lyrics)
 
     @staticmethod
-    def annotate_track(uri) -> Response:
+    def annotate_track(uri) -> AnnotationTuple:
         _track = Track.query.filter_by(spot_uri=uri).first()
         return Spotlight.annotate(_track.lyrics)
 

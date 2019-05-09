@@ -36,22 +36,18 @@ def artist(uri):
         _artist.update({"albums": _albums})
         return jsonify(_artist)
     except Exception as e:
+        print(e)
         return jsonify(dict())
 
 
 @application.route("/artists/<uri>/get_albums")
 def get_artist_albums(uri):
-    sp = SpotArtist()
     try:
-        # result = Artist.query.filter_by(spot_uri=uri).first()
-        _albums = sp.download_albums(uri)
-        # _artist = result.as_dict()
-        # _albums = [_album.as_dict() for _album in result.albums]
-        # _artist.update({"albums": _albums})
+        _albums = Tasks.run_artist_albums(uri)
+    except Exception:
+        raise
+    else:
         return jsonify(_albums)
-    except Exception as e:
-        print(e)
-        return jsonify(dict())
 
 
 @application.route("/albums")

@@ -42,6 +42,7 @@ class Album(db.Model):
     release_date_string = db.Column(db.Text)
     release_date = db.Column(db.DateTime)
     spot_uri = db.Column(db.Text)
+    images_json = db.Column(JSON)
     name = db.Column(db.Text)
     tracks = db.relationship('Track', backref='album', lazy=True)
     artists = db.relationship('Artist', secondary=album_artist, lazy='subquery',

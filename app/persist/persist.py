@@ -2,7 +2,7 @@ from typing import Dict
 
 from app import create_app, db
 from app.models import Artist, Track, Album
-from app.spot.models import TrackTuple
+from app.spot.models import TrackTuple, AlbumTuple
 
 
 class Persist:
@@ -33,14 +33,15 @@ class Persist:
             db.session.commit()
 
     @staticmethod
-    def persist_track(track: TrackTuple):
+    def persist_track_tuple(track: TrackTuple):
         current = create_app('docker')
         with current.app_context():
             _album = Persist.get_or_create(db.session, Album,
                                            name=track.album.name,
                                            spot_uri=track.album.uri,
                                            release_date=track.album.release_date,
-                                           release_date_string=track.album.release_date_string)
+                                           release_date_string=track.album.release_date_string,
+                                           )
             _track = Persist.get_or_create(db.session, Track,
                                            name=track.name,
                                            spot_uri=track.uri,
@@ -55,3 +56,26 @@ class Persist:
                 _track.artists.append(_artist)
                 _artist.albums.append(_album)
             db.session.commit()
+
+    @staticmethod
+    def persist_album_tuple(album: AlbumTuple):
+        current = create_app('docker')
+        with current.app_context():
+            try:
+                _album = Persist.get_or_create(db.session, Album,
+                                               name=album.name,
+                                               spot_uri=album.uri,
+                                               release_date=album.release_date,
+                                               release_date_string=album.release_date_string,
+                                               )
+                _artists = [Persist.get_or_create(db.session, Artist,
+                                                  name=artist.name,
+                                                  spot_uri=artist.uri)
+                            for artist in album.artists]
+            except Exception:
+                raise
+            else:
+                db.session.add(_album)
+                for _artist in _artists:
+                    _album.artists.append(_artist)
+                db.session.commit()
