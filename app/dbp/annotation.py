@@ -24,12 +24,12 @@ class Spotlight:
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
             response = requests.get(url=url, params=params)
+            done = AnnotationTuple(response.text)
         except Exception as e:
-            print(f"Unable to resolve {url}: {e}")
+            print(f"Unable to resolve {url}:", e)
             raise
         else:
-            print(response)
-            return AnnotationTuple(response.text)
+            return done
 
     @staticmethod
     def candidates(text) -> CandidatesTuple:
@@ -37,10 +37,10 @@ class Spotlight:
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
             response = requests.get(url=url, params=params, headers={"accept": "application/json"})
-            done = CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
         except Exception as e:
-            print(f"Unable to resolve {url}: {e}")
+            print(f"Unable to resolve {url}:", e)
             raise
         else:
-            return done
+            return CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
+
 

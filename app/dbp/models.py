@@ -1,6 +1,7 @@
 from collections import namedtuple
 
-CandidatesTuple = namedtuple("CandidatesTuple",
-                             ["text", "confidence", "support", "types", "sparql", "policy", "Resources"])
+_candidates_fields = ["text", "confidence", "support", "types", "sparql", "policy", "Resources"]
 
-AnnotationTuple = namedtuple("AnnotationTuple", ["text"])
+CandidatesTuple = namedtuple("CandidatesTuple", _candidates_fields, defaults=((None,) * (len(_candidates_fields) - 1)) + (list(),))
+
+AnnotationTuple = namedtuple("AnnotationTuple", ["text"], defaults=(None,))

@@ -6,7 +6,7 @@ from app.dbp.models import CandidatesTuple
 from app.geni import parser, utils
 from app.mb import metadata
 from app.mb.models import ArtistTuple as MBArtistTuple
-from app.models import Artist, Track
+from app.models import Artist, Track, Album
 from app.spot.albums import SpotAlbum
 from app.spot.artists import SpotArtist
 from app.spot.playlists import SpotPlaylist
@@ -31,20 +31,20 @@ class Fetch:
         sp = SpotAlbum()
         return sp.download_tracks(uri)
 
+    # FIXME!!
     @staticmethod
     def artist_dbp_uri(uri: str) -> Dict:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()
-        if result.dbp_uri is None:
-            try:
-                candidates = Fetch.artist_and_track_name_annotations(uri)
-                dbp_uri = candidates.Resources[0]["@URI"]
-                TasksPersist.persist_dbp_uri(result.id,  dbp_uri)
-            except Exception:
-                print(f"Could not get DBP URI for {result.name}")
-                raise
-            else:
-                _artist.update({"dbp_uri": dbp_uri})
+        try:
+            candidates = Fetch.artist_and_track_name_annotations(uri)
+            potentials = [resource for resource in candidates.Resources if "DBpedia:MusicalArtist" in resource['@types'].split(",")]
+            dbp_uri = potentials[0]["@URI"] if potentials else None
+            TasksPersist.persist_dbp_uri(result.id,  dbp_uri)
+        except Exception as e:
+            print(f"Could not get DBP URI for {result.name}", e)
+        else:
+            _artist.update({"dbp_uri": dbp_uri})
         return _artist
 
     @staticmethod
@@ -112,8 +112,10 @@ class Fetch:
         return _track
 
     @staticmethod
-    def artist_and_track_name_annotations(artist_uri: str) -> Optional[CandidatesTuple]:
+    def artist_and_track_name_annotations(artist_uri: str) -> CandidatesTuple:
         _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
-        _statements = [f"""{_track.name} is a song by the hip-hop group {_artist.name}, released in {_track.album.release_date.strftime('%b, %Y')} on the album {_track.album.name}""" for _track in _artist.tracks]
+        _albums = [_album for _album in _artist.albums if len(_album.artists) == 1]
+        _statements = set([f"""{_artist.name}, the hip-hop artist, released the album {_album.name} in {_album.release_date_string}""" for _album in _albums])
         message = "\n".join(_statements)
+        message = """Kendrick Lamar Duckworth (born June 17, 1987), known professionally as Kendrick Lamar, is an American rapper and songwriter. He embarked on his musical career as a teenager under the stage name K-Dot, releasing a mixtape that garnered local attention and led to his signing with indie record label Top Dawg Entertainment (TDE). He began to gain major recognition in 2010, after his first retail release, Overly Dedicated. The following year, Lamar independently released his first studio album, Section.80, which included his debut single, "HiiiPoWeR". By that time, he had amassed a large Internet following and collaborated with several prominent artists in the hip hop industry, including The Game, Snoop Dogg, Busta Rhymes, and Lil Wayne."""
         return Spotlight.candidates(message)
