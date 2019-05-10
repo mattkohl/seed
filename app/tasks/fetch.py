@@ -39,7 +39,7 @@ class Fetch:
         try:
             candidates = Fetch.artist_and_track_name_annotations(uri)
             potentials = [resource for resource in candidates.Resources if "DBpedia:MusicalArtist" in resource['@types'].split(",")]
-            dbp_uri = potentials[0]["@URI"] if potentials else None
+            dbp_uri = potentials[0]["@URI"] if potentials and Utils.fuzzy_match(result.name, potentials[0]["@URI"].split("/")[-1]) else None
             TasksPersist.persist_dbp_uri(result.id,  dbp_uri)
         except Exception as e:
             print(f"Could not get DBP URI for {result.name}", e)
@@ -115,7 +115,7 @@ class Fetch:
     def artist_and_track_name_annotations(artist_uri: str) -> CandidatesTuple:
         _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
         _albums = [_album for _album in _artist.albums if len(_album.artists) == 1]
-        _statements = set([f"""{_artist.name}, the hip-hop artist, released the album {_album.name} in {_album.release_date_string}""" for _album in _albums])
-        message = "\n".join(_statements)
-        message = """Kendrick Lamar Duckworth (born June 17, 1987), known professionally as Kendrick Lamar, is an American rapper and songwriter. He embarked on his musical career as a teenager under the stage name K-Dot, releasing a mixtape that garnered local attention and led to his signing with indie record label Top Dawg Entertainment (TDE). He began to gain major recognition in 2010, after his first retail release, Overly Dedicated. The following year, Lamar independently released his first studio album, Section.80, which included his debut single, "HiiiPoWeR". By that time, he had amassed a large Internet following and collaborated with several prominent artists in the hip hop industry, including The Game, Snoop Dogg, Busta Rhymes, and Lil Wayne."""
+        _statements = set([f""" {_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
+        message = f"{_artist.name}, the hip-hop artist, released the albums" + ", \n".join(_statements)
+        print(message)
         return Spotlight.candidates(message)
