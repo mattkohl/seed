@@ -1,6 +1,6 @@
 from typing import Optional
 
-from app.dbp.models import CandidatesTuple
+from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.mb.models import ArtistTuple as MBArtistTuple
 from app.models import Track, Artist
 from app.persist.persist import Persist
@@ -38,9 +38,9 @@ class TasksPersist:
         Persist.update(Artist, _artist.id, _updates)
 
     @staticmethod
-    def persist_lyrics_annotated(track_id: int, lyrics_annotated: str) -> None:
+    def persist_lyrics_annotated(track_id: int, lyrics_annotated: AnnotationTuple) -> None:
         _track = Track.query.filter_by(id=track_id).first()
-        _updates = {Track.lyrics_annotated: lyrics_annotated}
+        _updates = {Track.lyrics_annotated: lyrics_annotated.text}
         Persist.update_track(_track.id, _updates)
 
     @staticmethod
