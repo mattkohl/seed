@@ -57,8 +57,8 @@ class SpotUtils:
         return TrackTuple(**_raw)
 
     @staticmethod
-    def extract_tracks_from_playlist(track_items: Dict) -> List[Dict]:
-        return [track_item["track"] for track_item in track_items["tracks"]["items"]]
+    def extract_tracks_from_playlist(track_items: List[Dict]) -> List[Dict]:
+        return [track_item["track"] for track_item in track_items]
 
     @staticmethod
     def tuplify_tracks(track_dicts: List[Dict], album: Optional[AlbumTuple]) -> List[TrackTuple]:

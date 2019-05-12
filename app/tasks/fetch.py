@@ -17,7 +17,7 @@ from app.utils import Utils
 class Fetch:
 
     @staticmethod
-    def playlist_tracks(uri: str) -> Dict:
+    def playlist_tracks(uri: str) -> List[Dict]:
         sp = SpotPlaylist()
         return sp.download_tracks(uri)
 

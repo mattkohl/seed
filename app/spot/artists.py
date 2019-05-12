@@ -1,6 +1,7 @@
 from typing import Dict, List
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+
+from app.spot.oauth2 import SpotifyClientCredentials
+from app.spot.client import Spotify
 
 from app.spot.models import AlbumTuple
 from app.spot.utils import SpotUtils
@@ -9,7 +10,7 @@ from app.spot.utils import SpotUtils
 class SpotArtist:
 
     client_credentials_manager = SpotifyClientCredentials()
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+    sp = Spotify(client_credentials_manager=client_credentials_manager)
 
     def download_albums(self, uri: str) -> List[Dict]:
         artist_id = uri.split(':')[-1]

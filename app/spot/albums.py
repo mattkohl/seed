@@ -1,12 +1,13 @@
 from typing import Dict, List
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+
+from app.spot.oauth2 import SpotifyClientCredentials
+from app.spot.client import Spotify
 
 
 class SpotAlbum:
 
     client_credentials_manager = SpotifyClientCredentials()
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+    sp = Spotify(client_credentials_manager=client_credentials_manager)
 
     def download_tracks(self, uri: str) -> List[Dict]:
         album_id = uri.split(':')[-1]
