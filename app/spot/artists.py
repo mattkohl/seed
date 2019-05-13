@@ -20,7 +20,7 @@ class SpotArtist:
             return self.sp.artist_albums(artist_id=artist_id, album_type="album", country="US", limit=50)["items"]
         except Exception as e:
             print(f"Unable to download artist {artist_id} albums:", traceback.print_tb(e.__traceback__))
-            return list()
+            raise
 
     @staticmethod
     def extract_albums(album_dicts: List[Dict]) -> List[AlbumTuple]:

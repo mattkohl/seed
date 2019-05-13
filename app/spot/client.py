@@ -291,12 +291,10 @@ class Spotify(object):
         return self._get(f"users/{user}/playlists/{plid}", fields=fields)
 
     def playlist(self, playlist_id, fields=None):
-        # plid = self._get_id('playlist', playlist_id)
         return self._get(f"playlists/{playlist_id}", fields=fields)
 
     def playlist_tracks(self, playlist_id, fields=None, limit=100, offset=0, market=None):
-        plid = self._get_id('playlist', playlist_id)
-        return self._get(f"playlists/{plid}/tracks", limit=limit, offset=offset, fields=fields, market=market)
+        return self._get(f"playlists/{playlist_id}/tracks", limit=limit, offset=offset, fields=fields, market=market)
 
     def user_playlist_tracks(self, user, playlist_id=None, fields=None,
                              limit=100, offset=0, market=None):

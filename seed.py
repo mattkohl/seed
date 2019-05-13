@@ -1,6 +1,6 @@
 import os
 
-from flask import jsonify, Response
+from flask import jsonify, Response, request
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.models import Artist, Album, Track
@@ -12,7 +12,7 @@ migrate = Migrate(application, db)
 
 
 @application.cli.command()
-def deploy():
+def deploy() -> None:
     upgrade()
 
 
@@ -42,28 +42,17 @@ def artist(uri):
 
 @application.route("/artists/<uri>/albums")
 def get_artist_albums(uri):
-    try:
-        _albums = Tasks.run_artist_albums(uri)
-    except Exception:
-        raise
-    else:
-        return jsonify(_albums)
+    return jsonify(Tasks.run_artist_albums(uri))
 
 
 @application.route("/albums")
 def albums():
-    results = [_album.as_dict() for _album in Album.query.all()]
-    return jsonify(results)
+    return jsonify(Fetch.albums())
 
 
 @application.route("/albums/<uri>")
 def album(uri):
-    result = Album.query.filter_by(spot_uri=uri).first()
-    _album = result.as_dict()
-    _artists = [_artist.as_dict() for _artist in result.artists]
-    _tracks = [_track.as_dict() for _track in result.tracks]
-    _album.update({"tracks": _tracks, "artists": _artists})
-    return jsonify(_album)
+    return jsonify(Fetch.album(uri))
 
 
 @application.route("/albums/<uri>/tracks")
@@ -73,18 +62,12 @@ def album_tracks(uri):
 
 @application.route("/tracks")
 def tracks():
-    results = [_track.as_dict() for _track in Track.query.all()]
-    return jsonify(results)
+    return jsonify(Fetch.tracks())
 
 
 @application.route("/tracks/<uri>")
 def track(uri):
-    result = Track.query.filter_by(spot_uri=uri).first()
-    _track = result.as_dict()
-    _artists = [_artist.as_dict() for _artist in result.artists]
-    _album = result.album.as_dict()
-    _track.update({"album": _album, "artists": _artists})
-    return jsonify(_track)
+    return jsonify(Fetch.track(uri))
 
 
 @application.route("/clear")
@@ -102,22 +85,18 @@ def get_playlist(playlist_uri: str):
     return jsonify(Tasks.run_playlist(playlist_uri))
 
 
-@application.route("/scrape")
-def scrape_lyrics():
-    return jsonify(Tasks.scrape_all_lyrics())
-
-
 @application.route("/tracks/<track_uri>/lyrics")
-def scrape_lyric(track_uri):
-    return jsonify(Fetch.track_lyrics(track_uri))
+def get_lyrics(track_uri):
+    update = request.args.get('update', default=False)
+    return jsonify(Fetch.track_lyrics(track_uri, update))
 
 
-@application.route("/tracks/<uri>/annotate")
+@application.route("/tracks/<uri>/lyrics/annotate")
 def annotate(uri):
     return jsonify(Fetch.lyric_annotations(uri))
 
 
-@application.route("/tracks/<uri>/annotations")
+@application.route("/tracks/<uri>/lyrics/annotations")
 def annotations(uri):
     _track = Track.query.filter_by(spot_uri=uri).first()
     return Response(_track.lyrics_annotated)
@@ -139,7 +118,8 @@ def dbp_annotate(uri):
 
 @application.route("/artists/<spot_uri>/dbp")
 def get_artist_dbp_uri(spot_uri):
-    return jsonify(Fetch.artist_dbp_uri(spot_uri))
+    update = request.args.get('update', default=False)
+    return jsonify(Fetch.artist_dbp_uri(spot_uri, update))
 
 
 @application.route("/artists/<uri>/mb")

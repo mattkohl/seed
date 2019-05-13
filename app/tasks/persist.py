@@ -1,5 +1,5 @@
 from typing import Optional
-
+import traceback
 from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.mb.models import ArtistTuple as MBArtistTuple
 from app.models import Track, Artist
@@ -11,7 +11,12 @@ class TasksPersist:
 
     @staticmethod
     def persist_track(track_tuple: TrackTuple) -> None:
-        Persist.persist_track_tuple(track_tuple)
+        try:
+            Persist.persist_track_tuple(track_tuple)
+        except Exception as e:
+            print(f"Unable to persist track {track_tuple}")
+            traceback.print_tb(e.__traceback__)
+            raise
 
     @staticmethod
     def persist_album(album_tuple: AlbumTuple) -> None:
