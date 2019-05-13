@@ -1,4 +1,5 @@
 from typing import Dict, List
+import traceback
 
 from app.spot.oauth2 import SpotifyClientCredentials
 from app.spot.client import Spotify
@@ -18,7 +19,7 @@ class SpotArtist:
             print(f"Downloaded artist {artist_id} albums")
             return self.sp.artist_albums(artist_id=artist_id, album_type="album", country="US", limit=50)["items"]
         except Exception as e:
-            print(f"Unable to download artist {artist_id} albums: {e}")
+            print(f"Unable to download artist {artist_id} albums:", traceback.print_tb(e.__traceback__))
             return list()
 
     @staticmethod

@@ -2,10 +2,7 @@ import sys
 import requests
 import json
 import time
-
-
-""" A simple and thin Python library for the Spotify Web API
-"""
+import traceback
 
 
 class SpotifyException(Exception):
@@ -13,10 +10,7 @@ class SpotifyException(Exception):
         self.http_status = http_status
         self.code = code
         self.msg = msg
-        # `headers` is used to support `Retry-After` in the event of a
-        # 429 status code.
-        if headers is None:
-            headers = {}
+        headers = dict() if headers is None else headers
         self.headers = headers
 
     def __str__(self):
@@ -82,21 +76,15 @@ class Spotify(object):
 
         try:
             r.raise_for_status()
-        except:
+        except Exception as e:
             if r.text and len(r.text) > 0 and r.text != 'null':
-                raise SpotifyException(r.status_code,
-                    -1, '%s:\n %s' % (r.url, r.json()['error']['message']),
-                    headers=r.headers)
+                raise SpotifyException(r.status_code, -1, f"{r.url}:\n {r.json()['error']['message']}", headers=r.headers)
             else:
-                raise SpotifyException(r.status_code,
-                    -1, '%s:\n %s' % (r.url, 'error'), headers=r.headers)
+                raise SpotifyException(r.status_code, -1, f"{r.url}:\n 'error: '{traceback.print_tb(e.__traceback__)}", headers=r.headers)
         finally:
             r.connection.close()
         if r.text and len(r.text) > 0 and r.text != 'null':
             results = r.json()
-            if self.trace:  # pragma: no cover
-                print('RESP', results)
-                print()
             return results
         else:
             return None
@@ -113,7 +101,7 @@ class Spotify(object):
                 retries -= 1
                 status = e.http_status
                 # 429 means we hit a rate limit, backoff
-                if status == 429 or (status >= 500 and status < 600):
+                if status == 429 or (500 < status < 600):
                     if retries < 0:
                         raise
                     else:
@@ -288,8 +276,7 @@ class Spotify(object):
                 - limit  - the number of items to return
                 - offset - the index of the first item to return
         """
-        return self._get("users/%s/playlists" % user, limit=limit,
-                         offset=offset)
+        return self._get(f"users/{user}/playlists", limit=limit, offset=offset)
 
     def user_playlist(self, user, playlist_id=None, fields=None):
         """ Gets playlist of a user
@@ -299,9 +286,9 @@ class Spotify(object):
                 - fields - which fields to return
         """
         if playlist_id is None:
-            return self._get("users/%s/starred" % (user), fields=fields)
+            return self._get(f"users/{user}/starred", fields=fields)
         plid = self._get_id('playlist', playlist_id)
-        return self._get("users/%s/playlists/%s" % (user, plid), fields=fields)
+        return self._get(f"users/{user}/playlists/{plid}", fields=fields)
 
     def user_playlist_tracks(self, user, playlist_id=None, fields=None,
                              limit=100, offset=0, market=None):
@@ -466,15 +453,13 @@ class Spotify(object):
         fields = _id.split(':')
         if len(fields) >= 3:
             if _type != fields[-2]:
-                self._warn('expected id of type %s but found type %s %s',
-                           _type, fields[-2], _id)
+                self._warn(f'expected id of type {_type} but found type {fields[-2]} {_id}')
             return fields[-1]
         fields = _id.split('/')
         if len(fields) >= 3:
             itype = fields[-2]
             if _type != itype:
-                self._warn('expected id of type %s but found type %s %s',
-                           _type, itype, _id)
+                self._warn(f'expected id of type {_type} but found type {itype} {_id}')
             return fields[-1]
         return _id
 
