@@ -13,7 +13,7 @@ from app.spot.artists import SpotArtist
 from app.spot.models import TrackTuple, AlbumTuple
 from app.spot.playlists import SpotPlaylist
 from app.spot.utils import SpotUtils
-from app.tasks.persist import TasksPersist
+from app.tasks.persist import Persistence
 from app.utils import Utils
 
 
@@ -66,6 +66,10 @@ class Fetch:
             return _artist
 
     @staticmethod
+    def artists() -> List[Dict]:
+        return [_artist.as_dict() for _artist in Artist.query.all()]
+
+    @staticmethod
     def artist_albums(uri: str) -> List[AlbumTuple]:
         sp = SpotArtist()
         try:
@@ -96,7 +100,7 @@ class Fetch:
                 candidates = Fetch.artist_and_track_name_annotations(uri)
                 potentials = [resource for resource in candidates.Resources if "DBpedia:MusicalArtist" in resource['@types'].split(",")]
                 dbp_uri = potentials[0]["@URI"] if potentials and Utils.fuzzy_match(result.name, potentials[0]["@URI"].split("/")[-1]) else None
-                TasksPersist.persist_dbp_uri(result.id,  dbp_uri)
+                Persistence.persist_dbp_uri(result.id, dbp_uri)
             except Exception as e:
                 print(f"Could not get DBP URI for {result.name}", e)
             else:
@@ -111,7 +115,7 @@ class Fetch:
             mb_results = metadata.MBArtist().search(result.name)
             cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
             at = MBArtistTuple(**cleaned)
-            TasksPersist.persist_mb_metadata(result.id, at)
+            Persistence.persist_mb_metadata(result.id, at)
             _artist.update({"mb_id": at.id, "mb_obj": at._asdict()})
         return _artist
 
@@ -121,19 +125,24 @@ class Fetch:
         _track = result.as_dict()
         if result.lyrics is not None:
             candidates = Spotlight.candidates(result.lyrics)
-            TasksPersist.persist_lyrics_links(result.id, candidates)
+            Persistence.persist_lyrics_links(result.id, candidates)
             _track.update({"lyrics_annotations_json": candidates._asdict()})
         return _track
 
     @staticmethod
-    def lyric_annotations(uri) -> Dict:
+    def lyrics_annotate(uri) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         if result.lyrics is not None:
             annotated = Spotlight.annotate(result.lyrics)
-            TasksPersist.persist_lyrics_annotated(result.id, annotated)
+            Persistence.persist_lyrics_annotated(result.id, annotated)
             _track.update({"lyrics_annotated": annotated})
         return _track
+
+    @staticmethod
+    def lyrics_annotations(uri):
+        _track = Track.query.filter_by(spot_uri=uri).first()
+        return _track.lyrics_annotated
 
     @staticmethod
     def playlist_tracks(uri: str) -> List[TrackTuple]:
@@ -173,7 +182,7 @@ class Fetch:
                 raise
             else:
                 fetched = datetime.now()
-                TasksPersist.persist_lyrics(result.id, lyrics, url, fetched)
+                Persistence.persist_lyrics(result.id, lyrics, url, fetched)
                 _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched_timestamp": fetched})
         return _track
 

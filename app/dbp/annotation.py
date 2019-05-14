@@ -1,7 +1,6 @@
-from typing import Dict, Optional
+import traceback
 
 import requests
-from requests import Response
 
 from app.dbp.models import AnnotationTuple, CandidatesTuple
 from app.utils import Utils
@@ -26,7 +25,8 @@ class Spotlight:
             response = requests.get(url=url, params=params)
             done = AnnotationTuple(response.text)
         except Exception as e:
-            print(f"Unable to resolve {url}:", e)
+            print(f"Unable to resolve DBP Spotlight {url}")
+            traceback.print_tb(e.__traceback__)
             raise
         else:
             return done
@@ -37,10 +37,12 @@ class Spotlight:
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
             response = requests.get(url=url, params=params, headers={"accept": "application/json"})
+            done = CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
         except Exception as e:
-            print(f"Unable to resolve {url}:", e)
+            print(f"Unable to resolve DBP Spotlight {url}")
+            traceback.print_tb(e.__traceback__)
             raise
         else:
-            return CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
+            return done
 
 

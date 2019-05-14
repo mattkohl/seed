@@ -3,7 +3,7 @@ import os
 from flask import jsonify, Response, request
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
-from app.models import Artist, Album, Track
+from app.tasks.persist import Persistence
 from app.tasks.pipeline import Tasks
 from app.tasks.fetch import Fetch
 
@@ -17,27 +17,18 @@ def deploy() -> None:
 
 
 @application.route("/")
-def index() -> str:
-    return "Index"
+def index():
+    return jsonify({"service": "Seed API", "version": 0.1})
 
 
 @application.route("/artists")
 def artists():
-    results = [_artist.as_dict() for _artist in Artist.query.all()]
-    return jsonify(results)
+    return jsonify(Fetch.artists())
 
 
 @application.route("/artists/<uri>")
 def artist(uri):
-    try:
-        result = Artist.query.filter_by(spot_uri=uri).first()
-        _artist = result.as_dict()
-        _albums = [_album.as_dict() for _album in result.albums]
-        _artist.update({"albums": _albums})
-        return jsonify(_artist)
-    except Exception as e:
-        print(e)
-        return jsonify(dict())
+    return jsonify(Fetch.artist(uri))
 
 
 @application.route("/artists/<uri>/albums")
@@ -72,12 +63,7 @@ def track(uri):
 
 @application.route("/clear")
 def clear() -> str:
-    message = f"Deleted {Track.query.count()} Tracks, {Artist.query.count()} Artists, & {Album.query.count()} Albums"
-    Track.query.delete()
-    Artist.query.delete()
-    Album.query.delete()
-    db.session.commit()
-    return message
+    return jsonify(Persistence.clear())
 
 
 @application.route("/playlists/<playlist_uri>")
@@ -93,13 +79,12 @@ def get_lyrics(track_uri):
 
 @application.route("/tracks/<uri>/lyrics/annotate")
 def annotate(uri):
-    return jsonify(Fetch.lyric_annotations(uri))
+    return jsonify(Fetch.lyrics_annotate(uri))
 
 
 @application.route("/tracks/<uri>/lyrics/annotations")
 def annotations(uri):
-    _track = Track.query.filter_by(spot_uri=uri).first()
-    return Response(_track.lyrics_annotated)
+    return Response(Fetch.lyrics_annotations(uri))
 
 
 @application.route("/tracks/<uri>/links")
@@ -109,11 +94,7 @@ def get_lyric_links(uri):
 
 @application.route("/dbp_annotate/<uri>")
 def dbp_annotate(uri):
-    candidates = Fetch.artist_and_track_name_annotations(uri)
-    if candidates is not None:
-        return jsonify(candidates._asdict())
-    else:
-        return jsonify({"Error": "no candidates found"})
+    return jsonify(Fetch.artist_and_track_name_annotations(uri))
 
 
 @application.route("/artists/<spot_uri>/dbp")

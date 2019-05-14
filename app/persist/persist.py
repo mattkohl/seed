@@ -8,6 +8,13 @@ from app.spot.models import TrackTuple, AlbumTuple
 class Persist:
 
     @staticmethod
+    def clear():
+        Track.query.delete()
+        Artist.query.delete()
+        Album.query.delete()
+        db.session.commit()
+
+    @staticmethod
     def get_or_create(session, model, **kwargs) -> db.Model:
         instance = session.query(model).filter_by(**kwargs).first()
         if instance:

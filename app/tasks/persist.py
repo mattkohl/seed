@@ -2,12 +2,24 @@ from typing import Optional
 import traceback
 from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.mb.models import ArtistTuple as MBArtistTuple
-from app.models import Track, Artist
+from app.models import Track, Artist, Album
 from app.persist.persist import Persist
 from app.spot.models import TrackTuple, AlbumTuple
 
 
-class TasksPersist:
+class Persistence:
+
+    @staticmethod
+    def clear():
+        message = f"Deleted {Track.query.count()} Tracks, {Artist.query.count()} Artists, & {Album.query.count()} Albums"
+        try:
+            Persist.clear()
+        except Exception as e:
+            print(f"Unable to delete everything")
+            traceback.print_tb(e.__traceback__)
+            raise
+        else:
+            return {"status": message}
 
     @staticmethod
     def persist_track(track_tuple: TrackTuple) -> None:
