@@ -34,9 +34,18 @@ class Fetch:
             return _album
 
     @staticmethod
-    def album_tracks(uri: str) -> List[Dict]:
+    def album_tracks(uri: str) -> List[TrackTuple]:
         sp = SpotAlbum()
-        return sp.download_tracks(uri)
+        try:
+            result = Album.query.filter_by(spot_uri=uri).first()
+            track_dicts = sp.download_tracks(uri)
+            track_tuples = SpotUtils.tuplify_tracks(track_dicts, result.as_album_tuple())
+        except Exception as e:
+            print(f"Unable to retrieve album {uri} tracks:")
+            traceback.print_tb(e.__traceback__)
+            raise
+        else:
+            return track_tuples
 
     @staticmethod
     def albums() -> List[Dict]:
@@ -60,7 +69,7 @@ class Fetch:
     def artist_albums(uri: str) -> List[AlbumTuple]:
         sp = SpotArtist()
         try:
-            album_dicts = sp.download_albums(artist_uri)
+            album_dicts = sp.download_albums(uri)
             album_tuples = sp.extract_albums(album_dicts)
         except Exception as e:
             print(f"Unable to retrieve artist {uri} albums:")
@@ -68,6 +77,15 @@ class Fetch:
             raise
         else:
             return album_tuples
+
+    @staticmethod
+    def artist_and_track_name_annotations(artist_uri: str) -> CandidatesTuple:
+        _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
+        _albums = [_album for _album in _artist.albums if len(_album.artists) == 1]
+        _statements = set([f""" {_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
+        message = f"{_artist.name}, the hip-hop artist, released the albums" + ", \n".join(_statements)
+        print(message)
+        return Spotlight.candidates(message)
 
     @staticmethod
     def artist_dbp_uri(uri: str, force_update: bool = False) -> Dict:
@@ -90,17 +108,32 @@ class Fetch:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()
         if result.mb_id is None or force_update:
-            try:
-                mb_results = metadata.MBArtist().search(result.name)
-                assert mb_results[0]["ext:score"] == "100"
-            except Exception as e:
-                print(f"Could not get MB metadata for {result.name}:", e)
-            else:
-                cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
-                at = MBArtistTuple(**cleaned)
-                TasksPersist.persist_mb_metadata(result.id, at)
-                _artist.update({"mb_id": at.id, "mb_obj": at._asdict()})
+            mb_results = metadata.MBArtist().search(result.name)
+            cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
+            at = MBArtistTuple(**cleaned)
+            TasksPersist.persist_mb_metadata(result.id, at)
+            _artist.update({"mb_id": at.id, "mb_obj": at._asdict()})
         return _artist
+
+    @staticmethod
+    def lyric_links(uri) -> Dict:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        if result.lyrics is not None:
+            candidates = Spotlight.candidates(result.lyrics)
+            TasksPersist.persist_lyrics_links(result.id, candidates)
+            _track.update({"lyrics_annotations_json": candidates._asdict()})
+        return _track
+
+    @staticmethod
+    def lyric_annotations(uri) -> Dict:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        if result.lyrics is not None:
+            annotated = Spotlight.annotate(result.lyrics)
+            TasksPersist.persist_lyrics_annotated(result.id, annotated)
+            _track.update({"lyrics_annotated": annotated})
+        return _track
 
     @staticmethod
     def playlist_tracks(uri: str) -> List[TrackTuple]:
@@ -149,38 +182,13 @@ class Fetch:
         return [_track.as_dict() for _track in Track.query.all()]
 
     @staticmethod
-    def lyric_links(uri) -> Dict:
-        result = Track.query.filter_by(spot_uri=uri).first()
-        _track = result.as_dict()
-        if result.lyrics is not None:
-            try:
-                candidates = Spotlight.candidates(result.lyrics)
-                TasksPersist.persist_lyrics_links(result.id, candidates)
-                _track.update({"lyrics_annotations_json": candidates._asdict()})
-            except Exception as e:
-                print(f"Could not extract links for {uri}:", e)
-                raise
-        return _track
+    def text_annotate(text):
+        try:
+            annotated = Spotlight.annotate(text)
+        except Exception as e:
+            print(f"Unable to annotate text")
+            traceback.print_tb(e.__traceback__)
+            raise
+        else:
+            return annotated
 
-    @staticmethod
-    def lyric_annotations(uri) -> Dict:
-        result = Track.query.filter_by(spot_uri=uri).first()
-        _track = result.as_dict()
-        if result.lyrics is not None:
-            try:
-                annotated = Spotlight.annotate(result.lyrics)
-                TasksPersist.persist_lyrics_annotated(result.id, annotated)
-                _track.update({"lyrics_annotated": annotated})
-            except Exception as e:
-                print(f"Could not annotate to {uri}:", e)
-                raise
-        return _track
-
-    @staticmethod
-    def artist_and_track_name_annotations(artist_uri: str) -> CandidatesTuple:
-        _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
-        _albums = [_album for _album in _artist.albums if len(_album.artists) == 1]
-        _statements = set([f""" {_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
-        message = f"{_artist.name}, the hip-hop artist, released the albums" + ", \n".join(_statements)
-        print(message)
-        return Spotlight.candidates(message)
