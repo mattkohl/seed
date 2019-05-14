@@ -3,7 +3,7 @@ from typing import Dict, Optional, List
 import traceback
 
 from app.dbp.annotation import Spotlight
-from app.dbp.models import CandidatesTuple
+from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.geni import parser, utils
 from app.mb import metadata
 from app.mb.models import ArtistTuple as MBArtistTuple
@@ -85,9 +85,11 @@ class Fetch:
     @staticmethod
     def artist_and_track_name_annotations(artist_uri: str) -> CandidatesTuple:
         _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
+        _disambiguation = _artist.mb_obj['disambiguation'] if _artist.mb_obj is not None else None
+        _clause = f"({_disambiguation})" if _disambiguation is not None else "the hip-hop artist"
         _albums = [_album for _album in _artist.albums if len(_album.artists) == 1]
         _statements = set([f"""{_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
-        message = f"{_artist.name}, the hip-hop artist, released the albums " + ", ".join(_statements)
+        message = f"{_artist.name}, {_clause}, released the albums " + ", ".join(_statements)
         print(message)
         return Spotlight.candidates(message)
 
@@ -109,7 +111,7 @@ class Fetch:
                 traceback.print_tb(e.__traceback__)
             else:
                 if dbp_uri is None:
-                    print(f"DBP resolution rejected for this candidate {result.name} : {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
+                    print(f"DBP resolution rejected for this candidate {result.name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
                 _artist.update({"dbp_uri": dbp_uri})
         return _artist
 
@@ -146,7 +148,7 @@ class Fetch:
         return _track
 
     @staticmethod
-    def lyrics_annotations(uri):
+    def lyrics_annotations(uri) -> str:
         _track = Track.query.filter_by(spot_uri=uri).first()
         return _track.lyrics_annotated
 
@@ -197,7 +199,7 @@ class Fetch:
         return [_track.as_dict() for _track in Track.query.all()]
 
     @staticmethod
-    def text_annotate(text):
+    def text_annotate(text) -> AnnotationTuple:
         try:
             annotated = Spotlight.annotate(text)
         except Exception as e:
