@@ -100,13 +100,16 @@ class Fetch:
                 candidates = Fetch.artist_and_track_name_annotations(uri)
                 first = candidates.Resources[0]
                 offset_is_zero = int(first["@offset"]) == 0
-                fuzzy_match_score = Utils.fuzzy_match(result.name, first["@URI"].split("/")[-1])
-                dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 90) else None
+                local_name = first["@URI"].split("/")[-1].replace("_", " ")
+                fuzzy_match_score = Utils.fuzzy_match(result.name, local_name)
+                dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 75) else None
                 Persistence.persist_dbp_uri(result.id, dbp_uri)
             except Exception as e:
                 print(f"Could not get DBP URI for {result.name}")
                 traceback.print_tb(e.__traceback__)
             else:
+                if dbp_uri is None:
+                    print(f"DBP resolution rejected for this candidate {result.name} : {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
                 _artist.update({"dbp_uri": dbp_uri})
         return _artist
 
