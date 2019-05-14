@@ -33,7 +33,7 @@ class TasksPersist:
         if lyrics:
             _updates = {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched_timestamp: fetched}
             try:
-                Persist.update_track(_track.id, _updates)
+                Persist.update(Track, _track.id, _updates)
             except Exception as e:
                 print(f"Unable to persist track lyrics {track_id}")
                 traceback.print_tb(e.__traceback__)
@@ -68,7 +68,7 @@ class TasksPersist:
         _track = Track.query.filter_by(id=track_id).first()
         _updates = {Track.lyrics_annotated: lyrics_annotated.text}
         try:
-            Persist.update_track(_track.id, _updates)
+            Persist.update(Track, _track.id, _updates)
         except Exception as e:
             print(f"Unable to persist track {track_id} annotated lyrics")
             traceback.print_tb(e.__traceback__)
@@ -79,7 +79,7 @@ class TasksPersist:
         _track = Track.query.filter_by(id=track_id).first()
         _updates = {Track.lyrics_annotations_json: candidates._asdict()}
         try:
-            Persist.update_track(_track.id, _updates)
+            Persist.update(Track, _track.id, _updates)
         except Exception as e:
             print(f"Unable to persist track {track_id} annotations")
             traceback.print_tb(e.__traceback__)

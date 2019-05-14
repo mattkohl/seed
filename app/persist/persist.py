@@ -26,13 +26,6 @@ class Persist:
             db.session.commit()
 
     @staticmethod
-    def update_track(track_id: int, updates: Dict):
-        current = create_app('docker')
-        with current.app_context():
-            db.session.query(Track).filter(Track.id == track_id).update(updates)
-            db.session.commit()
-
-    @staticmethod
     def persist_track_tuple(track: TrackTuple):
         current = create_app('docker')
         with current.app_context():
