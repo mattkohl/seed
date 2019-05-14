@@ -8,5 +8,5 @@ class Utils:
         return k.replace("@", "").replace("-", "_").replace(":", "_")
 
     @staticmethod
-    def fuzzy_match(a: str, b: str) -> bool:
-        return fuzz.token_sort_ratio(a, b) > 90
+    def fuzzy_match(a: str, b: str):
+        return fuzz.token_sort_ratio(a, b)

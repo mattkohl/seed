@@ -10,6 +10,7 @@ TYPE_WHITELIST = ", ".join(
         "DBpedia:Band",
         "DBpedia:Place",
         "DBpedia:Artist",
+        "DBpedia:Person",
         "DBpedia:Company"
     ]
 )
@@ -35,7 +36,7 @@ class Spotlight:
     def candidates(text) -> CandidatesTuple:
         url = "https://api.dbpedia-spotlight.org/en/annotate"
         try:
-            params = {"text": text, "types": TYPE_WHITELIST}
+            params = {"text": text}
             response = requests.get(url=url, params=params, headers={"accept": "application/json"})
             done = CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
         except Exception as e:

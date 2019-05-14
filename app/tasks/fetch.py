@@ -86,8 +86,8 @@ class Fetch:
     def artist_and_track_name_annotations(artist_uri: str) -> CandidatesTuple:
         _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
         _albums = [_album for _album in _artist.albums if len(_album.artists) == 1]
-        _statements = set([f""" {_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
-        message = f"{_artist.name}, the hip-hop artist, released the albums" + ", \n".join(_statements)
+        _statements = set([f"""{_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
+        message = f"{_artist.name}, the hip-hop artist, released the albums " + ", ".join(_statements)
         print(message)
         return Spotlight.candidates(message)
 
@@ -98,11 +98,14 @@ class Fetch:
         if result.dbp_uri is None or force_update:
             try:
                 candidates = Fetch.artist_and_track_name_annotations(uri)
-                potentials = [resource for resource in candidates.Resources if "DBpedia:MusicalArtist" in resource['@types'].split(",")]
-                dbp_uri = potentials[0]["@URI"] if potentials and Utils.fuzzy_match(result.name, potentials[0]["@URI"].split("/")[-1]) else None
+                first = candidates.Resources[0]
+                offset_is_zero = int(first["@offset"]) == 0
+                fuzzy_match_score = Utils.fuzzy_match(result.name, first["@URI"].split("/")[-1])
+                dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 90) else None
                 Persistence.persist_dbp_uri(result.id, dbp_uri)
             except Exception as e:
-                print(f"Could not get DBP URI for {result.name}", e)
+                print(f"Could not get DBP URI for {result.name}")
+                traceback.print_tb(e.__traceback__)
             else:
                 _artist.update({"dbp_uri": dbp_uri})
         return _artist
