@@ -141,31 +141,6 @@ class Fetch:
         return _artist
 
     @staticmethod
-    def lyric_links(uri) -> Dict:
-        result = Track.query.filter_by(spot_uri=uri).first()
-        _track = result.as_dict()
-        if result.lyrics is not None:
-            candidates = Spotlight.candidates(result.lyrics)
-            Persistence.persist_lyrics_links(result.id, candidates)
-            _track.update({"lyrics_annotations_json": candidates._asdict()})
-        return _track
-
-    @staticmethod
-    def lyrics_annotate(uri) -> Dict:
-        result = Track.query.filter_by(spot_uri=uri).first()
-        _track = result.as_dict()
-        if result.lyrics is not None:
-            annotated = Spotlight.annotate(result.lyrics)
-            Persistence.persist_lyrics_annotated(result.id, annotated)
-            _track.update({"lyrics_annotated": annotated})
-        return _track
-
-    @staticmethod
-    def lyrics_annotations(uri) -> str:
-        _track = Track.query.filter_by(spot_uri=uri).first()
-        return _track.lyrics_annotated
-
-    @staticmethod
     def playlist_tracks(uri: str) -> List[TrackTuple]:
         sp = SpotPlaylist()
         try:
@@ -260,6 +235,36 @@ class Fetch:
                 Persistence.persist_lyrics(result.id, lyrics, url, fetched)
                 _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched_timestamp": fetched})
         return _track
+
+    @staticmethod
+    def track_lyrics_test(uri: str):
+        result = Track.query.filter_by(spot_uri=uri).first()
+        return utils.GenUtils.link([_artist.name for _artist in result.artists], result.name)
+
+    @staticmethod
+    def track_lyric_links(uri) -> Dict:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        if result.lyrics is not None:
+            candidates = Spotlight.candidates(result.lyrics)
+            Persistence.persist_lyrics_links(result.id, candidates)
+            _track.update({"lyrics_annotations_json": candidates._asdict()})
+        return _track
+
+    @staticmethod
+    def track_lyrics_annotate(uri) -> Dict:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        if result.lyrics is not None:
+            annotated = Spotlight.annotate(result.lyrics)
+            Persistence.persist_lyrics_annotated(result.id, annotated)
+            _track.update({"lyrics_annotated": annotated})
+        return _track
+
+    @staticmethod
+    def lyrics_annotations(uri) -> str:
+        _track = Track.query.filter_by(spot_uri=uri).first()
+        return _track.lyrics_annotated
 
     @staticmethod
     def tracks() -> List[Dict]:

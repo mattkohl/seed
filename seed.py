@@ -89,4 +89,9 @@ def track_lyrics_annotations(uri):
 
 @application.route("/tracks/<uri>/links")
 def track_lyrics_links(uri):
-    return jsonify(Fetch.lyric_links(uri))
+    return jsonify(Fetch.track_lyric_links(uri))
+
+
+@application.route("/tracks/<uri>/lyrics/test")
+def track_lyrics_test(uri):
+    return jsonify(Fetch.track_lyrics_test(uri))
