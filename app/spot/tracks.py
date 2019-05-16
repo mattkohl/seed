@@ -1,23 +1,23 @@
 import traceback
-from typing import Dict, List
+from typing import Dict
 
 from app.spot.oauth2 import SpotifyClientCredentials
 from app.spot.client import Spotify
 
 
-class SpotAlbum:
+class SpotTrack:
 
     client_credentials_manager = SpotifyClientCredentials()
     sp = Spotify(client_credentials_manager=client_credentials_manager)
 
-    def download_album_tracks(self, uri: str) -> List[Dict]:
-        album_id = uri.split(':')[-1]
+    def download_track(self, uri: str) -> Dict:
+        track_id = uri.split(':')[-1]
         try:
-            track_dicts = self.sp.album_tracks(album_id)["items"]
+            track_dict = self.sp.track(track_id)
         except Exception as e:
-            print(f"Unable to download tracks for {album_id}")
+            print(f"Unable to download track {track_id}")
             traceback.print_tb(e.__traceback__)
             raise
         else:
-            print(f"Downloaded playlist {album_id}")
-            return track_dicts
+            print(f"Downloaded playlist {track_id}")
+            return track_dict

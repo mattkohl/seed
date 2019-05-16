@@ -1,3 +1,4 @@
+import traceback
 from typing import Dict, List
 
 
@@ -10,14 +11,15 @@ class SpotPlaylist:
     client_credentials_manager = SpotifyClientCredentials()
     sp = Spotify(client_credentials_manager=client_credentials_manager)
 
-    def download_tracks(self, uri: str) -> List[Dict]:
+    def download_playlist_tracks(self, uri: str) -> List[Dict]:
         playlist_id = uri.split(':')[4]
 
         def _download_tracks(_playlist_id, offset):
             try:
                 pl = self.sp.playlist_tracks(_playlist_id, offset=offset)
             except Exception as e:
-                print(f"Unable to download playlist {_playlist_id}:", e)
+                print(f"Unable to download playlist {_playlist_id}:")
+                traceback.print_tb(e.__traceback__)
                 raise
             else:
                 print(f"Downloaded playlist {_playlist_id}")

@@ -1,3 +1,4 @@
+import traceback
 from copy import deepcopy
 from typing import Dict, List, Optional
 
@@ -23,9 +24,15 @@ class SpotUtils:
             _raw.update({"artists": _artists, "release_date": SpotUtils.clean_up_date(_release_date), "release_date_string": _release_date})
             _album_tuple = AlbumTuple(**_raw)
         except Exception:
+            print(f"Exception when trying to extract album")
+            print(raw)
             raise
         else:
             return _album_tuple
+
+    @staticmethod
+    def extract_albums(album_dicts: List[Dict]) -> List[AlbumTuple]:
+        return [SpotUtils.extract_album(item) for item in album_dicts]
 
     @staticmethod
     def extract_artist(raw: Dict) -> Optional[ArtistTuple]:
@@ -62,20 +69,28 @@ class SpotUtils:
 
     @staticmethod
     def tuplify_tracks(track_dicts: List[Dict], album: Optional[AlbumTuple]) -> List[TrackTuple]:
-        return [SpotUtils.tuplify_track(track_dict, album) for track_dict in track_dicts]
+        return [SpotUtils.tuplify_track(track_dict, album) for track_dict in track_dicts if track_dict is not None]
 
     @staticmethod
-    def tuplify_track(d: Dict, album: Optional[AlbumTuple]) -> TrackTuple:
-        if album:
-            d.update({"album": album._asdict()})
-        _track = SpotUtils.extract_track(d)
-        _album = _track.album._asdict()
-        _artists = [_artist._asdict() for _artist in _track.artists]
-        _updated = _track._replace(artists=_artists, album=_album)
-        return _track
+    def tuplify_track(d: Dict, album: Optional[AlbumTuple]) -> Optional[TrackTuple]:
+        try:
+            if album:
+                d.update({"album": album._asdict()})
+            _track = SpotUtils.extract_track(d)
+            _album = _track.album._asdict()
+            _artists = [_artist._asdict() for _artist in _track.artists]
+            _updated = _track._replace(artists=_artists, album=_album)
+        except Exception as e:
+            print(f"Unable to tuplify track")
+            print(f"track_dict: {d}")
+            print(f"album: {album}")
+            traceback.print_tb(e.__traceback__)
+            return None
+        else:
+            return _track
 
     @staticmethod
-    def clean_up_date(raw_date):
+    def clean_up_date(raw_date) -> str:
         new_date = raw_date
         month = new_date[-2:]
         if len(new_date) == 7 and month == '02':

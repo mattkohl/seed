@@ -13,6 +13,7 @@ from app.spot.albums import SpotAlbum
 from app.spot.artists import SpotArtist
 from app.spot.models import TrackTuple, AlbumTuple
 from app.spot.playlists import SpotPlaylist
+from app.spot.tracks import SpotTrack
 from app.spot.utils import SpotUtils
 from app.tasks.persist import Persistence
 from app.utils import Utils
@@ -57,8 +58,8 @@ class Fetch:
         sp = SpotAlbum()
         try:
             result = Album.query.filter_by(spot_uri=uri).first()
-            track_dicts = sp.download_tracks(uri)
-            track_tuples = SpotUtils.tuplify_tracks(track_dicts, result.as_album_tuple())
+            track_dicts = sp.download_album_tracks(uri)
+            track_tuples = [t for t in SpotUtils.tuplify_tracks(track_dicts, result.as_album_tuple()) if t is not None]
         except Exception as e:
             print(f"Unable to retrieve album {uri} tracks:")
             traceback.print_tb(e.__traceback__)
@@ -74,6 +75,11 @@ class Fetch:
     def artist(uri: str) -> Dict:
         try:
             result = Artist.query.filter_by(spot_uri=uri).first()
+            if result is None:
+                print(f"{uri} not found. Querying API.")
+                album_tuples = Fetch.artist_albums(uri)
+                [Persistence.persist_album(a) for a in album_tuples]
+                result = Artist.query.filter_by(spot_uri=uri).first()
             _artist = result.as_dict()
             _albums = [_album.as_dict() for _album in result.albums]
             _artist.update({"albums": _albums})
@@ -92,8 +98,8 @@ class Fetch:
     def artist_albums(uri: str) -> List[AlbumTuple]:
         sp = SpotArtist()
         try:
-            album_dicts = sp.download_albums(uri)
-            album_tuples = sp.extract_albums(album_dicts)
+            album_dicts = sp.download_artist_albums(uri)
+            album_tuples = [a for a in SpotUtils.extract_albums(album_dicts) if a is not None]
         except Exception as e:
             print(f"Unable to retrieve artist {uri} albums:")
             traceback.print_tb(e.__traceback__)
@@ -123,7 +129,7 @@ class Fetch:
         return _artist
 
     @staticmethod
-    def artist_mb_metadata(uri: str, force_update: bool = False) -> Optional[MBArtistTuple]:
+    def artist_mb_metadata(uri: str, force_update: bool = False) -> Dict:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()
         if result.mb_id is None or force_update:
@@ -163,12 +169,13 @@ class Fetch:
     def playlist_tracks(uri: str) -> List[TrackTuple]:
         sp = SpotPlaylist()
         try:
-            playlist = sp.download_tracks(uri)
+            playlist = sp.download_playlist_tracks(uri)
             track_dicts = SpotUtils.extract_tracks_from_playlist(playlist)
-            track_tuples = SpotUtils.tuplify_tracks(track_dicts, None)
+            track_tuples = [t for t in SpotUtils.tuplify_tracks(track_dicts, None) if t is not None]
         except Exception as e:
             print(f"Unable to retrieve playlist {uri} tracks")
             traceback.print_tb(e.__traceback__)
+            raise
         else:
             return track_tuples
 
@@ -186,6 +193,12 @@ class Fetch:
     @staticmethod
     def track(uri: str) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
+        if result is None:
+            sp = SpotTrack()
+            track_dict = sp.download_track(uri)
+            track_tuple = SpotUtils.tuplify_track(track_dict, None)
+            Persistence.persist_track(track_tuple)
+            result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         _artists = [_artist.as_dict() for _artist in result.artists]
         _album = result.album.as_dict()
