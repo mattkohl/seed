@@ -61,6 +61,11 @@ def get_playlist(playlist_uri: str):
     return jsonify(Tasks.run_playlist(playlist_uri))
 
 
+@application.route("/stats")
+def stats():
+    return jsonify(Fetch.stats())
+
+
 @application.route("/tracks")
 def tracks():
     return jsonify(Fetch.tracks())
@@ -84,7 +89,7 @@ def track_lyrics(track_uri):
 
 @application.route("/tracks/<uri>/lyrics/annotations")
 def track_lyrics_annotations(uri):
-    return Response(Fetch.lyrics_annotations(uri))
+    return Response(Fetch.track_lyrics_annotations(uri))
 
 
 @application.route("/tracks/<uri>/links")

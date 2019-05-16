@@ -141,6 +141,24 @@ class Fetch:
         return _artist
 
     @staticmethod
+    def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, fetch_candidates: Callable) -> Optional[str]:
+        try:
+            candidates = fetch_candidates(uri)
+            first = candidates.Resources[0]
+            offset_is_zero = int(first["@offset"]) == 0
+            local_name = first["@URI"].split("/")[-1].replace("_", " ")
+            fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
+            dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 75) else None
+            Persistence.persist_dbp_uri(model, instance_id, dbp_uri)
+        except Exception as e:
+            print(f"Could not get DBP URI for {instance_name}")
+            traceback.print_tb(e.__traceback__)
+        else:
+            if dbp_uri is None:
+                print(f"DBP resolution rejected for this candidate {instance_name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
+            return dbp_uri
+
+    @staticmethod
     def playlist_tracks(uri: str) -> List[TrackTuple]:
         sp = SpotPlaylist()
         try:
@@ -153,6 +171,17 @@ class Fetch:
             raise
         else:
             return track_tuples
+
+    @staticmethod
+    def stats():
+        return {
+            "counts": {
+                "artists": Artist.query.count(),
+                "albums": Album.query.count(),
+                "tracks": Track.query.count(),
+                "lyrics": Track.query.filter(Track.lyrics != None).count()
+            }
+        }
 
     @staticmethod
     def text_annotate(text) -> AnnotationTuple:
@@ -187,24 +216,6 @@ class Fetch:
         message = f"{_track.name}, a track on the a hip-hop album {_track.album.name}, released in {_track.album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
         print(message)
         return Spotlight.candidates(message)
-
-    @staticmethod
-    def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, fetch_candidates: Callable) -> Optional[str]:
-        try:
-            candidates = fetch_candidates(uri)
-            first = candidates.Resources[0]
-            offset_is_zero = int(first["@offset"]) == 0
-            local_name = first["@URI"].split("/")[-1].replace("_", " ")
-            fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
-            dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 75) else None
-            Persistence.persist_dbp_uri(model, instance_id, dbp_uri)
-        except Exception as e:
-            print(f"Could not get DBP URI for {instance_name}")
-            traceback.print_tb(e.__traceback__)
-        else:
-            if dbp_uri is None:
-                print(f"DBP resolution rejected for this candidate {instance_name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
-            return dbp_uri
 
     @staticmethod
     def track_dbp_uri(uri: str, force_update: bool = False) -> Dict:
@@ -262,7 +273,7 @@ class Fetch:
         return _track
 
     @staticmethod
-    def lyrics_annotations(uri) -> str:
+    def track_lyrics_annotations(uri) -> str:
         _track = Track.query.filter_by(spot_uri=uri).first()
         return _track.lyrics_annotated
 
