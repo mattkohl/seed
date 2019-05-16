@@ -68,8 +68,9 @@ class Fetch:
             return track_tuples
 
     @staticmethod
-    def albums() -> List[Dict]:
-        return [_album.as_dict() for _album in Album.query.all()]
+    def albums(name_filter: Optional[str]) -> List[Dict]:
+        results = Album.query.filter(Album.name.ilike(f"%{name_filter}%")) if name_filter else Album.query.all()
+        return [_album.as_dict() for _album in results]
 
     @staticmethod
     def artist(uri: str) -> Dict:
@@ -91,8 +92,9 @@ class Fetch:
             return _artist
 
     @staticmethod
-    def artists() -> List[Dict]:
-        return [_artist.as_dict() for _artist in Artist.query.all()]
+    def artists(name_filter: Optional[str]) -> List[Dict]:
+        results = Artist.query.filter(Artist.name.ilike(f"%{name_filter}%")) if name_filter else Artist.query.all()
+        return [_artist.as_dict() for _artist in results]
 
     @staticmethod
     def artist_albums(uri: str) -> List[AlbumTuple]:
@@ -278,5 +280,6 @@ class Fetch:
         return _track.lyrics_annotated
 
     @staticmethod
-    def tracks() -> List[Dict]:
-        return [_track.as_dict() for _track in Track.query.all()]
+    def tracks(name_filter: Optional[str]) -> List[Dict]:
+        results = Track.query.filter(Track.name.ilike(f"%{name_filter}%")) if name_filter else Track.query.all()
+        return [_track.as_dict() for _track in results]

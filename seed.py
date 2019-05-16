@@ -1,6 +1,6 @@
 import os
 
-from flask import jsonify, Response, request
+from flask import jsonify, Response, request, redirect, url_for
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.tasks.persist import Persistence
@@ -23,7 +23,11 @@ def index():
 
 @application.route("/albums")
 def albums():
-    return jsonify(Fetch.albums())
+    name_filter = request.args.get('filter', default=None)
+    fetched = Fetch.albums(name_filter)
+    if len(fetched) == 1:
+        return redirect(url_for("album", uri=fetched[0]["spot_uri"]))
+    return jsonify(fetched)
 
 
 @application.route("/albums/<uri>")
@@ -38,7 +42,11 @@ def album_run(uri):
 
 @application.route("/artists")
 def artists():
-    return jsonify(Fetch.artists())
+    name_filter = request.args.get('filter', default=None)
+    fetched = Fetch.artists(name_filter)
+    if len(fetched) == 1:
+        return redirect(url_for("artist", uri=fetched[0]["spot_uri"]))
+    return jsonify(fetched)
 
 
 @application.route("/artists/<uri>")
@@ -68,7 +76,11 @@ def stats():
 
 @application.route("/tracks")
 def tracks():
-    return jsonify(Fetch.tracks())
+    name_filter = request.args.get('filter', default=None)
+    fetched = Fetch.tracks(name_filter)
+    if len(fetched) == 1:
+        return redirect(url_for("track", uri=fetched[0]["spot_uri"]))
+    return jsonify(fetched)
 
 
 @application.route("/tracks/<uri>")
