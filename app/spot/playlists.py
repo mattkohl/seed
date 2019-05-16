@@ -21,9 +21,10 @@ class SpotPlaylist:
                 raise
             else:
                 print(f"Downloaded playlist {_playlist_id}")
-                if pl["offset"] > 0:
-                    print(f"Downloading next page playlist {_playlist_id} at {pl['offset']}")
-                    return pl["items"] + _download_tracks(_playlist_id, offset=pl["offset"])
+                if pl["next"] is not None:
+                    _next = pl['offset'] + pl['limit']
+                    print(f"Downloading next page playlist {pl['next']}")
+                    return pl["items"] + _download_tracks(_playlist_id, offset=_next)
                 else:
                     return pl["items"]
         return _download_tracks(playlist_id, 0)

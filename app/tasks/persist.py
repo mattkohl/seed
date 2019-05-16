@@ -1,5 +1,7 @@
 from typing import Optional
 import traceback
+
+from app import db
 from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.mb.models import ArtistTuple as MBArtistTuple
 from app.models import Track, Artist, Album
@@ -52,14 +54,14 @@ class Persistence:
                 raise
 
     @staticmethod
-    def persist_dbp_uri(artist_id: int, dbp_uri: Optional[str]) -> None:
-        _artist = Track.query.filter_by(id=artist_id).first()
+    def persist_dbp_uri(model: db.Model, artist_id: int, dbp_uri: Optional[str]) -> None:
+        _instance = model.query.filter_by(id=artist_id).first()
         if dbp_uri:
-            _updates = {Artist.dbp_uri: dbp_uri}
+            _updates = {model.dbp_uri: dbp_uri}
             try:
-                Persist.update(Artist, _artist.id, _updates)
+                Persist.update(model, _instance.id, _updates)
             except Exception as e:
-                print(f"Unable to persist artist {artist_id} dbp uri")
+                print(f"Unable to persist {artist_id} dbp uri")
                 traceback.print_tb(e.__traceback__)
                 raise
 

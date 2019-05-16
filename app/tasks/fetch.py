@@ -1,7 +1,8 @@
 from datetime import datetime
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Callable
 import traceback
 
+from app import db
 from app.dbp.annotation import Spotlight
 from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.geni import parser, utils
@@ -32,6 +33,24 @@ class Fetch:
             traceback.print_tb(e.__traceback__)
         else:
             return _album
+
+    @staticmethod
+    def album_dbp_uri(uri: str, force_update: bool = False) -> Dict:
+        result = Album.query.filter_by(spot_uri=uri).first()
+        _album = result.as_dict()
+        if result.dbp_uri is None or force_update:
+            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Album, uri=uri,
+                                    fetch_candidates=Fetch.album_and_artist_annotations)
+            _album.update({"dbp_uri": dbp_uri})
+        return _album
+
+    @staticmethod
+    def album_and_artist_annotations(album_uri: str) -> CandidatesTuple:
+        _album = Album.query.filter_by(spot_uri=album_uri).first()
+        _artists = [_artist for _artist in _album.artists]
+        message = f"{_album.name}, a hip-hop album, was released in {_album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
+        print(message)
+        return Spotlight.candidates(message)
 
     @staticmethod
     def album_tracks(uri: str) -> List[TrackTuple]:
@@ -98,21 +117,9 @@ class Fetch:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()
         if result.dbp_uri is None or force_update:
-            try:
-                candidates = Fetch.artist_and_track_name_annotations(uri)
-                first = candidates.Resources[0]
-                offset_is_zero = int(first["@offset"]) == 0
-                local_name = first["@URI"].split("/")[-1].replace("_", " ")
-                fuzzy_match_score = Utils.fuzzy_match(result.name, local_name)
-                dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 75) else None
-                Persistence.persist_dbp_uri(result.id, dbp_uri)
-            except Exception as e:
-                print(f"Could not get DBP URI for {result.name}")
-                traceback.print_tb(e.__traceback__)
-            else:
-                if dbp_uri is None:
-                    print(f"DBP resolution rejected for this candidate {result.name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
-                _artist.update({"dbp_uri": dbp_uri})
+            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Artist, uri=uri,
+                                    fetch_candidates=Fetch.artist_and_track_name_annotations)
+            _artist.update({"dbp_uri": dbp_uri})
         return _artist
 
     @staticmethod
@@ -166,12 +173,59 @@ class Fetch:
             return track_tuples
 
     @staticmethod
+    def text_annotate(text) -> AnnotationTuple:
+        try:
+            annotated = Spotlight.annotate(text)
+        except Exception as e:
+            print(f"Unable to annotate text")
+            traceback.print_tb(e.__traceback__)
+            raise
+        else:
+            return annotated
+
+    @staticmethod
     def track(uri: str) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         _artists = [_artist.as_dict() for _artist in result.artists]
         _album = result.album.as_dict()
         _track.update({"album": _album, "artists": _artists})
+        return _track
+
+    @staticmethod
+    def track_album_and_artist_annotations(track_uri: str) -> CandidatesTuple:
+        _track = Track.query.filter_by(spot_uri=track_uri).first()
+        _artists = [_artist for _artist in _track.album.artists]
+        message = f"{_track.name}, a track on the a hip-hop album {_track.album.name}, released in {_track.album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
+        print(message)
+        return Spotlight.candidates(message)
+
+    @staticmethod
+    def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, fetch_candidates: Callable) -> Optional[str]:
+        try:
+            candidates = fetch_candidates(uri)
+            first = candidates.Resources[0]
+            offset_is_zero = int(first["@offset"]) == 0
+            local_name = first["@URI"].split("/")[-1].replace("_", " ")
+            fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
+            dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 75) else None
+            Persistence.persist_dbp_uri(model, instance_id, dbp_uri)
+        except Exception as e:
+            print(f"Could not get DBP URI for {instance_name}")
+            traceback.print_tb(e.__traceback__)
+        else:
+            if dbp_uri is None:
+                print(f"DBP resolution rejected for this candidate {instance_name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
+            return dbp_uri
+
+    @staticmethod
+    def track_dbp_uri(uri: str, force_update: bool = False) -> Dict:
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        if result.dbp_uri is None or force_update:
+            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Track, uri=uri,
+                                    fetch_candidates=Fetch.track_album_and_artist_annotations)
+            _track.update({"dbp_uri": dbp_uri})
         return _track
 
     @staticmethod
@@ -197,15 +251,3 @@ class Fetch:
     @staticmethod
     def tracks() -> List[Dict]:
         return [_track.as_dict() for _track in Track.query.all()]
-
-    @staticmethod
-    def text_annotate(text) -> AnnotationTuple:
-        try:
-            annotated = Spotlight.annotate(text)
-        except Exception as e:
-            print(f"Unable to annotate text")
-            traceback.print_tb(e.__traceback__)
-            raise
-        else:
-            return annotated
-

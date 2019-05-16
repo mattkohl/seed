@@ -103,6 +103,18 @@ def get_artist_dbp_uri(spot_uri):
     return jsonify(Fetch.artist_dbp_uri(spot_uri, update))
 
 
+@application.route("/albums/<spot_uri>/dbp")
+def get_album_dbp_uri(spot_uri):
+    update = request.args.get('update', default=False)
+    return jsonify(Fetch.album_dbp_uri(spot_uri, update))
+
+
+@application.route("/tracks/<spot_uri>/dbp")
+def get_track_dbp_uri(spot_uri):
+    update = request.args.get('update', default=False)
+    return jsonify(Fetch.track_dbp_uri(spot_uri, update))
+
+
 @application.route("/artists/<uri>/mb")
 def get_mb_metadata(uri):
     return jsonify(Fetch.artist_mb_metadata(uri))

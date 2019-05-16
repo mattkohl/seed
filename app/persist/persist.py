@@ -15,7 +15,7 @@ class Persist:
         db.session.commit()
 
     @staticmethod
-    def get_or_create(session, model, **kwargs) -> db.Model:
+    def get_or_create(session, model: db.Model, **kwargs) -> db.Model:
         instance = session.query(model).filter_by(**kwargs).first()
         if instance:
             return instance
@@ -26,7 +26,7 @@ class Persist:
             return instance
 
     @staticmethod
-    def update(model, _id: int, _updates: Dict):
+    def update(model: db.Model, _id: int, _updates: Dict):
         current = create_app('docker')
         with current.app_context():
             db.session.query(model).filter(model.id == _id).update(_updates)
