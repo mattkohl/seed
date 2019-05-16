@@ -52,6 +52,6 @@ class GenUtils:
         _artist = artists[0]
         artist = "The " + _artist[:-4] if _artist.endswith(", The") else _artist
         song_title = GenUtils.prune(song_title)
-        slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
-        slug = re.sub("[-]+", "-", slug)
+        _slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
+        slug = re.sub("[-]+", "-", _slug)
         return f"{h}://{g}.{c}/{slug}"
