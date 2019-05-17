@@ -1,8 +1,8 @@
 from collections import namedtuple
 
-_track_fields = ['album', 'artists', 'disc_number', 'duration_ms', 'episode', 'explicit',
+_track_fields = ['album', 'disc_number', 'duration_ms', 'episode', 'explicit',
                  'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url',
-                 'track', 'track_number', 'type', 'uri']
+                 'track', 'track_number', 'type', 'uri', 'primary_artists', 'featured_artists']
 TrackTuple = namedtuple("TrackTuple", _track_fields, defaults=(None,) * len(_track_fields))
 
 _album_fields = ['album_type', 'album_group', 'artists', 'external_urls', 'href', 'id', 'images', 'name',

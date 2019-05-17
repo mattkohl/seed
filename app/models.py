@@ -80,8 +80,11 @@ class Track(db.Model):
     lyrics_annotated = db.Column(db.Text)
     lyrics_annotations_json = db.Column(JSON)
     lyrics_fetched_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    artists = db.relationship('Artist', secondary=track_artist, lazy='subquery',
-                              backref=db.backref('artists_tracks', lazy=True))
+    primary_artists = db.relationship('Artist', secondary=track_artist, lazy='subquery',
+                              backref=db.backref('primary_artists_tracks', lazy=True))
+
+    featured_artists = db.relationship('Artist', secondary=track_artist, lazy='subquery',
+                              backref=db.backref('featured_artists_tracks', lazy=True))
 
     def __repr__(self):
         return f"<Track {self.name}>"

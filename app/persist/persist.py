@@ -47,14 +47,22 @@ class Persist:
                                            spot_uri=track.uri,
                                            preview_url=track.preview_url,
                                            album_id=_album.id)
-            _artists = [Persist.get_or_create(db.session, Artist,
+            _primary_artists = [Persist.get_or_create(db.session, Artist,
                                               name=artist.name,
                                               spot_uri=artist.uri)
-                        for artist in track.artists]
+                                for artist in track.primary_artists]
+            _featured_artists = [Persist.get_or_create(db.session, Artist,
+                                              name=artist.name,
+                                              spot_uri=artist.uri)
+                                 for artist in track.featured_artists]
             db.session.add(_track)
-            for _artist in _artists:
-                _track.artists.append(_artist)
+            for _artist in _primary_artists:
+                _track.primary_artists.append(_artist)
                 _artist.albums.append(_album)
+
+            for _artist in _featured_artists:
+                _track.featured_artists.append(_artist)
+
             db.session.commit()
 
     @staticmethod

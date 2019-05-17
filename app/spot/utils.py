@@ -59,8 +59,10 @@ class SpotUtils:
         raw.pop("available_markets")
         _raw = deepcopy(raw)
         _album = SpotUtils.extract_album(raw["album"])
-        _artists = [SpotUtils.extract_artist(a) for a in raw["artists"]]
-        _raw.update({"album": _album, "artists": _artists})
+        _primary_artists = _album.artists
+        _featured_artists = [SpotUtils.extract_artist(a) for a in raw["artists"] if SpotUtils.extract_artist(a) not in _primary_artists]
+        _raw.pop("artists")
+        _raw.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists})
         return TrackTuple(**_raw)
 
     @staticmethod
@@ -74,16 +76,12 @@ class SpotUtils:
     @staticmethod
     def tuplify_track(d: Dict, album: Optional[AlbumTuple]) -> Optional[TrackTuple]:
         try:
-            if album:
+            if album is not None:
                 d.update({"album": album._asdict()})
             _track = SpotUtils.extract_track(d)
-            _album = _track.album._asdict()
-            _artists = [_artist._asdict() for _artist in _track.artists]
-            _updated = _track._replace(artists=_artists, album=_album)
         except Exception as e:
             print(f"Unable to tuplify track")
             print(f"track_dict: {d}")
-            print(f"album: {album}")
             traceback.print_tb(e.__traceback__)
             return None
         else:
