@@ -60,7 +60,8 @@ class SpotUtils:
         _raw = deepcopy(raw)
         _album = SpotUtils.extract_album(raw["album"])
         _primary_artists = _album.artists
-        _featured_artists = [SpotUtils.extract_artist(a) for a in raw["artists"] if SpotUtils.extract_artist(a) not in _primary_artists]
+        _featured_artists_raw = [SpotUtils.extract_artist(a) for a in _raw["artists"]]
+        _featured_artists = [_fa for _fa in _featured_artists_raw if _fa not in _primary_artists]
         _raw.pop("artists")
         _raw.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists})
         return TrackTuple(**_raw)

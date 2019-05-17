@@ -5,7 +5,12 @@ from . import db
 from sqlalchemy.dialects.postgresql import JSON
 
 
-track_artist = db.Table('track_artist',
+track_primary_artist = db.Table('track_primary_artist',
+                       db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
+                       db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
+
+
+track_featured_artist = db.Table('track_featured_artist',
                        db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
                        db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
@@ -24,7 +29,8 @@ class Artist(db.Model):
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
     name = db.Column(db.Text)
-    tracks = db.relationship('Track', secondary=track_artist, lazy='subquery', backref=db.backref('tracks_artists', lazy=True))
+    primary_tracks = db.relationship('Track', secondary=track_primary_artist, lazy='subquery', backref=db.backref('primary_artists', lazy=True))
+    featured_tracks = db.relationship('Track', secondary=track_featured_artist, lazy='subquery', backref=db.backref('featured_artists', lazy=True))
     albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy=True))
 
     def __repr__(self):
@@ -80,11 +86,6 @@ class Track(db.Model):
     lyrics_annotated = db.Column(db.Text)
     lyrics_annotations_json = db.Column(JSON)
     lyrics_fetched_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    primary_artists = db.relationship('Artist', secondary=track_artist, lazy='subquery',
-                              backref=db.backref('primary_artists_tracks', lazy=True))
-
-    featured_artists = db.relationship('Artist', secondary=track_artist, lazy='subquery',
-                              backref=db.backref('featured_artists_tracks', lazy=True))
 
     def __repr__(self):
         return f"<Track {self.name}>"

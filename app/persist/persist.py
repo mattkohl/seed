@@ -56,12 +56,12 @@ class Persist:
                                               spot_uri=artist.uri)
                                  for artist in track.featured_artists]
             db.session.add(_track)
-            for _artist in _primary_artists:
-                _track.primary_artists.append(_artist)
-                _artist.albums.append(_album)
+            for _primary_artist in _primary_artists:
+                _track.primary_artists.append(_primary_artist)
+                _primary_artist.albums.append(_album)
 
-            for _artist in _featured_artists:
-                _track.featured_artists.append(_artist)
+            for _featured_artist in _featured_artists:
+                _track.featured_artists.append(_featured_artist)
 
             db.session.commit()
 

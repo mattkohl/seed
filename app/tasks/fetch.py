@@ -206,9 +206,13 @@ class Fetch:
             Persistence.persist_track(track_tuple)
             result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
-        _artists = [_artist.as_dict() for _artist in result.artists]
+        print(result)
+        print(result.primary_artists)
+        print(result.featured_artists)
+        _primary_artists = [_artist.as_dict() for _artist in result.primary_artists]
+        _featured_artists = [_artist.as_dict() for _artist in result.featured_artists]
         _album = result.album.as_dict()
-        _track.update({"album": _album, "artists": _artists})
+        _track.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists})
         return _track
 
     @staticmethod

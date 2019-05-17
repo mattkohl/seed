@@ -19,5 +19,5 @@ class SpotTrack:
             traceback.print_tb(e.__traceback__)
             raise
         else:
-            print(f"Downloaded playlist {track_id}")
+            print(f"Downloaded track {track_id}")
             return track_dict
