@@ -7,7 +7,7 @@ from app.dbp.annotation import Spotlight
 from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.geni import parser, utils
 from app.mb import metadata
-from app.mb.models import MbArtistTuple, MbAlbumTuple
+from app.mb.models import MbArtistTuple
 from app.models import Artist, Track, Album
 from app.spot.albums import SpotAlbum
 from app.spot.artists import SpotArtist
@@ -218,7 +218,7 @@ class Fetch:
     @staticmethod
     def track_album_and_artist_annotations(track_uri: str) -> CandidatesTuple:
         _track = Track.query.filter_by(spot_uri=track_uri).first()
-        _artists = [_artist for _artist in _track.album.artists]
+        _artists = [_artist for _artist in _track.album.primary_artists]
         message = f"{_track.name}, a track on the a hip-hop album {_track.album.name}, released in {_track.album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
         print(message)
         return Spotlight.candidates(message)
@@ -250,11 +250,11 @@ class Fetch:
     def track_lyrics(uri: str, force_update: bool = False) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
-        _artists = [_artist.as_dict() for _artist in result.artists]
+        _artists = [_artist.as_dict() for _artist in result.primary_artists]
         _album = result.album.as_dict()
         _track.update({"album": _album, "artists": _artists})
         if result.lyrics is None or force_update:
-            url = utils.GenUtils.link([_artist.name for _artist in result.artists], result.name)
+            url = utils.GenUtils.link([_artist.name for _artist in result.primary_artists], result.name)
             try:
                 lyrics = parser.GenParser.download(url)
             except Exception as e:
@@ -269,7 +269,7 @@ class Fetch:
     @staticmethod
     def track_lyrics_test(uri: str):
         result = Track.query.filter_by(spot_uri=uri).first()
-        return utils.GenUtils.link([_artist.name for _artist in result.artists], result.name)
+        return utils.GenUtils.link([_artist.name for _artist in result.primary_artists], result.name)
 
     @staticmethod
     def track_lyric_links(uri) -> Dict:
