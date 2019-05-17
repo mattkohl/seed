@@ -112,3 +112,8 @@ def track_lyrics_links(uri):
 @application.route("/tracks/<uri>/lyrics/test")
 def track_lyrics_test(uri):
     return jsonify(Fetch.track_lyrics_test(uri))
+
+
+@application.route("/tracks/<uri>/mb")
+def track_mb(uri):
+    return jsonify(Fetch.track_mb_metadata(uri))

@@ -3,7 +3,7 @@ import traceback
 
 from app import db
 from app.dbp.models import CandidatesTuple, AnnotationTuple
-from app.mb.models import ArtistTuple as MBArtistTuple
+from app.mb.models import MbArtistTuple as MBArtistTuple
 from app.models import Track, Artist, Album
 from app.persist.persist import Persist
 from app.spot.models import TrackTuple, AlbumTuple
