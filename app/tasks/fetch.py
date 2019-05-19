@@ -25,6 +25,12 @@ class Fetch:
     def album(uri: str) -> Dict:
         try:
             result = Album.query.filter_by(spot_uri=uri).first()
+            if result is None:
+                sp = SpotAlbum()
+                _album = sp.download_album(uri)
+                _album_tuple = SpotUtils.extract_album(_album)
+                Persistence.persist_album(_album_tuple)
+                result = Album.query.filter_by(spot_uri=uri).first()
             _album = result.as_dict()
             _artists = [_artist.as_dict() for _artist in result.artists]
             _tracks = [_track.as_dict() for _track in result.tracks]
@@ -57,9 +63,9 @@ class Fetch:
     def album_tracks(uri: str) -> List[TrackTuple]:
         sp = SpotAlbum()
         try:
-            result = Album.query.filter_by(spot_uri=uri).first()
+            # result = Album.query.filter_by(spot_uri=uri).first()
             track_dicts = sp.download_album_tracks(uri)
-            track_tuples = [t for t in SpotUtils.tuplify_tracks(track_dicts, result.as_album_tuple()) if t is not None]
+            track_tuples = [t for t in SpotUtils.tuplify_tracks(track_dicts, None) if t is not None]
         except Exception as e:
             print(f"Unable to retrieve album {uri} tracks:")
             traceback.print_tb(e.__traceback__)

@@ -23,8 +23,9 @@ class SpotUtils:
             _artists = [SpotUtils.extract_artist(a) for a in raw["artists"]]
             _raw.update({"artists": _artists, "release_date": SpotUtils.clean_up_date(_release_date), "release_date_string": _release_date})
             _album_tuple = AlbumTuple(**_raw)
-        except Exception:
+        except Exception as e:
             print(f"Exception when trying to extract album")
+            traceback.print_tb(e.__traceback__)
             print(raw)
             raise
         else:
