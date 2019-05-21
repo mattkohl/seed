@@ -1,13 +1,13 @@
 from collections import namedtuple
 
 _track_fields = ['album', 'disc_number', 'duration_ms', 'episode', 'explicit',
-                 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'name', 'popularity', 'preview_url',
+                 'external_ids', 'external_urls', 'href', 'id', 'is_local', 'label', 'name', 'popularity', 'preview_url',
                  'track', 'track_number', 'type', 'uri', 'primary_artists', 'featured_artists']
 TrackTuple = namedtuple("TrackTuple", _track_fields, defaults=(None,) * len(_track_fields))
 
-_album_fields = ['album_type', 'album_group', 'artists', 'external_urls', 'href', 'id', 'images', 'name',
-                 'release_date', 'release_date_string', 'release_date_precision', 'total_tracks', 'type',
-                 'uri']
+_album_fields = ['album_type', 'album_group', 'artists', 'copyrights', 'external_ids', 'external_urls', 'genres',
+                 'href', 'id', 'images', 'label', 'name', 'popularity', 'release_date', 'release_date_string',
+                 'release_date_precision', 'tracks', 'total_tracks', 'type', 'uri']
 AlbumTuple = namedtuple("AlbumTuple", _album_fields, defaults=(None,) * len(_album_fields))
 
 _artist_fields = ['external_urls', 'href', 'id', 'name', 'type', 'uri']

@@ -13,7 +13,7 @@ class SpotArtist:
     def download_artist_albums(self, uri: str) -> List[Dict]:
         artist_id = uri.split(':')[-1]
         try:
-            print(f"Downloaded artist {artist_id} albums")
+            print(f"Downloading artist {artist_id} albums")
             return self.sp.artist_albums(artist_id=artist_id, album_type="album", country="US", limit=50)["items"]
         except Exception as e:
             print(f"Unable to download artist {artist_id} albums")

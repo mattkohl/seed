@@ -60,12 +60,12 @@ class Fetch:
         return Spotlight.candidates(message)
 
     @staticmethod
-    def album_tracks(uri: str) -> List[TrackTuple]:
+    def album_tracks(uri: str):
         sp = SpotAlbum()
         try:
-            # result = Album.query.filter_by(spot_uri=uri).first()
-            track_dicts = sp.download_album_tracks(uri)
-            track_tuples = [t for t in SpotUtils.tuplify_tracks(track_dicts, None) if t is not None]
+            _album = Album.query.filter_by(spot_uri=uri).first()
+            _tracks = sp.download_album_tracks(uri)
+            track_tuples = [t for t in SpotUtils.tuplify_tracks(_tracks, _album.as_album_tuple(_album.artists)) if t is not None]
         except Exception as e:
             print(f"Unable to retrieve album {uri} tracks:")
             traceback.print_tb(e.__traceback__)
@@ -212,9 +212,6 @@ class Fetch:
             Persistence.persist_track(track_tuple)
             result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
-        print(result)
-        print(result.primary_artists)
-        print(result.featured_artists)
         _primary_artists = [_artist.as_dict() for _artist in result.primary_artists]
         _featured_artists = [_artist.as_dict() for _artist in result.featured_artists]
         _album = result.album.as_dict()
@@ -224,7 +221,7 @@ class Fetch:
     @staticmethod
     def track_album_and_artist_annotations(track_uri: str) -> CandidatesTuple:
         _track = Track.query.filter_by(spot_uri=track_uri).first()
-        _artists = [_artist for _artist in _track.album.primary_artists]
+        _artists = [_artist for _artist in _track.primary_artists]
         message = f"{_track.name}, a track on the a hip-hop album {_track.album.name}, released in {_track.album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
         print(message)
         return Spotlight.candidates(message)

@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import List
 
-from app.spot.models import AlbumTuple
+from app.spot.models import AlbumTuple, ArtistTuple
 from . import db
 from sqlalchemy.dialects.postgresql import JSON
 
@@ -42,6 +43,9 @@ class Artist(db.Model):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+    def as_artist_tuple(self):
+        return ArtistTuple(uri=self.spot_uri, name=self.name)
+
 
 class Album(db.Model):
     __tablename__ = "albums"
@@ -67,8 +71,14 @@ class Album(db.Model):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-    def as_album_tuple(self):
-        return AlbumTuple(uri=self.spot_uri, release_date=f"{self.release_date:%Y-%m-%d}", release_date_string=self.release_date_string, name=self.name, artists=list())
+    def as_album_tuple(self, artists: List[Artist]):
+        return AlbumTuple(
+            uri=self.spot_uri,
+            release_date=f"{self.release_date:%Y-%m-%d}",
+            release_date_string=self.release_date_string,
+            name=self.name,
+            artists=[_a.as_artist_tuple()._asdict() for _a in artists]
+        )
 
 
 class Track(db.Model):

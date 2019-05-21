@@ -2,6 +2,7 @@ import traceback
 from copy import deepcopy
 from typing import Dict, List, Optional
 
+from app.models import Album
 from app.spot.models import AlbumTuple, ArtistTuple, TrackTuple
 
 
@@ -59,7 +60,7 @@ class SpotUtils:
         """
         raw.pop("available_markets")
         _raw = deepcopy(raw)
-        _album = SpotUtils.extract_album(raw["album"])
+        _album = SpotUtils.extract_album(_raw["album"])
         _primary_artists = _album.artists
         _featured_artists_raw = [SpotUtils.extract_artist(a) for a in _raw["artists"]]
         _featured_artists = [_fa for _fa in _featured_artists_raw if _fa not in _primary_artists]
