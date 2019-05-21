@@ -1,7 +1,9 @@
 from typing import Dict, List
 
+from app.models import Track
 from app.tasks.fetch import Fetch
 from app.tasks.persist import Persistence
+from  sqlalchemy.sql.expression import func, select
 
 
 class Tasks:
@@ -11,6 +13,11 @@ class Tasks:
         track_tuples = Fetch.playlist_tracks(playlist_uri)
         [Persistence.persist_track(t) for t in track_tuples]
         return [t._asdict() for t in track_tuples]
+
+    @staticmethod
+    def run_random_track() -> Dict:
+        _track = Track.query.filter(Track.lyrics == None).order_by(func.random()).first()
+        return Tasks.run_track(_track.spot_uri)
 
     @staticmethod
     def run_track(track_uri) -> Dict:

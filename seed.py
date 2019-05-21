@@ -83,6 +83,11 @@ def tracks():
     return jsonify(fetched)
 
 
+@application.route("/tracks/run/random")
+def track_run_random():
+    return jsonify(Tasks.run_random_track())
+
+
 @application.route("/tracks/<uri>")
 def track(uri):
     return jsonify(Fetch.track(uri))
