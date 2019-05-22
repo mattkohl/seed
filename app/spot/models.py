@@ -12,3 +12,7 @@ AlbumTuple = namedtuple("AlbumTuple", _album_fields, defaults=(None,) * len(_alb
 
 _artist_fields = ['external_urls', 'href', 'id', 'name', 'type', 'uri']
 ArtistTuple = namedtuple("ArtistTuple", _artist_fields, defaults=(None,) * len(_artist_fields))
+
+
+_genre_fields = ['id', 'name']
+GenreTuple = namedtuple("GenreTuple", _genre_fields, defaults=(None,) * len(_genre_fields))
