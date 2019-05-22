@@ -88,7 +88,7 @@ class Fetch:
                 [Persistence.persist_album(a) for a in album_tuples]
                 result = Artist.query.filter_by(spot_uri=uri).first()
             _artist = result.as_dict()
-            _albums = [_album.as_dict() for _album in result.albums]
+            _albums = [_album.as_dict() for _album in sorted(result.albums, key=lambda x: x.release_date)]
             _artist.update({"albums": _albums})
         except Exception as e:
             print(f"Unable to retrieve artist {uri}:")

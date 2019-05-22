@@ -32,7 +32,7 @@ class Artist(db.Model):
     name = db.Column(db.Text)
     primary_tracks = db.relationship('Track', secondary=track_primary_artist, lazy='subquery', backref=db.backref('primary_artists', lazy=True))
     featured_tracks = db.relationship('Track', secondary=track_featured_artist, lazy='subquery', backref=db.backref('featured_artists', lazy=True))
-    albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy=True))
+    albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy='dynamic'))
 
     def __repr__(self):
         return f"<Artist {self.name}>"
@@ -58,7 +58,7 @@ class Album(db.Model):
     mb_id = db.Column(db.Text)
     images_json = db.Column(JSON)
     name = db.Column(db.Text)
-    tracks = db.relationship('Track', backref='album', lazy=True)
+    tracks = db.relationship('Track', backref='album', lazy='dynamic')
     artists = db.relationship('Artist', secondary=album_artist, lazy='subquery',
                               backref=db.backref('artists_albums', lazy=True))
 
