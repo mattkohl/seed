@@ -7,6 +7,7 @@ from app.dbp.annotation import Spotlight
 from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.geni import parser, utils
 from app.mb import metadata
+from app.mb.genres import GENRES
 from app.mb.models import MbArtistTuple
 from app.models import Artist, Track, Album
 from app.spot.albums import SpotAlbum
@@ -143,6 +144,8 @@ class Fetch:
         if result.mb_id is None or force_update:
             mb_results = metadata.MB().search_artists(result.name)
             cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
+            _genres = [i["name"] for i in cleaned['tag_list'] if i["name"] in GENRES]
+            cleaned.update({"genres": _genres})
             at = MbArtistTuple(**cleaned)
             Persistence.persist_mb_metadata(result.id, at)
             _artist.update({"mb_id": at.id, "mb_obj": at._asdict()})
