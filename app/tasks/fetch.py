@@ -180,6 +180,20 @@ class Fetch:
     def track_mb_metadata(uri: str, force_update: bool = False):
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
+        if result.mb_id is None or force_update:
+            if result.album.mb_id:
+                _mb_track_candidates = [MbUtils.cleaned(item) for item in metadata.MB().get_tracks_with_album_id(result.album.mb_id)]
+
+                _mb_tracks = [a for a in _mb_track_candidates if Utils.fuzzy_match(a['title'], result.name) > 90]
+                if _mb_tracks:
+                    mb_obj = _mb_tracks[0]
+                    from pprint import pprint
+                    pprint(_mb_tracks)
+                else:
+                    _candidate_string = '\n'.join([str(a) for a in _mb_track_candidates])
+                    print(f"Found no matches for {result} in list:\n {_candidate_string}")
+            else:
+                print(f"Cannot resolve MB id for {result}: missing mb_id for {[result.artists]}")
         return _track
 
     @staticmethod

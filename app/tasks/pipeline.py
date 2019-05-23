@@ -40,4 +40,5 @@ class Tasks:
         track_tuples = Fetch.album_tracks(album_uri)
         [Persistence.persist_track(t) for t in track_tuples]
         _ = Fetch.album_dbp_uri(album_uri)
+        _ = Fetch.album_mb_metadata(album_uri)
         return Fetch.album(album_uri)

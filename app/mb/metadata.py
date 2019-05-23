@@ -34,3 +34,14 @@ class MB:
         else:
             return _metadata
 
+    @staticmethod
+    def get_tracks_with_album_id(mb_id: str) -> List[Dict]:
+        try:
+            _metadata = mb.browse_releases(release_group=mb_id)["release-list"]
+        except Exception as e:
+            print(f"Unable to retrieve MB metadata for {mb_id}")
+            traceback.print_tb(e.__traceback__)
+            raise
+        else:
+            return _metadata
+
