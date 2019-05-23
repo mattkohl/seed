@@ -7,8 +7,8 @@ from app.dbp.annotation import Spotlight
 from app.dbp.models import CandidatesTuple, AnnotationTuple
 from app.geni import parser, utils
 from app.mb import metadata
-from app.mb.genres import GENRES
-from app.mb.models import MbArtistTuple
+from app.mb.models import MbArtistTuple, MbAlbumTuple
+from app.mb.mbutils import MbUtils
 from app.models import Artist, Track, Album
 from app.spot.albums import SpotAlbum
 from app.spot.artists import SpotArtist
@@ -143,13 +143,44 @@ class Fetch:
         _artist = result.as_dict()
         if result.mb_id is None or force_update:
             mb_results = metadata.MB().search_artists(result.name)
-            cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
-            _genres = [i["name"] for i in cleaned['tag_list'] if i["name"] in GENRES]
-            cleaned.update({"genres": _genres})
-            at = MbArtistTuple(**cleaned)
-            Persistence.persist_mb_metadata(result.id, at)
-            _artist.update({"mb_id": at.id, "mb_obj": at._asdict()})
+            _cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
+            _cleaned_with_genres = MbUtils.add_genres(_cleaned)
+            _artist_tuple = MbArtistTuple(**_cleaned_with_genres)
+            Persistence.persist_mb_metadata(Artist, result.id, _artist_tuple)
+            _artist.update({"mb_id": _artist_tuple.id, "mb_obj": _artist_tuple._asdict()})
         return _artist
+
+    @staticmethod
+    def album_mb_metadata(uri: str, force_update: bool = False):
+        result = Album.query.filter_by(spot_uri=uri).first()
+        _album = result.as_dict()
+
+        if result.mb_id is None or force_update:
+            _artist_mb_ids = [a.mb_id for a in result.artists]
+            if _artist_mb_ids:
+                _mb_album_candidates = [MbUtils.cleaned(item)
+                                        for _id in _artist_mb_ids
+                                        for item in metadata.MB().get_albums_with_artist_id(_id)]
+
+                _mb_albums = [a for a in _mb_album_candidates if Utils.fuzzy_match(a['title'], result.name) > 90]
+
+                if _mb_albums:
+                    mb_obj = _mb_albums[0]
+                    _album_tuple = MbAlbumTuple(**mb_obj)
+                    Persistence.persist_mb_metadata(Album, result.id, _album_tuple)
+                    _album.update({"mb_id": _album_tuple.id, "mb_obj": _album_tuple._asdict()})
+                else:
+                    _candidate_string = '\n'.join([str(a) for a in _mb_album_candidates])
+                    print(f"Found no matches for {result} in list:\n {_candidate_string}")
+            else:
+                print(f"Cannot resolve MB id for {result}: missing mb_id for {[result.artists]}")
+        return _album
+
+    @staticmethod
+    def track_mb_metadata(uri: str, force_update: bool = False):
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        return _track
 
     @staticmethod
     def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, fetch_candidates: Callable) -> Optional[str]:
@@ -238,19 +269,6 @@ class Fetch:
                                     fetch_candidates=Fetch.track_album_and_artist_annotations)
             _track.update({"dbp_uri": dbp_uri})
         return _track
-
-    @staticmethod
-    def track_mb_metadata(uri: str, force_update: bool = False):
-        result = Track.query.filter_by(spot_uri=uri).first()
-
-        def cleaned(d) -> Dict:
-            return {Utils.clean_key(k): v for k, v in d.items()}
-
-        _albums = [cleaned(item)
-                   for _artist in result.album.artists
-                   for item in metadata.MB().get_albums_with_artist_id(_artist.mb_id)]
-
-        return _albums
 
     @staticmethod
     def track_lyrics(uri: str, force_update: bool = False) -> Dict:

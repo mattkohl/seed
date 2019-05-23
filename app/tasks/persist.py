@@ -66,14 +66,14 @@ class Persistence:
                 raise
 
     @staticmethod
-    def persist_mb_metadata(artist_id: int, artist_tuple: MBArtistTuple) -> None:
-        _artist = Track.query.filter_by(id=artist_id).first()
-        _updates = {Artist.mb_id: artist_tuple.id, Artist.mb_obj: artist_tuple._asdict()}
+    def persist_mb_metadata(model: db.Model, _id: int, _tuple) -> None:
+        _entity = model.query.filter_by(id=_id).first()
+        _updates = {model.mb_id: _tuple.id, model.mb_obj: _tuple._asdict()}
         try:
-            Persist.update(Artist, _artist.id, _updates)
+            Persist.update(model, _entity.id, _updates)
 
         except Exception as e:
-            print(f"Unable to persist artist {artist_id} mb metadata")
+            print(f"Unable to persist {_id} mb metadata")
             traceback.print_tb(e.__traceback__)
             raise
 
