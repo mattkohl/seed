@@ -62,6 +62,8 @@ class Artist(db.Model):
     dbp_uri = db.Column(db.Text)
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
+    img = db.Column(db.Text)
+    thumb = db.Column(db.Text)
     name = db.Column(db.Text)
     primary_tracks = db.relationship('Track', secondary=track_primary_artist, lazy='subquery', backref=db.backref('primary_artists', lazy=True))
     featured_tracks = db.relationship('Track', secondary=track_featured_artist, lazy='subquery', backref=db.backref('featured_artists', lazy=True))
@@ -111,7 +113,8 @@ class Album(db.Model):
     dbp_uri = db.Column(db.Text)
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
-    images_json = db.Column(JSON)
+    img = db.Column(db.Text)
+    thumb = db.Column(db.Text)
     name = db.Column(db.Text)
     tracks = db.relationship('Track', backref='album', lazy='dynamic')
     artists = db.relationship('Artist', secondary=album_artist, lazy='subquery',

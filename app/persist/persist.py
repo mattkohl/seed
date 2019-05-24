@@ -39,9 +39,13 @@ class Persist:
     def persist_track_tuple(track: TrackTuple):
         current = create_app('docker')
         with current.app_context():
+            img = track.album.images[0]["url"] if track.album.images else None
+            thumb = track.album.images[-1]["url"] if track.album.images and len(track.album.images) > 1 else None
             _album = Persist.get_or_create(db.session, Album,
                                            name=track.album.name,
                                            spot_uri=track.album.uri,
+                                           img=img,
+                                           thumb=thumb,
                                            release_date=track.album.release_date,
                                            release_date_string=track.album.release_date_string,
                                            )
@@ -70,10 +74,15 @@ class Persist:
     def persist_album_tuple(album: AlbumTuple):
         current = create_app('docker')
         with current.app_context():
+            img = album.images[0]["url"] if album.images else None
+            thumb = album.images[-1]["url"] if len(album.images) > 1 else None
+
             try:
                 _album = Persist.get_or_create(db.session, Album,
                                                name=album.name,
                                                spot_uri=album.uri,
+                                               img=img,
+                                               thumb=thumb,
                                                release_date=album.release_date,
                                                release_date_string=album.release_date_string,
                                                )
