@@ -224,15 +224,23 @@ class Fetch:
     @staticmethod
     def locations(name_filter: Optional[str]) -> List[Dict]:
         results = Location.query.filter(Location.name.ilike(f"%{name_filter}%")) if name_filter else Location.query.all()
-        return [_location.as_dict() for _location in results]
+
+        def _locations():
+            for result in results:
+                _location = result.as_dict()
+                _hometown_of = [a.name for a in result.hometown_of]
+                _birthplace_of = [a.name for a in result.birthplace_of]
+                _location.update({"hometown_of": _hometown_of, "birthplace_of": _birthplace_of})
+                yield _location
+        return list(_locations())
 
     @staticmethod
     def location(_id: int) -> Dict:
         try:
             result = Location.query.filter_by(id=_id).first()
             _location = result.as_dict()
-            _hometown_of = [_artist.as_dict() for _artist in result.hometown_of]
-            _birthplace_of = [_artist.as_dict() for _artist in result.birthplace_of]
+            _hometown_of = [_artist.name for _artist in result.hometown_of]
+            _birthplace_of = [_artist.name for _artist in result.birthplace_of]
             _location.update({"hometown_of": _hometown_of, "birthplace_of": _birthplace_of})
         except Exception as e:
             print(f"Unable to retrieve location {_id}")
