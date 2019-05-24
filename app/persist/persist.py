@@ -1,7 +1,8 @@
 from typing import Dict
 
 from app import create_app, db
-from app.models import Artist, Track, Album
+from app.dbp.models import LocationTuple
+from app.models import Artist, Track, Album, Location, Genre
 from app.spot.models import TrackTuple, AlbumTuple
 
 
@@ -12,6 +13,8 @@ class Persist:
         Track.query.delete()
         Artist.query.delete()
         Album.query.delete()
+        Genre.query.delete()
+        Location.query.delete()
         db.session.commit()
 
     @staticmethod
@@ -82,6 +85,28 @@ class Persist:
                 raise
             else:
                 db.session.add(_album)
-                for _artist in _artists:
-                    _album.artists.append(_artist)
+                if _artists:
+                    _album.artists.extend(_artists)
+                db.session.commit()
+
+    @staticmethod
+    def persist_location_tuple(location: LocationTuple):
+        current = create_app('docker')
+        with current.app_context():
+            try:
+                _location = Persist.get_or_create(db.session, Location,
+                                                  name=location.label,
+                                                  dbp_uri=location.uri,
+                                                  latitude=location.latitude,
+                                                  longitude=location.longitude,
+                                                  )
+
+            except Exception:
+                raise
+            else:
+                db.session.add(_location)
+                if location.hometown_of is not None:
+                    _location.hometown_of = [location.hometown_of]
+                if location.birthplace_of is not None:
+                    _location.birthplace_of = [location.birthplace_of]
                 db.session.commit()

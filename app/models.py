@@ -6,34 +6,52 @@ from . import db
 from sqlalchemy.dialects.postgresql import JSON
 
 
-track_primary_artist = db.Table('track_primary_artist',
-                       db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
-                       db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
+track_primary_artist = \
+    db.Table('track_primary_artist',
+             db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
-track_featured_artist = db.Table('track_featured_artist',
-                       db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
-                       db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
+track_featured_artist = \
+    db.Table('track_featured_artist',
+             db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
-album_artist = db.Table('album_artist',
-                        db.Column('album_id', db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"), primary_key=True),
-                        db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
+artist_hometown = \
+    db.Table('artist_hometown',
+             db.Column('location_id', db.Integer, db.ForeignKey('locations.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
-artist_genre = db.Table('artist_genre',
-                        db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True),
-                        db.Column('genre_id', db.Integer, db.ForeignKey('genres.id', ondelete="CASCADE"), primary_key=True))
+artist_birthplace = \
+    db.Table('artist_birthplace',
+             db.Column('location_id', db.Integer, db.ForeignKey('locations.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
-album_genre = db.Table('album_genre',
-                        db.Column('album_id', db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"), primary_key=True),
-                        db.Column('genre_id', db.Integer, db.ForeignKey('genres.id', ondelete="CASCADE"), primary_key=True))
+album_artist = \
+    db.Table('album_artist',
+             db.Column('album_id', db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
-track_genre = db.Table('track_genre',
-                        db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
-                        db.Column('genre_id', db.Integer, db.ForeignKey('genres.id', ondelete="CASCADE"), primary_key=True))
+artist_genre = \
+    db.Table('artist_genre',
+             db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('genre_id', db.Integer, db.ForeignKey('genres.id', ondelete="CASCADE"), primary_key=True))
+
+
+album_genre = \
+    db.Table('album_genre',
+             db.Column('album_id', db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('genre_id', db.Integer, db.ForeignKey('genres.id', ondelete="CASCADE"), primary_key=True))
+
+
+track_genre = \
+    db.Table('track_genre',
+             db.Column('track_id', db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('genre_id', db.Integer, db.ForeignKey('genres.id', ondelete="CASCADE"), primary_key=True))
 
 
 class Artist(db.Model):
@@ -48,6 +66,8 @@ class Artist(db.Model):
     primary_tracks = db.relationship('Track', secondary=track_primary_artist, lazy='subquery', backref=db.backref('primary_artists', lazy=True))
     featured_tracks = db.relationship('Track', secondary=track_featured_artist, lazy='subquery', backref=db.backref('featured_artists', lazy=True))
     albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy='dynamic'))
+    hometown = db.relationship('Location', secondary=artist_hometown, lazy='subquery', uselist=False, backref=db.backref('hometown_of', lazy='dynamic'))
+    birthplace = db.relationship('Location', secondary=artist_birthplace, lazy='subquery', uselist=False, backref=db.backref('birthplace_of', lazy='dynamic'))
 
     def __repr__(self):
         return f"<Artist {self.name}>"
@@ -60,6 +80,25 @@ class Artist(db.Model):
 
     def as_artist_tuple(self):
         return ArtistTuple(uri=self.spot_uri, name=self.name)
+
+
+class Location(db.Model):
+    __tablename__ = "locations"
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+    dbp_uri = db.Column(db.Text)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+
+    def __repr__(self):
+        return f"<Location {self.name}>"
+
+    def __str__(self):
+        return f"LOCATION: {self.name} ({self.latitude}, {self.longitude}) <{self.dbp_uri}>"
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Album(db.Model):

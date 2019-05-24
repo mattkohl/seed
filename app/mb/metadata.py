@@ -15,13 +15,13 @@ class MB:
         """
         try:
             _metadata = mb.search_artists(artist=name)["artist-list"]
-            assert _metadata[0]["ext:score"] == "100"
+            _ = _metadata[0]["ext:score"] == "100"
         except Exception as e:
             print(f"Unable to retrieve MB metadata for {name}")
             traceback.print_tb(e.__traceback__)
-            raise
+            return list()
         else:
-            return _metadata
+            return _metadata[0].items()
 
     @staticmethod
     def get_albums_with_artist_id(mb_id: str) -> List[Dict]:

@@ -3,7 +3,7 @@ from typing import Dict, List
 from app.models import Track
 from app.tasks.fetch import Fetch
 from app.tasks.persist import Persistence
-from  sqlalchemy.sql.expression import func, select
+from sqlalchemy.sql.expression import func
 
 
 class Tasks:
@@ -33,6 +33,8 @@ class Tasks:
         [Persistence.persist_album(a) for a in album_tuples]
         _ = Fetch.artist_mb_metadata(artist_uri)
         _ = Fetch.artist_dbp_uri(artist_uri)
+        _ = Fetch.artist_hometown(artist_uri)
+        _ = Fetch.artist_birthplace(artist_uri)
         return Fetch.artist(artist_uri)
 
     @staticmethod

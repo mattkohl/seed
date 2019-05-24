@@ -5,11 +5,12 @@ import traceback
 from app import db
 from app.dbp.annotation import Spotlight
 from app.dbp.models import CandidatesTuple, AnnotationTuple
+from app.dbp.sparql import Sparql
 from app.geni import parser, utils
 from app.mb import metadata
 from app.mb.models import MbArtistTuple, MbAlbumTuple
 from app.mb.mbutils import MbUtils
-from app.models import Artist, Track, Album
+from app.models import Artist, Track, Album, Location, Genre
 from app.spot.albums import SpotAlbum
 from app.spot.artists import SpotArtist
 from app.spot.models import TrackTuple, AlbumTuple
@@ -61,6 +62,32 @@ class Fetch:
         return Spotlight.candidates(message)
 
     @staticmethod
+    def album_mb_metadata(uri: str, force_update: bool = False):
+        result = Album.query.filter_by(spot_uri=uri).first()
+        _album = result.as_dict()
+
+        if result.mb_id is None or force_update:
+            _artist_mb_ids = [a.mb_id for a in result.artists]
+            if _artist_mb_ids:
+                _mb_album_candidates = [MbUtils.cleaned(item)
+                                        for _id in _artist_mb_ids
+                                        for item in metadata.MB().get_albums_with_artist_id(_id)]
+
+                _mb_albums = [a for a in _mb_album_candidates if Utils.fuzzy_match(a['title'], result.name) > 90]
+
+                if _mb_albums:
+                    mb_obj = _mb_albums[0]
+                    _album_tuple = MbAlbumTuple(**mb_obj)
+                    Persistence.persist_mb_metadata(Album, result.id, _album_tuple)
+                    _album.update({"mb_id": _album_tuple.id, "mb_obj": _album_tuple._asdict()})
+                else:
+                    _candidate_string = '\n'.join([str(a) for a in _mb_album_candidates])
+                    print(f"Found no matches for {result} in list:\n {_candidate_string}")
+            else:
+                print(f"Cannot resolve MB id for {result}: missing mb_id for {[result.artists]}")
+        return _album
+
+    @staticmethod
     def album_tracks(uri: str):
         sp = SpotAlbum()
         try:
@@ -90,7 +117,9 @@ class Fetch:
                 result = Artist.query.filter_by(spot_uri=uri).first()
             _artist = result.as_dict()
             _albums = [_album.as_dict() for _album in sorted(result.albums, key=lambda x: x.release_date)]
-            _artist.update({"albums": _albums})
+            _birthplace = result.birthplace.as_dict() if result.birthplace else None
+            _hometown = result.hometown.as_dict() if result.hometown else None
+            _artist.update({"albums": _albums, "hometown": _hometown, "birthplace": _birthplace})
         except Exception as e:
             print(f"Unable to retrieve artist {uri}:")
             traceback.print_tb(e.__traceback__)
@@ -143,7 +172,7 @@ class Fetch:
         _artist = result.as_dict()
         if result.mb_id is None or force_update:
             mb_results = metadata.MB().search_artists(result.name)
-            _cleaned = {Utils.clean_key(k): v for k, v in mb_results[0].items()}
+            _cleaned = {Utils.clean_key(k): v for k, v in mb_results}
             _cleaned_with_genres = MbUtils.add_genres(_cleaned)
             _artist_tuple = MbArtistTuple(**_cleaned_with_genres)
             Persistence.persist_mb_metadata(Artist, result.id, _artist_tuple)
@@ -151,50 +180,28 @@ class Fetch:
         return _artist
 
     @staticmethod
-    def album_mb_metadata(uri: str, force_update: bool = False):
-        result = Album.query.filter_by(spot_uri=uri).first()
-        _album = result.as_dict()
-
-        if result.mb_id is None or force_update:
-            _artist_mb_ids = [a.mb_id for a in result.artists]
-            if _artist_mb_ids:
-                _mb_album_candidates = [MbUtils.cleaned(item)
-                                        for _id in _artist_mb_ids
-                                        for item in metadata.MB().get_albums_with_artist_id(_id)]
-
-                _mb_albums = [a for a in _mb_album_candidates if Utils.fuzzy_match(a['title'], result.name) > 90]
-
-                if _mb_albums:
-                    mb_obj = _mb_albums[0]
-                    _album_tuple = MbAlbumTuple(**mb_obj)
-                    Persistence.persist_mb_metadata(Album, result.id, _album_tuple)
-                    _album.update({"mb_id": _album_tuple.id, "mb_obj": _album_tuple._asdict()})
-                else:
-                    _candidate_string = '\n'.join([str(a) for a in _mb_album_candidates])
-                    print(f"Found no matches for {result} in list:\n {_candidate_string}")
-            else:
-                print(f"Cannot resolve MB id for {result}: missing mb_id for {[result.artists]}")
-        return _album
+    def artist_hometown(uri: str) -> Dict:
+        result = Artist.query.filter_by(spot_uri=uri).first()
+        _artist = result.as_dict()
+        if result.dbp_uri is not None:
+            _location_tuple = Sparql.hometown(result.dbp_uri)
+            if _location_tuple:
+                Persistence.persist_artist_hometown(result.id, _location_tuple)
+                _location = Location.query.filter_by(dbp_uri=_location_tuple.uri).first()
+                _artist.update({"hometown": _location.as_dict()})
+        return _artist
 
     @staticmethod
-    def track_mb_metadata(uri: str, force_update: bool = False):
-        result = Track.query.filter_by(spot_uri=uri).first()
-        _track = result.as_dict()
-        if result.mb_id is None or force_update:
-            if result.album.mb_id:
-                _mb_track_candidates = [MbUtils.cleaned(item) for item in metadata.MB().get_tracks_with_album_id(result.album.mb_id)]
-
-                _mb_tracks = [a for a in _mb_track_candidates if Utils.fuzzy_match(a['title'], result.name) > 90]
-                if _mb_tracks:
-                    mb_obj = _mb_tracks[0]
-                    from pprint import pprint
-                    pprint(_mb_tracks)
-                else:
-                    _candidate_string = '\n'.join([str(a) for a in _mb_track_candidates])
-                    print(f"Found no matches for {result} in list:\n {_candidate_string}")
-            else:
-                print(f"Cannot resolve MB id for {result}: missing mb_id for {[result.artists]}")
-        return _track
+    def artist_birthplace(uri: str) -> Dict:
+        result = Artist.query.filter_by(spot_uri=uri).first()
+        _artist = result.as_dict()
+        if result.dbp_uri is not None:
+            _location_tuple = Sparql.birthplace(result.dbp_uri)
+            if _location_tuple:
+                Persistence.persist_artist_birthplace(result.id, _location_tuple)
+                _location = Location.query.filter_by(dbp_uri=_location_tuple.uri).first()
+                _artist.update({"birthplace": _location.as_dict()})
+        return _artist
 
     @staticmethod
     def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, fetch_candidates: Callable) -> Optional[str]:
@@ -213,6 +220,25 @@ class Fetch:
             if dbp_uri is None:
                 print(f"DBP resolution rejected for this candidate {instance_name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
             return dbp_uri
+
+    @staticmethod
+    def locations(name_filter: Optional[str]) -> List[Dict]:
+        results = Location.query.filter(Location.name.ilike(f"%{name_filter}%")) if name_filter else Location.query.all()
+        return [_location.as_dict() for _location in results]
+
+    @staticmethod
+    def location(_id: int) -> Dict:
+        try:
+            result = Location.query.filter_by(id=_id).first()
+            _location = result.as_dict()
+            _hometown_of = [_artist.as_dict() for _artist in result.hometown_of]
+            _birthplace_of = [_artist.as_dict() for _artist in result.birthplace_of]
+            _location.update({"hometown_of": _hometown_of, "birthplace_of": _birthplace_of})
+        except Exception as e:
+            print(f"Unable to retrieve location {_id}")
+            traceback.print_tb(e.__traceback__)
+        else:
+            return _location
 
     @staticmethod
     def playlist_tracks(uri: str) -> List[TrackTuple]:
@@ -235,6 +261,8 @@ class Fetch:
                 "artists": Artist.query.count(),
                 "albums": Album.query.count(),
                 "tracks": Track.query.count(),
+                "genres": Genre.query.count(),
+                "locations": Location.query.count(),
                 "lyrics": Track.query.filter(Track.lyrics != None).count()
             }
         }
@@ -333,6 +361,26 @@ class Fetch:
     def track_lyrics_annotations(uri) -> str:
         _track = Track.query.filter_by(spot_uri=uri).first()
         return _track.lyrics_annotated
+
+    @staticmethod
+    def track_mb_metadata(uri: str, force_update: bool = False):
+        result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
+        if result.mb_id is None or force_update:
+            if result.album.mb_id:
+                _mb_track_candidates = [MbUtils.cleaned(item) for item in metadata.MB().get_tracks_with_album_id(result.album.mb_id)]
+
+                _mb_tracks = [a for a in _mb_track_candidates if Utils.fuzzy_match(a['title'], result.name) > 90]
+                if _mb_tracks:
+                    mb_obj = _mb_tracks[0]
+                    from pprint import pprint
+                    pprint(_mb_tracks)
+                else:
+                    _candidate_string = '\n'.join([str(a) for a in _mb_track_candidates])
+                    print(f"Found no matches for {result} in list:\n {_candidate_string}")
+            else:
+                print(f"Cannot resolve MB id for {result}: missing mb_id for {[result.artists]}")
+        return _track
 
     @staticmethod
     def tracks(name_filter: Optional[str]) -> List[Dict]:

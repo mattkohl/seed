@@ -8,8 +8,9 @@ class MbUtils:
 
     @staticmethod
     def add_genres(d: Dict) -> Dict:
-        _genres = [i["name"] for i in d['tag_list'] if i["name"] in GENRES]
-        d.update({"genres": _genres})
+        if 'tag_list' in d:
+            _genres = [i["name"] for i in d['tag_list'] if i["name"] in GENRES]
+            d.update({"genres": _genres})
         return d
 
     @staticmethod

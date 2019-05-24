@@ -2,9 +2,8 @@ from typing import Optional
 import traceback
 
 from app import db
-from app.dbp.models import CandidatesTuple, AnnotationTuple
-from app.mb.models import MbArtistTuple as MBArtistTuple
-from app.models import Track, Artist, Album
+from app.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
+from app.models import Track, Artist, Album, Location, Genre
 from app.persist.persist import Persist
 from app.spot.models import TrackTuple, AlbumTuple
 
@@ -13,7 +12,12 @@ class Persistence:
 
     @staticmethod
     def clear():
-        message = f"Deleted {Track.query.count()} Tracks, {Artist.query.count()} Artists, & {Album.query.count()} Albums"
+        message = f"Deleted " \
+            f"{Track.query.count()} Tracks, " \
+            f"{Artist.query.count()} Artists, " \
+            f"{Album.query.count()} Albums, " \
+            f"{Genre.query.count()} Genres, & " \
+            f"{Location.query.count()} Locations"
         try:
             Persist.clear()
         except Exception as e:
@@ -38,6 +42,37 @@ class Persistence:
             Persist.persist_album_tuple(album_tuple)
         except Exception as e:
             print(f"Unable to persist track {album_tuple}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
+    def persist_location(location_tuple: LocationTuple) -> None:
+        try:
+            Persist.persist_location_tuple(location_tuple)
+        except Exception as e:
+            print(f"Unable to persist location {location_tuple}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
+    def persist_artist_hometown(artist_id: int, location_tuple: LocationTuple) -> None:
+        try:
+            _artist = Artist.query.filter_by(id=artist_id).first()
+            _updated = location_tuple._replace(hometown_of=_artist)
+            Persist.persist_location_tuple(_updated)
+        except Exception as e:
+            print(f"Unable to persist artist {artist_id} hometown {location_tuple}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
+    def persist_artist_birthplace(artist_id: int, location_tuple: LocationTuple) -> None:
+        try:
+            _artist = Artist.query.filter_by(id=artist_id).first()
+            _updated = location_tuple._replace(birthplace_of=_artist)
+            Persist.persist_location_tuple(_updated)
+        except Exception as e:
+            print(f"Unable to persist artist {artist_id} birthplace {location_tuple}")
             traceback.print_tb(e.__traceback__)
             raise
 
