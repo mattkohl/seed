@@ -66,6 +66,24 @@ class Persistence:
             raise
 
     @staticmethod
+    def delete_artist_birthplace(artist_uri: str) -> None:
+        try:
+            Persist.delete_birthplace(artist_uri)
+        except Exception as e:
+            print(f"Unable to delete artist {artist_id} birthplace")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
+    def delete_artist_hometown(artist_uri: str) -> None:
+        try:
+            Persist.delete_hometown(artist_uri)
+        except Exception as e:
+            print(f"Unable to delete artist {artist_uri} hometown")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
     def persist_artist_birthplace(artist_id: int, location_tuple: LocationTuple) -> None:
         try:
             _artist = Artist.query.filter_by(id=artist_id).first()

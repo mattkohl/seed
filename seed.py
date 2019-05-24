@@ -59,9 +59,19 @@ def artist_hometown(uri):
     return jsonify(Fetch.artist_hometown(uri))
 
 
+@application.route("/artists/<uri>/hometown/delete")
+def artist_hometown_delete(uri):
+    return jsonify(Persistence.delete_artist_hometown(uri))
+
+
 @application.route("/artists/<uri>/birthplace")
 def birthplace(uri):
     return jsonify(Fetch.artist_birthplace(uri))
+
+
+@application.route("/artists/<uri>/birthplace/delete")
+def birthplace_delete(uri):
+    return jsonify(Persistence.delete_artist_birthplace(uri))
 
 
 @application.route("/artists/<uri>/run")

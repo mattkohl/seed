@@ -110,3 +110,21 @@ class Persist:
                 if location.birthplace_of is not None:
                     _location.birthplace_of = [location.birthplace_of]
                 db.session.commit()
+
+    @staticmethod
+    def delete_hometown(uri):
+        _artist = Artist.query.filter_by(spot_uri=uri).first()
+        current = create_app('docker')
+        with current.app_context():
+            db.session.add(_artist)
+            _artist.hometown = None
+            db.session.commit()
+
+    @staticmethod
+    def delete_birthplace(uri):
+        _artist = Artist.query.filter_by(spot_uri=uri).first()
+        current = create_app('docker')
+        with current.app_context():
+            db.session.add(_artist)
+            _artist.birthplace = None
+            db.session.commit()

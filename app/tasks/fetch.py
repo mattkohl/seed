@@ -211,7 +211,7 @@ class Fetch:
             offset_is_zero = int(first["@offset"]) == 0
             local_name = first["@URI"].split("/")[-1].replace("_", " ")
             fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
-            dbp_uri = first["@URI"] if (offset_is_zero and fuzzy_match_score > 75) else None
+            dbp_uri = first["@URI"] if ((offset_is_zero and fuzzy_match_score > 85) or fuzzy_match_score == 100) else None
             Persistence.persist_dbp_uri(model, instance_id, dbp_uri)
         except Exception as e:
             print(f"Could not get DBP URI for {instance_name}")

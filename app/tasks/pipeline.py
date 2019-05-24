@@ -32,7 +32,7 @@ class Tasks:
         album_tuples = Fetch.artist_albums(artist_uri)
         [Persistence.persist_album(a) for a in album_tuples]
         _ = Fetch.artist_mb_metadata(artist_uri)
-        _ = Fetch.artist_dbp_uri(artist_uri)
+        _ = Fetch.artist_dbp_uri(artist_uri, True)
         _ = Fetch.artist_hometown(artist_uri)
         _ = Fetch.artist_birthplace(artist_uri)
         return Fetch.artist(artist_uri)
