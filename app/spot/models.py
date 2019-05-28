@@ -10,9 +10,8 @@ _album_fields = ['album_type', 'album_group', 'artists', 'copyrights', 'external
                  'release_date_precision', 'tracks', 'total_tracks', 'type', 'uri']
 AlbumTuple = namedtuple("AlbumTuple", _album_fields, defaults=(None,) * len(_album_fields))
 
-_artist_fields = ['external_urls', 'href', 'id', 'name', 'type', 'uri']
+_artist_fields = ['external_urls', 'followers', 'genres', 'href', 'id', 'images', 'name', 'popularity', 'type', 'uri']
 ArtistTuple = namedtuple("ArtistTuple", _artist_fields, defaults=(None,) * len(_artist_fields))
-
 
 _genre_fields = ['id', 'name']
 GenreTuple = namedtuple("GenreTuple", _genre_fields, defaults=(None,) * len(_genre_fields))

@@ -3,7 +3,7 @@ from typing import Dict
 from app import create_app, db
 from app.dbp.models import LocationTuple
 from app.models import Artist, Track, Album, Location, Genre
-from app.spot.models import TrackTuple, AlbumTuple
+from app.spot.models import TrackTuple, AlbumTuple, GenreTuple
 
 
 class Persist:
@@ -96,6 +96,18 @@ class Persist:
                 db.session.add(_album)
                 if _artists:
                     _album.artists.extend(_artists)
+                db.session.commit()
+
+    @staticmethod
+    def persist_genre_tuple(genre: GenreTuple):
+        current = create_app('docker')
+        with current.app_context():
+            try:
+                _genre = Persist.get_or_create(db.session, Genre, name=genre.name)
+            except Exception:
+                raise
+            else:
+                db.session.add(_genre)
                 db.session.commit()
 
     @staticmethod

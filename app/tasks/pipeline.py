@@ -35,6 +35,7 @@ class Tasks:
         _ = Fetch.artist_dbp_uri(artist_uri, True)
         _ = Fetch.artist_hometown(artist_uri)
         _ = Fetch.artist_birthplace(artist_uri)
+
         return Fetch.artist(artist_uri)
 
     @staticmethod

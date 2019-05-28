@@ -180,6 +180,24 @@ class Fetch:
         return _artist
 
     @staticmethod
+    def artist_spot_metadata(uri: str, force_update: bool = False) -> Dict:
+        result = Artist.query.filter_by(spot_uri=uri).first()
+        _artist = result.as_dict()
+        if result.img is None or force_update:
+            sp = SpotArtist()
+            try:
+                artist_dict = sp.download_artist(uri)
+                artist_tuple = SpotUtils.extract_artist(artist_dict)
+
+            except Exception as e:
+                print(f"Unable to retrieve artist {uri} albums:")
+                traceback.print_tb(e.__traceback__)
+                raise
+            else:
+                return artist_tuple
+        return _artist
+
+    @staticmethod
     def artist_hometown(uri: str) -> Dict:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()

@@ -2,19 +2,13 @@ import traceback
 from copy import deepcopy
 from typing import Dict, List, Optional
 
-from app.spot.models import AlbumTuple, ArtistTuple, TrackTuple
+from app.spot.models import AlbumTuple, ArtistTuple, TrackTuple, GenreTuple
 
 
 class SpotUtils:
 
     @staticmethod
     def extract_album(raw: Dict) -> Optional[AlbumTuple]:
-        """
-        available keys:
-            'album_type', 'artists', 'available_markets', 'external_urls',
-            'href', 'id', 'images', 'name', 'release_date',
-            'release_date_precision', 'total_tracks', 'type', 'uri'
-        """
         if "available_markets" in raw:
             raw.pop("available_markets")
         _raw = deepcopy(raw)
@@ -37,16 +31,19 @@ class SpotUtils:
 
     @staticmethod
     def extract_artist(raw: Dict) -> Optional[ArtistTuple]:
-        """
-        available keys:
-            'external_urls', 'href', 'id', 'name', 'type', 'uri'
-        """
+        _raw = deepcopy(raw)
         try:
-            _artist_tuple = ArtistTuple(**raw)
+            _genres = SpotUtils.extract_genres(_raw['genres'])
+            _raw.update({"genres": _genres})
+            _artist_tuple = ArtistTuple(**_raw)
         except Exception:
             raise
         else:
             return _artist_tuple
+
+    @staticmethod
+    def extract_genres(raw: List[str]) -> List[GenreTuple]:
+        return [GenreTuple(name=g.replace(" ", "-").lower()) for g in raw]
 
     @staticmethod
     def extract_track(raw: Dict) -> TrackTuple:
