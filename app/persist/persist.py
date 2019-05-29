@@ -44,6 +44,8 @@ class Persist:
                                             spot_uri=artist.uri)
 
             _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in artist.genres]
+            _artist.img = artist.images[0]["url"] if artist.images else None
+            _artist.thumb = artist.images[-1]["url"] if len(artist.images) > 1 else None
             db.session.add(_artist)
             _artist.genres.extend(_genres)
             db.session.commit()
