@@ -36,7 +36,8 @@ class Fetch:
             _album = result.as_dict()
             _artists = [_artist.as_dict() for _artist in result.artists]
             _tracks = [_track.as_dict() for _track in result.tracks]
-            _album.update({"tracks": _tracks, "artists": _artists})
+            _genres = [genre.name for genre in result.genres] if result.genres else None
+            _album.update({"tracks": _tracks, "artists": _artists, "genres": _genres})
         except Exception as e:
             print(f"Unable to retrieve album {uri}")
             traceback.print_tb(e.__traceback__)
@@ -119,7 +120,8 @@ class Fetch:
             _albums = [_album.as_dict() for _album in sorted(result.albums, key=lambda x: x.release_date)]
             _birthplace = result.birthplace.as_dict() if result.birthplace else None
             _hometown = result.hometown.as_dict() if result.hometown else None
-            _artist.update({"albums": _albums, "hometown": _hometown, "birthplace": _birthplace})
+            _genres = [genre.name for genre in result.genres] if result.genres else None
+            _artist.update({"albums": _albums, "hometown": _hometown, "birthplace": _birthplace, "genres": _genres})
         except Exception as e:
             print(f"Unable to retrieve artist {uri}:")
             traceback.print_tb(e.__traceback__)
@@ -188,13 +190,13 @@ class Fetch:
             try:
                 artist_dict = sp.download_artist(uri)
                 artist_tuple = SpotUtils.extract_artist(artist_dict)
-
+                Persistence.persist_artist(artist_tuple)
             except Exception as e:
                 print(f"Unable to retrieve artist {uri} albums:")
                 traceback.print_tb(e.__traceback__)
                 raise
             else:
-                return artist_tuple
+                _artist.update({"genres": artist_tuple.genres})
         return _artist
 
     @staticmethod
@@ -238,6 +240,33 @@ class Fetch:
             if dbp_uri is None:
                 print(f"DBP resolution rejected for this candidate {instance_name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
             return dbp_uri
+
+    @staticmethod
+    def genre(_id: int) -> Dict:
+        try:
+            result = Genre.query.filter_by(id=_id).first()
+            _genre = result.as_dict()
+            _artists = [_artist.name for _artist in result.artists]
+            _albums = [_album.name for _album in result.albums]
+            _genre.update({"artists": _artists, "albums": _albums})
+        except Exception as e:
+            print(f"Unable to retrieve genre {_id}")
+            traceback.print_tb(e.__traceback__)
+        else:
+            return _genre
+
+    @staticmethod
+    def genres(name_filter: Optional[str]) -> List[Dict]:
+        results = Genre.query.filter(Genre.name.ilike(f"%{name_filter}%")) if name_filter else Genre.query.all()
+
+        def _genres():
+            for result in results:
+                _genre = result.as_dict()
+                _artists = [_artist.name for _artist in result.artists]
+                _albums = [_album.name for _album in result.albums]
+                _genre.update({"artists": _artists, "albums": _albums})
+                yield _genre
+        return list(_genres())
 
     @staticmethod
     def locations(name_filter: Optional[str]) -> List[Dict]:

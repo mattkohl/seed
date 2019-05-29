@@ -5,7 +5,7 @@ from app import db
 from app.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
 from app.models import Track, Artist, Album, Location, Genre
 from app.persist.persist import Persist
-from app.spot.models import TrackTuple, AlbumTuple
+from app.spot.models import TrackTuple, AlbumTuple, ArtistTuple
 
 
 class Persistence:
@@ -51,6 +51,15 @@ class Persistence:
             Persist.persist_location_tuple(location_tuple)
         except Exception as e:
             print(f"Unable to persist location {location_tuple}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
+    def persist_artist(artist_tuple: ArtistTuple) -> None:
+        try:
+            Persist.persist_artist_tuple(artist_tuple)
+        except Exception as e:
+            print(f"Unable to persist artist {artist_tuple.id}")
             traceback.print_tb(e.__traceback__)
             raise
 

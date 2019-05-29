@@ -33,7 +33,7 @@ class SpotUtils:
     def extract_artist(raw: Dict) -> Optional[ArtistTuple]:
         _raw = deepcopy(raw)
         try:
-            _genres = SpotUtils.extract_genres(_raw['genres'])
+            _genres = SpotUtils.extract_genres(_raw['genres']) if 'genres' in _raw else list()
             _raw.update({"genres": _genres})
             _artist_tuple = ArtistTuple(**_raw)
         except Exception:

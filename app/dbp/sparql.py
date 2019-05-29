@@ -25,7 +25,7 @@ class Sparql:
             { ?subject ?predicate ?uri . }
             UNION
             { ?subject ?predicate ?_uri . ?_uri dbo:wikiPageRedirects ?uri . }
-            ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Settlement> .
+            ?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/PopulatedPlace> .
             ?uri <http://www.georss.org/georss/point> ?point .
             BIND(STRBEFORE(?point, " " ) as ?latitude)
             BIND(STRAFTER(?point, " " ) as ?longitude)            

@@ -3,7 +3,7 @@ from typing import Dict
 from app import create_app, db
 from app.dbp.models import LocationTuple
 from app.models import Artist, Track, Album, Location, Genre
-from app.spot.models import TrackTuple, AlbumTuple, GenreTuple
+from app.spot.models import TrackTuple, AlbumTuple, GenreTuple, ArtistTuple
 
 
 class Persist:
@@ -36,6 +36,19 @@ class Persist:
             db.session.commit()
 
     @staticmethod
+    def persist_artist_tuple(artist: ArtistTuple):
+        current = create_app('docker')
+        with current.app_context():
+            _artist = Persist.get_or_create(db.session, Artist,
+                                            name=artist.name,
+                                            spot_uri=artist.uri)
+
+            _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in artist.genres]
+            db.session.add(_artist)
+            _artist.genres.extend(_genres)
+            db.session.commit()
+
+    @staticmethod
     def persist_track_tuple(track: TrackTuple):
         current = create_app('docker')
         with current.app_context():
@@ -62,6 +75,7 @@ class Persist:
                                                        name=artist.name,
                                                        spot_uri=artist.uri)
                                  for artist in track.featured_artists]
+
             db.session.add(_track)
 
             _album.artists.extend(_primary_artists)
@@ -90,6 +104,7 @@ class Persist:
                                                   name=artist.name,
                                                   spot_uri=artist.uri)
                             for artist in album.artists]
+
             except Exception:
                 raise
             else:
@@ -99,7 +114,7 @@ class Persist:
                 db.session.commit()
 
     @staticmethod
-    def persist_genre_tuple(genre: GenreTuple):
+    def persist_genre_tuple(genre: GenreTuple) -> None:
         current = create_app('docker')
         with current.app_context():
             try:
@@ -111,7 +126,7 @@ class Persist:
                 db.session.commit()
 
     @staticmethod
-    def persist_location_tuple(location: LocationTuple):
+    def persist_location_tuple(location: LocationTuple) -> None:
         current = create_app('docker')
         with current.app_context():
             try:

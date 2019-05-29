@@ -65,12 +65,12 @@ def artist_hometown_delete(uri):
 
 
 @application.route("/artists/<uri>/birthplace")
-def birthplace(uri):
+def artist_birthplace(uri):
     return jsonify(Fetch.artist_birthplace(uri))
 
 
 @application.route("/artists/<uri>/birthplace/delete")
-def birthplace_delete(uri):
+def artist_birthplace_delete(uri):
     return jsonify(Persistence.delete_artist_birthplace(uri))
 
 
@@ -82,6 +82,20 @@ def artist_run(uri):
 @application.route("/clear")
 def clear() -> str:
     return jsonify(Persistence.clear())
+
+
+@application.route("/genres")
+def genres():
+    name_filter = request.args.get('filter', default=None)
+    fetched = Fetch.genres(name_filter)
+    if len(fetched) == 1:
+        return redirect(url_for("genre", _id=fetched[0]["id"]))
+    return jsonify(fetched)
+
+
+@application.route("/genres/<_id>")
+def genre(_id):
+    return jsonify(Fetch.genre(_id))
 
 
 @application.route("/locations")
