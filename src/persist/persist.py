@@ -1,9 +1,9 @@
 from typing import Dict
 
-from app import create_app, db
-from app.dbp.models import LocationTuple
-from app.models import Artist, Track, Album, Location, Genre
-from app.spot.models import TrackTuple, AlbumTuple, GenreTuple, ArtistTuple
+from src import create_app, db
+from src.dbp.models import LocationTuple
+from src.models import Artist, Track, Album, Location, Genre
+from src.spot.models import TrackTuple, AlbumTuple, GenreTuple, ArtistTuple
 
 
 class Persist:

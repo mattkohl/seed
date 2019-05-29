@@ -2,7 +2,7 @@ import traceback
 from copy import deepcopy
 from typing import Dict, List, Optional
 
-from app.spot.models import AlbumTuple, ArtistTuple, TrackTuple, GenreTuple
+from src.spot.models import AlbumTuple, ArtistTuple, TrackTuple, GenreTuple
 
 
 class SpotUtils:

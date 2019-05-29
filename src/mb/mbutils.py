@@ -1,7 +1,7 @@
 from typing import Dict
 
-from app.mb.genres import GENRES
-from app.utils import Utils
+from src.mb.genres import GENRES
+from src.utils import Utils
 
 
 class MbUtils:

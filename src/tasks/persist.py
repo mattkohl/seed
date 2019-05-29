@@ -1,11 +1,11 @@
 from typing import Optional
 import traceback
 
-from app import db
-from app.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
-from app.models import Track, Artist, Album, Location, Genre
-from app.persist.persist import Persist
-from app.spot.models import TrackTuple, AlbumTuple, ArtistTuple
+from src import db
+from src.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
+from src.models import Track, Artist, Album, Location, Genre
+from src.persist.persist import Persist
+from src.spot.models import TrackTuple, AlbumTuple, ArtistTuple
 
 
 class Persistence:

@@ -2,23 +2,23 @@ from datetime import datetime
 from typing import Dict, Optional, List, Callable
 import traceback
 
-from app import db
-from app.dbp.annotation import Spotlight
-from app.dbp.models import CandidatesTuple, AnnotationTuple
-from app.dbp.sparql import Sparql
-from app.geni import parser, utils
-from app.mb import metadata
-from app.mb.models import MbArtistTuple, MbAlbumTuple
-from app.mb.mbutils import MbUtils
-from app.models import Artist, Track, Album, Location, Genre
-from app.spot.albums import SpotAlbum
-from app.spot.artists import SpotArtist
-from app.spot.models import TrackTuple, AlbumTuple
-from app.spot.playlists import SpotPlaylist
-from app.spot.tracks import SpotTrack
-from app.spot.utils import SpotUtils
-from app.tasks.persist import Persistence
-from app.utils import Utils
+from src import db
+from src.dbp.annotation import Spotlight
+from src.dbp.models import CandidatesTuple, AnnotationTuple
+from src.dbp.sparql import Sparql
+from src.geni import parser, utils
+from src.mb import metadata
+from src.mb.models import MbArtistTuple, MbAlbumTuple
+from src.mb.mbutils import MbUtils
+from src.models import Artist, Track, Album, Location, Genre
+from src.spot.albums import SpotAlbum
+from src.spot.artists import SpotArtist
+from src.spot.models import TrackTuple, AlbumTuple
+from src.spot.playlists import SpotPlaylist
+from src.spot.tracks import SpotTrack
+from src.spot.utils import SpotUtils
+from src.tasks.persist import Persistence
+from src.utils import Utils
 
 
 class Fetch:

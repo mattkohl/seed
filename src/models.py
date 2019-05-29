@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from app.spot.models import AlbumTuple, ArtistTuple, GenreTuple
+from src.spot.models import AlbumTuple, ArtistTuple, GenreTuple
 from . import db
 from sqlalchemy.dialects.postgresql import JSON
 

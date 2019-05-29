@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM python:3.7-alpine
 
 RUN apk add --no-cache --update gcc build-base postgresql-dev python3-dev
 
@@ -10,7 +10,7 @@ RUN venv/bin/pip install --upgrade pip
 RUN venv/bin/pip install -r requirements.txt
 RUN venv/bin/pip install gunicorn
 
-COPY app app
+COPY src app
 COPY migrations migrations
 COPY seed.py config.py boot.sh ./
 

@@ -2,8 +2,8 @@ import traceback
 
 import requests
 
-from app.dbp.models import AnnotationTuple, CandidatesTuple
-from app.utils import Utils
+from src.dbp.models import AnnotationTuple, CandidatesTuple
+from src.utils import Utils
 
 TYPE_WHITELIST = ", ".join(
     [

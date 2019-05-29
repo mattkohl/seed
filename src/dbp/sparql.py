@@ -2,7 +2,7 @@ from typing import Optional
 
 from SPARQLWrapper import SPARQLWrapper2
 
-from app.dbp.models import LocationTuple
+from src.dbp.models import LocationTuple
 
 
 class Sparql:

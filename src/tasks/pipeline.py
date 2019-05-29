@@ -1,8 +1,8 @@
 from typing import Dict, List
 
-from app.models import Track
-from app.tasks.fetch import Fetch
-from app.tasks.persist import Persistence
+from src.models import Track
+from src.tasks.fetch import Fetch
+from src.tasks.persist import Persistence
 from sqlalchemy.sql.expression import func
 
 

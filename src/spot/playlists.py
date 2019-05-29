@@ -2,8 +2,8 @@ import traceback
 from typing import Dict, List
 
 
-from app.spot.oauth2 import SpotifyClientCredentials
-from app.spot.client import Spotify
+from src.spot.oauth2 import SpotifyClientCredentials
+from src.spot.client import Spotify
 
 
 class SpotPlaylist:
