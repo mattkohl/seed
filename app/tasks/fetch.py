@@ -192,7 +192,7 @@ class Fetch:
                 artist_tuple = SpotUtils.extract_artist(artist_dict)
                 Persistence.persist_artist(artist_tuple)
             except Exception as e:
-                print(f"Unable to retrieve artist {uri} albums:")
+                print(f"Unable to retrieve artist {uri} metadata:")
                 traceback.print_tb(e.__traceback__)
                 raise
             else:

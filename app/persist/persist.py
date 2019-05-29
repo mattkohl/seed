@@ -43,11 +43,12 @@ class Persist:
                                             name=artist.name,
                                             spot_uri=artist.uri)
 
-            _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in artist.genres]
+            _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in artist.genres] if artist.genres else None
             _artist.img = artist.images[0]["url"] if artist.images else None
             _artist.thumb = artist.images[-1]["url"] if len(artist.images) > 1 else None
             db.session.add(_artist)
-            _artist.genres.extend(_genres)
+            if _genres:
+                _artist.genres.extend(_genres)
             db.session.commit()
 
     @staticmethod
@@ -92,6 +93,7 @@ class Persist:
         with current.app_context():
             img = album.images[0]["url"] if album.images else None
             thumb = album.images[-1]["url"] if len(album.images) > 1 else None
+            _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in album.genres] if album.genres else None
 
             try:
                 _album = Persist.get_or_create(db.session, Album,
@@ -113,6 +115,8 @@ class Persist:
                 db.session.add(_album)
                 if _artists:
                     _album.artists.extend(_artists)
+                if _genres:
+                    _album.genres.extend(_genres)
                 db.session.commit()
 
     @staticmethod
