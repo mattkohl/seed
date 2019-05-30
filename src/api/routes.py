@@ -122,8 +122,13 @@ def tracks():
     return jsonify(fetched)
 
 
+@api.route("/tracks/missing-lyrics")
+def tracks_missing_lyrics():
+    return jsonify(Fetch.tracks_missing_lyrics())
+
+
 @api.route("/tracks/run/random")
-def track_run_random():
+def tracks_run_random():
     return jsonify(Tasks.run_random_track())
 
 
@@ -151,11 +156,6 @@ def track_lyrics_annotations(uri):
 @api.route("/tracks/<uri>/links")
 def track_lyrics_links(uri):
     return jsonify(Fetch.track_lyric_links(uri))
-
-
-@api.route("/tracks/<uri>/lyrics/test")
-def track_lyrics_test(uri):
-    return jsonify(Fetch.track_lyrics_test(uri))
 
 
 @api.route("/tracks/<uri>/mb")

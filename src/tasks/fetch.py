@@ -388,11 +388,6 @@ class Fetch:
         return _track
 
     @staticmethod
-    def track_lyrics_test(uri: str):
-        result = Track.query.filter_by(spot_uri=uri).first()
-        return utils.GenUtils.link([_artist.name for _artist in result.primary_artists], result.name)
-
-    @staticmethod
     def track_lyric_links(uri) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
@@ -441,3 +436,9 @@ class Fetch:
     def tracks(name_filter: Optional[str]) -> List[Dict]:
         results = Track.query.filter(Track.name.ilike(f"%{name_filter}%")) if name_filter else Track.query.all()
         return [_track.as_dict() for _track in results]
+
+    @staticmethod
+    def tracks_missing_lyrics():
+        results = Track.query.filter_by(lyrics=None).filter_by(lyrics_url=None).limit(5)
+        return {"tracks": [result.spot_uri for result in results]}
+
