@@ -103,7 +103,7 @@ def location(_id):
     return jsonify(Fetch.location(_id))
 
 
-@api.route("/playlists/<playlist_uri>")
+@api.route("/playlists/<playlist_uri>/run")
 def get_playlist(playlist_uri: str):
     return jsonify(Tasks.run_playlist(playlist_uri))
 

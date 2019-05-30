@@ -12,7 +12,7 @@ class Tasks:
     def run_playlist(playlist_uri) -> List[Dict]:
         track_tuples = Fetch.playlist_tracks(playlist_uri)
         [Persistence.persist_track(t) for t in track_tuples]
-        return [t._asdict() for t in track_tuples]
+        return [Fetch.track(t.uri) for t in track_tuples]
 
     @staticmethod
     def run_random_track() -> Dict:
