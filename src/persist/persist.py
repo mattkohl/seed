@@ -60,8 +60,6 @@ class Persist:
             _album = Persist.get_or_create(db.session, Album,
                                            name=track.album.name,
                                            spot_uri=track.album.uri,
-                                           img=img,
-                                           thumb=thumb,
                                            release_date=track.album.release_date,
                                            release_date_string=track.album.release_date_string,
                                            )
@@ -80,11 +78,12 @@ class Persist:
                                  for artist in track.featured_artists]
 
             db.session.add(_track)
-
+            db.session.add(_album)
+            _album.img = img
+            _album.thumb = thumb
             _album.artists.extend(_primary_artists)
             _track.primary_artists.extend(_primary_artists)
             _track.featured_artists.extend(_featured_artists)
-
             db.session.commit()
 
     @staticmethod
@@ -99,8 +98,6 @@ class Persist:
                 _album = Persist.get_or_create(db.session, Album,
                                                name=album.name,
                                                spot_uri=album.uri,
-                                               img=img,
-                                               thumb=thumb,
                                                release_date=album.release_date,
                                                release_date_string=album.release_date_string,
                                                )
@@ -113,6 +110,8 @@ class Persist:
                 raise
             else:
                 db.session.add(_album)
+                _album.img = img
+                _album.thumb = thumb
                 if _artists:
                     _album.artists.extend(_artists)
                 if _genres:

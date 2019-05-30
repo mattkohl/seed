@@ -17,7 +17,7 @@ def albums():
     name_filter = request.args.get('filter', default=None)
     fetched = Fetch.albums(name_filter)
     if len(fetched) == 1:
-        return redirect(url_for("album", uri=fetched[0]["spot_uri"]))
+        return redirect(url_for("api.album", uri=fetched[0]["spot_uri"]))
     return jsonify(fetched)
 
 
@@ -36,7 +36,7 @@ def artists():
     name_filter = request.args.get('filter', default=None)
     fetched = Fetch.artists(name_filter)
     if len(fetched) == 1:
-        return redirect(url_for("artist", uri=fetched[0]["spot_uri"]))
+        return redirect(url_for("api.artist", uri=fetched[0]["spot_uri"]))
     return jsonify(fetched)
 
 
@@ -80,7 +80,7 @@ def genres():
     name_filter = request.args.get('filter', default=None)
     fetched = Fetch.genres(name_filter)
     if len(fetched) == 1:
-        return redirect(url_for("genre", _id=fetched[0]["id"]))
+        return redirect(url_for("api.genre", _id=fetched[0]["id"]))
     return jsonify(fetched)
 
 
@@ -94,7 +94,7 @@ def locations():
     name_filter = request.args.get('filter', default=None)
     fetched = Fetch.locations(name_filter)
     if len(fetched) == 1:
-        return redirect(url_for("location", _id=fetched[0]["id"]))
+        return redirect(url_for("api.location", _id=fetched[0]["id"]))
     return jsonify(fetched)
 
 
@@ -118,7 +118,7 @@ def tracks():
     name_filter = request.args.get('filter', default=None)
     fetched = Fetch.tracks(name_filter)
     if len(fetched) == 1:
-        return redirect(url_for("track", uri=fetched[0]["spot_uri"]))
+        return redirect(url_for("api.track", uri=fetched[0]["spot_uri"]))
     return jsonify(fetched)
 
 
