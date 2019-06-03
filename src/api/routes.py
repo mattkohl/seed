@@ -122,6 +122,11 @@ def tracks():
     return jsonify(fetched)
 
 
+@api.route("/tracks/with-lyrics")
+def tracks_with_lyrics():
+    return jsonify(Fetch.tracks_with_lyrics())
+
+
 @api.route("/tracks/missing-lyrics")
 def tracks_missing_lyrics():
     return jsonify(Fetch.tracks_missing_lyrics())

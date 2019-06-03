@@ -438,6 +438,10 @@ class Fetch:
         return [_track.as_dict() for _track in results]
 
     @staticmethod
+    def tracks_with_lyrics():
+        return [t.as_dict() for t in Track.query.filter(Track.lyrics != None)]
+
+    @staticmethod
     def tracks_missing_lyrics():
         return [t.as_dict() for t in Track.query.filter_by(lyrics=None).filter_by(lyrics_url=None).limit(5)]
 

@@ -18,6 +18,12 @@ track_featured_artist = \
              db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
+verse_artist = \
+    db.Table('verse_artist',
+             db.Column('verse_id', db.Integer, db.ForeignKey('verses.id', ondelete="CASCADE"), primary_key=True),
+             db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
+
+
 artist_hometown = \
     db.Table('artist_hometown',
              db.Column('location_id', db.Integer, db.ForeignKey('locations.id', ondelete="CASCADE"), primary_key=True),
@@ -67,6 +73,7 @@ class Artist(db.Model):
     name = db.Column(db.Text)
     primary_tracks = db.relationship('Track', secondary=track_primary_artist, lazy='subquery', backref=db.backref('primary_artists', lazy=True))
     featured_tracks = db.relationship('Track', secondary=track_featured_artist, lazy='subquery', backref=db.backref('featured_artists', lazy=True))
+    verses = db.relationship('Verse', secondary=verse_artist, lazy='subquery', backref=db.backref('verse_artists', lazy=True))
     albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy='dynamic'))
     hometown = db.relationship('Location', secondary=artist_hometown, lazy='subquery', uselist=False, backref=db.backref('hometown_of', lazy='dynamic'))
     birthplace = db.relationship('Location', secondary=artist_birthplace, lazy='subquery', uselist=False, backref=db.backref('birthplace_of', lazy='dynamic'))
@@ -189,3 +196,12 @@ class Track(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class Verse(db.Model):
+    __tablename__ = "verses"
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    id = db.Column(db.Integer, primary_key=True)
+    track_id = db.Column(db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"))
+    text = db.Column(db.Text)
+    text_annotated = db.Column(db.Text)
