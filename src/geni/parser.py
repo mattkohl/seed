@@ -1,7 +1,10 @@
-from typing import Optional
+from typing import Optional, List
 
 from bs4 import BeautifulSoup
 import requests
+
+from src.geni.models import VerseTuple
+from src.geni.utils import GenUtils
 
 
 class GenParser:
@@ -17,4 +20,8 @@ class GenParser:
             return None
         else:
             return lyrics
+
+    @staticmethod
+    def extract_verses(text: str) -> List[VerseTuple]:
+        return GenUtils.heading_regex.findall(text)
 
