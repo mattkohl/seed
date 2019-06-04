@@ -4,8 +4,6 @@ from typing import List
 
 class GenUtils:
 
-    heading_regex = re.compile(r"\[(.*):\s(.*)\]\n(.*)")
-
     @staticmethod
     def slugify(text: str) -> str:
         slug = text.strip().lower()
