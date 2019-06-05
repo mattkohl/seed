@@ -380,7 +380,7 @@ class Fetch:
                 lyrics = parser.GenParser.download(url)
             except Exception as e:
                 print(f"Could not connect to {url}:", e)
-                raise
+                # TODO check if () in result.name & try again with trimmed version
             else:
                 fetched = datetime.now()
                 Persistence.persist_lyrics(result.id, lyrics, url, fetched)

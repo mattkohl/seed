@@ -18,7 +18,7 @@ class GenParser:
             lyrics = html.find("div", class_="lyrics").get_text()
         except Exception as e:
             print(f"Nothing found at {url}: {e}")
-            return None
+            raise
         else:
             return lyrics
 
