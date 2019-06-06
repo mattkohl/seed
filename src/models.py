@@ -187,6 +187,7 @@ class Track(db.Model):
     lyrics_annotated = db.Column(db.Text)
     lyrics_annotations_json = db.Column(JSON)
     lyrics_fetched_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    verses = db.relationship('Verse', backref='track', lazy='dynamic')
 
     def __repr__(self):
         return f"<Track {self.name}>"
@@ -205,3 +206,4 @@ class Verse(db.Model):
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"))
     text = db.Column(db.Text)
     text_annotated = db.Column(db.Text)
+    offset = db.Column(db.Integer)

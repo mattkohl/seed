@@ -1,8 +1,8 @@
 import traceback
-
 import requests
 
 from src.dbp.models import AnnotationTuple, CandidatesTuple
+from src.dbp.utils import DbpUtils
 from src.utils import Utils
 
 TYPE_WHITELIST = ", ".join(
@@ -24,7 +24,8 @@ class Spotlight:
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
             response = requests.get(url=url, params=params)
-            done = AnnotationTuple(response.text)
+            cleaned = DbpUtils.strip_html(response.text)
+            done = AnnotationTuple(cleaned)
         except Exception as e:
             print(f"Unable to resolve DBP Spotlight {url}")
             traceback.print_tb(e.__traceback__)

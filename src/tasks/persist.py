@@ -1,6 +1,7 @@
-from typing import Optional
+from typing import Optional, List
 import traceback
 
+from src.geni.models import VerseTuple
 from src import db
 from src.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
 from src.models import Track, Artist, Album, Location, Genre
@@ -79,7 +80,7 @@ class Persistence:
         try:
             Persist.delete_birthplace(artist_uri)
         except Exception as e:
-            print(f"Unable to delete artist {artist_id} birthplace")
+            print(f"Unable to delete artist {artist_uri} birthplace")
             traceback.print_tb(e.__traceback__)
             raise
 
@@ -112,6 +113,17 @@ class Persistence:
                 Persist.update(Track, _track.id, _updates)
             except Exception as e:
                 print(f"Unable to persist track lyrics {track_id}")
+                traceback.print_tb(e.__traceback__)
+                raise
+
+    @staticmethod
+    def persist_verses(track_id: int, verses: List[VerseTuple]):
+        _track = Track.query.filter_by(id=track_id).first()
+        for verse_tuple in verses:
+            try:
+                Persist.persist_verse_tuple(verse_tuple, track_id)
+            except Exception as e:
+                print(f"Unable to persist verse {verse_tuple}")
                 traceback.print_tb(e.__traceback__)
                 raise
 
