@@ -8,7 +8,12 @@ from src.geni.models import VerseTuple
 
 class GenParser:
 
-    heading_regex = re.compile(r"\[(?P<block_type>[\w-]+)\s?(?P<block_num>\d?\d?):?\s?(?P<artists>.*)?\]\n(?P<text>(.+\n)+)", flags=re.MULTILINE)
+    dbp_uri = re.compile(r"""<a about="(?P<uri>http://dbpedia\.org/resource/.*?)" typeof="http://dbpedia\.org/ontology/Agent" href="http://dbpedia\.org/resource/.*?" title="http://dbpedia\.org/resource/.*?">(?P<label>.*?)</a>""")
+
+    heading_regex = re.compile(
+        r"\[(?P<block_type>[\w-]+)\s?(?P<block_num>\d?\d?):?\s?(?P<artists>.*?)\]\n(?P<text>(.+\n)+)",
+        flags=re.MULTILINE
+    )
 
     @staticmethod
     def download(url) -> Optional[str]:
