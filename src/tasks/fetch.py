@@ -346,7 +346,8 @@ class Fetch:
         _primary_artists = [_artist.as_dict() for _artist in result.primary_artists]
         _featured_artists = [_artist.as_dict() for _artist in result.featured_artists]
         _album = result.album.as_dict()
-        _track.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists})
+        _sections = [s.as_dict() for s in result.sections]
+        _track.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists, "sections": _sections})
         return _track
 
     @staticmethod
@@ -390,9 +391,12 @@ class Fetch:
     @staticmethod
     def track_sections(uri: str) -> None:
         result = Track.query.filter_by(spot_uri=uri).first()
+        _track = result.as_dict()
         if result.lyrics is not None:
             section_tuples = parser.GenParser.extract_sections(result.lyrics)
             Persistence.persist_sections(result.id, section_tuples)
+            _track.update({"sections": sorted([section_tuple._asdict() for section_tuple in section_tuples], key = lambda k:k["offset"])})
+        return _track
 
     @staticmethod
     def track_lyric_links(uri) -> Dict:

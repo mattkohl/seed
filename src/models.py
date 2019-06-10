@@ -210,3 +210,12 @@ class Section(db.Model):
     text = db.Column(db.Text)
     text_annotated = db.Column(db.Text)
     offset = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"<Section {self.name}>"
+
+    def __str__(self):
+        return f"SECTION {self.offset} [{self.artists_raw}]: {self.text}"
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
