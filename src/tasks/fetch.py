@@ -389,7 +389,7 @@ class Fetch:
         return _track
 
     @staticmethod
-    def track_sections(uri: str) -> None:
+    def track_sections(uri: str) -> Dict:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         if result.lyrics is not None:

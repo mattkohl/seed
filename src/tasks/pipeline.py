@@ -25,6 +25,7 @@ class Tasks:
         _ = Fetch.track_dbp_uri(track_uri)
         _ = Fetch.track_lyrics(track_uri, force_update=True)
         _ = Fetch.track_lyrics_annotate(track_uri)
+        _ = Fetch.track_sections(track_uri)
         return Fetch.track(track_uri)
 
     @staticmethod
