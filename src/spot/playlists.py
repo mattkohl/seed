@@ -12,7 +12,7 @@ class SpotPlaylist:
     sp = Spotify(client_credentials_manager=client_credentials_manager)
 
     def download_playlist_tracks(self, uri: str) -> List[Dict]:
-        playlist_id = uri.split(':')[4]
+        playlist_id = uri.split(':')[-1]
 
         def _download_tracks(_playlist_id, offset):
             try:
