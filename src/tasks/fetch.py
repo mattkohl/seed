@@ -454,5 +454,5 @@ class Fetch:
 
     @staticmethod
     def tracks_missing_lyrics():
-        return [t.as_dict() for t in Track.query.filter_by(lyrics=None).filter_by(lyrics_url=None).limit(5)]
+        return [t.as_dict() for t in Track.query.filter_by(lyrics=None).filter_by(lyrics_url=None).limit(50)]
 

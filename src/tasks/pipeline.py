@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from src.models import Track
+from src.models import Track, Artist, Album
 from src.tasks.fetch import Fetch
 from src.tasks.persist import Persistence
 from sqlalchemy.sql.expression import func
@@ -18,6 +18,16 @@ class Tasks:
     def run_random_track() -> Dict:
         _track = Track.query.filter(Track.lyrics == None).order_by(func.random()).first()
         return Tasks.run_track(_track.spot_uri)
+
+    @staticmethod
+    def run_random_album() -> Dict:
+        _album = Album.query.filter(Album.img == None).order_by(func.random()).first()
+        return Tasks.run_album(_album.spot_uri)
+
+    @staticmethod
+    def run_random_artist() -> Dict:
+        _artist = Artist.query.filter(Artist.img == None).order_by(func.random()).first()
+        return Tasks.run_artist(_artist.spot_uri)
 
     @staticmethod
     def run_track(track_uri) -> Dict:

@@ -31,6 +31,11 @@ def album_run(uri):
     return jsonify(Tasks.run_album(uri))
 
 
+@api.route("/albums/run/random")
+def albums_run_random():
+    return jsonify(Tasks.run_random_album())
+
+
 @api.route("/artists")
 def artists():
     name_filter = request.args.get('filter', default=None)
@@ -68,6 +73,11 @@ def artist_birthplace_delete(uri):
 @api.route("/artists/<uri>/run")
 def artist_run(uri):
     return jsonify(Tasks.run_artist(uri))
+
+
+@api.route("/artists/run/random")
+def artists_run_random():
+    return jsonify(Tasks.run_random_artist())
 
 
 @api.route("/clear")
