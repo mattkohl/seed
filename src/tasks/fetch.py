@@ -388,11 +388,11 @@ class Fetch:
         return _track
 
     @staticmethod
-    def track_verses(uri: str) -> None:
+    def track_sections(uri: str) -> None:
         result = Track.query.filter_by(spot_uri=uri).first()
         if result.lyrics is not None:
-            verse_tuples = parser.GenParser.extract_verses(result.lyrics)
-            Persistence.persist_verses(result.id, verse_tuples)
+            section_tuples = parser.GenParser.extract_sections(result.lyrics)
+            Persistence.persist_sections(result.id, section_tuples)
 
     @staticmethod
     def track_lyric_links(uri) -> Dict:

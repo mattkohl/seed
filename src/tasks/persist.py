@@ -1,7 +1,7 @@
 from typing import Optional, List
 import traceback
 
-from src.geni.models import VerseTuple
+from src.geni.models import SectionTuple
 from src import db
 from src.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
 from src.models import Track, Artist, Album, Location, Genre
@@ -117,13 +117,13 @@ class Persistence:
                 raise
 
     @staticmethod
-    def persist_verses(track_id: int, verses: List[VerseTuple]):
+    def persist_sections(track_id: int, sections: List[SectionTuple]):
         _track = Track.query.filter_by(id=track_id).first()
-        for verse_tuple in verses:
+        for section_tuple in sections:
             try:
-                Persist.persist_verse_tuple(verse_tuple, track_id)
+                Persist.persist_section_tuple(section_tuple, track_id)
             except Exception as e:
-                print(f"Unable to persist verse {verse_tuple}")
+                print(f"Unable to persist section {section_tuple}")
                 traceback.print_tb(e.__traceback__)
                 raise
 

@@ -1,9 +1,9 @@
 from typing import Dict
 
-from src.geni.models import VerseTuple
+from src.geni.models import SectionTuple
 from src import create_app, db
 from src.dbp.models import LocationTuple
-from src.models import Artist, Track, Album, Location, Genre, Verse
+from src.models import Artist, Track, Album, Location, Genre, Section
 from src.spot.models import TrackTuple, AlbumTuple, GenreTuple, ArtistTuple
 
 
@@ -53,17 +53,17 @@ class Persist:
             db.session.commit()
 
     @staticmethod
-    def persist_verse_tuple(verse: VerseTuple, track_id: int):
+    def persist_section_tuple(section: SectionTuple, track_id: int):
         current = create_app('docker')
         with current.app_context():
-            _verse = Persist.get_or_create(db.session, Verse,
-                                           track_id=track_id,
-                                           text=verse.text)
-            db.session.add(_verse)
-            _verse.offset = verse.offset
-            _artists = [Artist.query.filter_by(id=_a.id) for _a in _verse.artists]
-            if _artists:
-                _verse.artists.extend(_artists)
+            _section = Persist.get_or_create(db.session, Section,
+                                             track_id=track_id,
+                                             number=section.number)
+            db.session.add(_section)
+            _section.type = section.type
+            _section.offset = section.offset
+            _section.artists_raw = section.artists
+            _section.text = section.text
             db.session.commit()
 
     @staticmethod

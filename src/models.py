@@ -18,9 +18,9 @@ track_featured_artist = \
              db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
-verse_artist = \
-    db.Table('verse_artist',
-             db.Column('verse_id', db.Integer, db.ForeignKey('verses.id', ondelete="CASCADE"), primary_key=True),
+section_artist = \
+    db.Table('section_artist',
+             db.Column('section_id', db.Integer, db.ForeignKey('sections.id', ondelete="CASCADE"), primary_key=True),
              db.Column('artist_id', db.Integer, db.ForeignKey('artists.id', ondelete="CASCADE"), primary_key=True))
 
 
@@ -73,7 +73,7 @@ class Artist(db.Model):
     name = db.Column(db.Text)
     primary_tracks = db.relationship('Track', secondary=track_primary_artist, lazy='subquery', backref=db.backref('primary_artists', lazy=True))
     featured_tracks = db.relationship('Track', secondary=track_featured_artist, lazy='subquery', backref=db.backref('featured_artists', lazy=True))
-    verses = db.relationship('Verse', secondary=verse_artist, lazy='subquery', backref=db.backref('verse_artists', lazy=True))
+    sections = db.relationship('Section', secondary=section_artist, lazy='subquery', backref=db.backref('section_artists', lazy=True))
     albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy='dynamic'))
     hometown = db.relationship('Location', secondary=artist_hometown, lazy='subquery', uselist=False, backref=db.backref('hometown_of', lazy='dynamic'))
     birthplace = db.relationship('Location', secondary=artist_birthplace, lazy='subquery', uselist=False, backref=db.backref('birthplace_of', lazy='dynamic'))
@@ -187,7 +187,7 @@ class Track(db.Model):
     lyrics_annotated = db.Column(db.Text)
     lyrics_annotations_json = db.Column(JSON)
     lyrics_fetched_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    verses = db.relationship('Verse', backref='track', lazy='dynamic')
+    sections = db.relationship('Section', backref='track', lazy='dynamic')
 
     def __repr__(self):
         return f"<Track {self.name}>"
@@ -199,11 +199,14 @@ class Track(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
-class Verse(db.Model):
-    __tablename__ = "verses"
+class Section(db.Model):
+    __tablename__ = "sections"
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"))
+    type = db.Column(db.Text)
+    number = db.Column(db.Integer)
+    artists_raw = db.Column(db.Text)
     text = db.Column(db.Text)
     text_annotated = db.Column(db.Text)
     offset = db.Column(db.Integer)
