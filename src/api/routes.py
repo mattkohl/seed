@@ -31,11 +31,6 @@ def album_run(uri):
     return jsonify(Tasks.run_album(uri))
 
 
-@api.route("/albums/run/random")
-def albums_run_random():
-    return jsonify(Tasks.run_random_album())
-
-
 @api.route("/artists")
 def artists():
     name_filter = request.args.get('filter', default=None)
@@ -73,11 +68,6 @@ def artist_birthplace_delete(uri):
 @api.route("/artists/<uri>/run")
 def artist_run(uri):
     return jsonify(Tasks.run_artist(uri))
-
-
-@api.route("/artists/run/random")
-def artists_run_random():
-    return jsonify(Tasks.run_random_artist())
 
 
 @api.route("/clear")
@@ -118,6 +108,21 @@ def get_playlist(playlist_uri: str):
     return jsonify(Tasks.run_playlist(playlist_uri))
 
 
+@api.route("/run-random-album")
+def run_random_album():
+    return jsonify(Tasks.run_random_album())
+
+
+@api.route("/run-random-artist")
+def run_random_artist():
+    return jsonify(Tasks.run_random_artist())
+
+
+@api.route("/run-random-track")
+def run_random_track():
+    return jsonify(Tasks.run_random_track())
+
+
 @api.route("/stats")
 def stats():
     return jsonify(Fetch.stats())
@@ -140,11 +145,6 @@ def tracks_with_lyrics():
 @api.route("/tracks/missing-lyrics")
 def tracks_missing_lyrics():
     return jsonify(Fetch.tracks_missing_lyrics())
-
-
-@api.route("/tracks/run/random")
-def tracks_run_random():
-    return jsonify(Tasks.run_random_track())
 
 
 @api.route("/tracks/<uri>")
