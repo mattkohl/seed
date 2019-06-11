@@ -383,9 +383,8 @@ class Fetch:
                 print(f"Could not connect to {url}:", e)
                 # TODO check if () in result.name & try again with trimmed version
             else:
-                fetched = datetime.now()
-                Persistence.persist_lyrics(result.id, lyrics, url, fetched)
-                _track.update({"lyrics": lyrics, "lyrics_url": url, "lyrics_fetched_timestamp": fetched})
+                Persistence.persist_lyrics(result.id, lyrics, url)
+                _track.update({"lyrics": lyrics, "lyrics_url": url})
         return _track
 
     @staticmethod

@@ -16,17 +16,17 @@ class Tasks:
 
     @staticmethod
     def run_random_track() -> Dict:
-        _track = Track.query.filter(Track.lyrics == None).order_by(func.random()).first()
+        _track = Track.query.filter(Track.last_updated == None).order_by(func.random()).first()
         return Tasks.run_track(_track.spot_uri)
 
     @staticmethod
     def run_random_album() -> Dict:
-        _album = Album.query.filter(Album.img == None).order_by(func.random()).first()
+        _album = Album.query.filter(Album.last_updated == None).order_by(func.random()).first()
         return Tasks.run_album(_album.spot_uri)
 
     @staticmethod
     def run_random_artist() -> Dict:
-        _artist = Artist.query.filter(Artist.img == None).order_by(func.random()).first()
+        _artist = Artist.query.filter(Artist.last_updated == None).order_by(func.random()).first()
         return Tasks.run_artist(_artist.spot_uri)
 
     @staticmethod

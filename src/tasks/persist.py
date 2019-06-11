@@ -105,10 +105,10 @@ class Persistence:
             raise
 
     @staticmethod
-    def persist_lyrics(track_id: int, lyrics: Optional[str], url: str, fetched) -> None:
+    def persist_lyrics(track_id: int, lyrics: Optional[str], url: str) -> None:
         _track = Track.query.filter_by(id=track_id).first()
         if lyrics:
-            _updates = {Track.lyrics: lyrics, Track.lyrics_url: url, Track.lyrics_fetched_timestamp: fetched}
+            _updates = {Track.lyrics: lyrics, Track.lyrics_url: url}
             try:
                 Persist.update(Track, _track.id, _updates)
             except Exception as e:
