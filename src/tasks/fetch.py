@@ -68,7 +68,7 @@ class Fetch:
         _album = result.as_dict()
 
         if result.mb_id is None or force_update:
-            _artist_mb_ids = [a.mb_id for a in result.artists]
+            _artist_mb_ids = [a.mb_id for a in result.artists if a.mb_id is not None]
             if _artist_mb_ids:
                 _mb_album_candidates = [MbUtils.cleaned(item)
                                         for _id in _artist_mb_ids
@@ -376,7 +376,8 @@ class Fetch:
         _album = result.album.as_dict()
         _track.update({"album": _album, "artists": _artists})
         if result.lyrics is None or force_update:
-            url = utils.GenUtils.link([_artist.name for _artist in result.primary_artists], result.name)
+            _artists = result.primary_artists if len(result.primary_artists) > 0 else result.featured_artists
+            url = utils.GenUtils.link([_artist.name for _artist in _artists], result.name)
             try:
                 lyrics = parser.GenParser.download(url)
             except Exception as e:
