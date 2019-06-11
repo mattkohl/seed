@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict
 
 from src.geni.models import SectionTuple
@@ -33,6 +34,7 @@ class Persist:
     def update(model: db.Model, _id: int, _updates: Dict):
         current = create_app('docker')
         with current.app_context():
+            _updates.update({"last_updated": datetime.utcnow()})
             db.session.query(model).filter(model.id == _id).update(_updates)
             db.session.commit()
 

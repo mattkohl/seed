@@ -62,7 +62,7 @@ track_genre = \
 
 class Artist(db.Model):
     __tablename__ = "artists"
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
@@ -77,6 +77,7 @@ class Artist(db.Model):
     albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy='dynamic'))
     hometown = db.relationship('Location', secondary=artist_hometown, lazy='subquery', uselist=False, backref=db.backref('hometown_of', lazy='dynamic'))
     birthplace = db.relationship('Location', secondary=artist_birthplace, lazy='subquery', uselist=False, backref=db.backref('birthplace_of', lazy='dynamic'))
+    last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<Artist {self.name}>"
@@ -93,12 +94,13 @@ class Artist(db.Model):
 
 class Location(db.Model):
     __tablename__ = "locations"
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
+    last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<Location {self.name}>"
@@ -112,7 +114,7 @@ class Location(db.Model):
 
 class Album(db.Model):
     __tablename__ = "albums"
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     release_date_string = db.Column(db.Text)
     release_date = db.Column(db.DateTime)
@@ -126,6 +128,7 @@ class Album(db.Model):
     tracks = db.relationship('Track', backref='album', lazy='dynamic')
     artists = db.relationship('Artist', secondary=album_artist, lazy='subquery',
                               backref=db.backref('artists_albums', lazy=True))
+    last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<Album {self.name}>"
@@ -148,7 +151,7 @@ class Album(db.Model):
 
 class Genre(db.Model):
     __tablename__ = "genres"
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     dbp_uri = db.Column(db.Text)
     mb_id = db.Column(db.Text)
@@ -157,6 +160,7 @@ class Genre(db.Model):
     artists = db.relationship('Artist', secondary=artist_genre, lazy='subquery', backref=db.backref('genres', lazy=True))
     albums = db.relationship('Album', secondary=album_genre, lazy='subquery', backref=db.backref('genres', lazy='dynamic'))
     tracks = db.relationship('Track', secondary=track_genre, lazy='subquery', backref=db.backref('genres', lazy=True))
+    last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<Genre {self.name}>"
@@ -173,7 +177,7 @@ class Genre(db.Model):
 
 class Track(db.Model):
     __tablename__ = "tracks"
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
@@ -186,8 +190,8 @@ class Track(db.Model):
     lyrics_url = db.Column(db.Text)
     lyrics_annotated = db.Column(db.Text)
     lyrics_annotations_json = db.Column(JSON)
-    lyrics_fetched_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     sections = db.relationship('Section', backref='track', lazy='dynamic')
+    last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<Track {self.name}>"
@@ -201,7 +205,7 @@ class Track(db.Model):
 
 class Section(db.Model):
     __tablename__ = "sections"
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"))
     type = db.Column(db.Text)
@@ -210,6 +214,7 @@ class Section(db.Model):
     text = db.Column(db.Text)
     text_annotated = db.Column(db.Text)
     offset = db.Column(db.Integer)
+    last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
         return f"<Section {self.name}>"
