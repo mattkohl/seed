@@ -122,9 +122,6 @@ class Persist:
                                                            name=artist.name,
                                                            spot_uri=artist.uri)
                                      for artist in track.featured_artists]
-
-                db.session.add(_track)
-                db.session.add(_album)
                 _album.img = img
                 _album.thumb = thumb
                 _album.artists.extend(_primary_artists)

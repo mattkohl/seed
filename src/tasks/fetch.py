@@ -1,4 +1,4 @@
-from datetime import datetime
+import collections
 from typing import Dict, Optional, List, Callable
 import traceback
 
@@ -106,6 +106,15 @@ class Fetch:
     def albums(name_filter: Optional[str]) -> List[Dict]:
         results = Album.query.filter(Album.name.ilike(f"%{name_filter}%")) if name_filter else Album.query.all()
         return [_album.as_dict() for _album in results]
+
+    @staticmethod
+    def albums_debug(name_filter: Optional[str]) -> List[Dict]:
+        grouped = collections.defaultdict(list)
+        results = Album.query.filter(Album.name.ilike(f"%{name_filter}%")) if name_filter else Album.query.all()
+        for _album in results:
+            grouped[_album.spot_uri].append(_album.id)
+        dupes = [r for r in grouped if len(grouped[r]) > 1]
+        return [Fetch.album(a.spot_uri) for a in Album.query.filter(Album.spot_uri.in_(dupes)).all()]
 
     @staticmethod
     def artist(uri: str) -> Dict:

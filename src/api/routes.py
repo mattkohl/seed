@@ -21,6 +21,13 @@ def albums():
     return jsonify(fetched)
 
 
+@api.route("/albums-debug")
+def albums_debug():
+    name_filter = request.args.get('filter', default=None)
+    fetched = Fetch.albums_debug(name_filter)
+    return jsonify(fetched)
+
+
 @api.route("/albums/<uri>")
 def album(uri):
     return jsonify(Fetch.album(uri))
