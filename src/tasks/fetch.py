@@ -94,7 +94,13 @@ class Fetch:
         try:
             _album = Album.query.filter_by(spot_uri=uri).first()
             _tracks = sp.download_album_tracks(uri)
-            track_tuples = [t for t in SpotUtils.tuplify_tracks(_tracks, _album.as_album_tuple(_album.artists)) if t is not None]
+
+            def _track_tuples():
+                for _t in SpotUtils.tuplify_tracks(_tracks, _album.as_album_tuple(_album.artists)):
+                    if _t is not None:
+                        yield _t
+
+            track_tuples = list(_track_tuples())
         except Exception as e:
             print(f"Unable to retrieve album {uri} tracks:")
             traceback.print_tb(e.__traceback__)
@@ -105,7 +111,15 @@ class Fetch:
     @staticmethod
     def albums(name_filter: Optional[str]) -> List[Dict]:
         results = Album.query.filter(Album.name.ilike(f"%{name_filter}%")) if name_filter else Album.query.all()
-        return [_album.as_dict() for _album in results]
+
+        def _populate():
+            for result in results:
+                _artists = [{"name": _artist.name, "uri": _artist.spot_uri} for _artist in result.artists]
+                _payload = result.as_dict()
+                _payload.update({"artists": _artists})
+                yield _payload
+
+        return list(_populate())
 
     @staticmethod
     def albums_debug(name_filter: Optional[str]) -> List[Dict]:

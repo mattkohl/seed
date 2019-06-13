@@ -109,8 +109,7 @@ class Persist:
                                                name=track.album.name,
                                                spot_uri=track.album.uri,
                                                release_date=track.album.release_date,
-                                               release_date_string=track.album.release_date_string,
-                                               )
+                                               release_date_string=track.album.release_date_string)
                 _track = Persist.get_or_create(db.session, Track,
                                                name=track.name,
                                                spot_uri=track.uri,
@@ -148,8 +147,7 @@ class Persist:
                                                name=album.name,
                                                spot_uri=album.uri,
                                                release_date=album.release_date,
-                                               release_date_string=album.release_date_string,
-                                               )
+                                               release_date_string=album.release_date_string)
                 _artists = [Persist.get_or_create(db.session, Artist,
                                                   name=artist.name,
                                                   spot_uri=artist.uri)
