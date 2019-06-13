@@ -9,8 +9,7 @@ class SpotUtils:
 
     @staticmethod
     def extract_album(raw: Dict) -> Optional[AlbumTuple]:
-        if "available_markets" in raw:
-            raw.pop("available_markets")
+        raw.pop("available_markets", None)
         _raw = deepcopy(raw)
         _release_date = _raw["release_date"]
         _release_date_string = _raw["release_date_string"] if "release_date_string" in _raw else _release_date
@@ -20,8 +19,8 @@ class SpotUtils:
             _album_tuple = AlbumTuple(**_raw)
         except Exception as e:
             print(f"Exception when trying to extract album")
-            traceback.print_tb(e.__traceback__)
             print(raw)
+            traceback.print_tb(e.__traceback__)
             raise
         else:
             return _album_tuple
@@ -56,7 +55,7 @@ class SpotUtils:
             'external_urls', 'href', 'id', 'is_local', 'name',
             'popularity', 'preview_url', 'track', 'track_number', 'type', 'uri'
         """
-        raw.pop("available_markets")
+        raw.pop("available_markets", None)
         _raw = deepcopy(raw)
         _album = SpotUtils.extract_album(_raw["album"])
         _primary_artists = _album.artists
@@ -81,7 +80,7 @@ class SpotUtils:
             _track = SpotUtils.extract_track(d)
         except Exception as e:
             print(f"Unable to tuplify track")
-            print(f"track_dict: {d}")
+            print(d)
             traceback.print_tb(e.__traceback__)
             raise
         else:
