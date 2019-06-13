@@ -31,6 +31,7 @@ class Persistence:
     @staticmethod
     def persist_track(track_tuple: TrackTuple) -> None:
         try:
+            print(f"Persisting track '{track_tuple.name}'")
             Persist.persist_track_tuple(track_tuple)
         except Exception as e:
             print(f"Unable to persist track {track_tuple}")

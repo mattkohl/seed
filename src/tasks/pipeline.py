@@ -17,17 +17,17 @@ class Tasks:
     @staticmethod
     def run_random_track() -> Dict:
         _track = Track.query.filter(Track.last_updated == None).order_by(func.random()).first()
-        return Tasks.run_track(_track.spot_uri)
+        return Tasks.run_track(_track.spot_uri) if _track else {"error": "No tracks found"}
 
     @staticmethod
     def run_random_album() -> Dict:
         _album = Album.query.filter(Album.last_updated == None).order_by(func.random()).first()
-        return Tasks.run_album(_album.spot_uri)
+        return Tasks.run_album(_album.spot_uri) if _album else {"error": "No albums found"}
 
     @staticmethod
     def run_random_artist() -> Dict:
         _artist = Artist.query.filter(Artist.last_updated == None).order_by(func.random()).first()
-        return Tasks.run_artist(_artist.spot_uri)
+        return Tasks.run_artist(_artist.spot_uri) if _artist else {"error": "No albums found"}
 
     @staticmethod
     def run_track(track_uri) -> Dict:

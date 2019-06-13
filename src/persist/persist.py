@@ -30,11 +30,13 @@ class Persist:
         try:
             instance = session.query(model).filter_by(**kwargs).first()
             if instance:
+                print(f"Found {instance}")
                 return instance
             else:
                 instance = model(**kwargs)
                 session.add(instance)
                 session.commit()
+                print(f"Created {instance}")
                 return instance
         except Exception:
             session.rollback()
