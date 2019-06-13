@@ -189,8 +189,7 @@ class Persist:
                                                   name=location.label,
                                                   dbp_uri=location.uri,
                                                   latitude=location.latitude,
-                                                  longitude=location.longitude,
-                                                  )
+                                                  longitude=location.longitude)
                 db.session.add(_location)
                 if location.hometown_of is not None:
                     _location.hometown_of = [location.hometown_of]
