@@ -13,9 +13,10 @@ class SpotUtils:
             raw.pop("available_markets")
         _raw = deepcopy(raw)
         _release_date = _raw["release_date"]
+        _release_date_string = _raw["release_date_string"] if "release_date_string" in _raw else _release_date
         try:
             _artists = [SpotUtils.extract_artist(a) for a in raw["artists"]]
-            _raw.update({"artists": _artists, "release_date": SpotUtils.clean_up_date(_release_date), "release_date_string": _release_date})
+            _raw.update({"artists": _artists, "release_date": SpotUtils.clean_up_date(_release_date), "release_date_string": _release_date_string})
             _album_tuple = AlbumTuple(**_raw)
         except Exception as e:
             print(f"Exception when trying to extract album")
@@ -36,7 +37,8 @@ class SpotUtils:
             _genres = SpotUtils.extract_genres(_raw['genres']) if 'genres' in _raw else list()
             _raw.update({"genres": _genres})
             _artist_tuple = ArtistTuple(**_raw)
-        except Exception:
+        except Exception as e:
+            traceback.print_tb(e.__traceback__)
             raise
         else:
             return _artist_tuple
@@ -70,20 +72,18 @@ class SpotUtils:
         return [track_item["track"] for track_item in track_items]
 
     @staticmethod
-    def tuplify_tracks(track_dicts: List[Dict], album: Optional[AlbumTuple]) -> List[TrackTuple]:
-        return [SpotUtils.tuplify_track(track_dict, album) for track_dict in track_dicts if track_dict is not None]
+    def tuplify_tracks(track_dicts: List[Dict]) -> List[TrackTuple]:
+        return [SpotUtils.tuplify_track(track_dict) for track_dict in track_dicts if track_dict is not None]
 
     @staticmethod
-    def tuplify_track(d: Dict, album: Optional[AlbumTuple]) -> Optional[TrackTuple]:
+    def tuplify_track(d: Dict) -> Optional[TrackTuple]:
         try:
-            if album is not None:
-                d.update({"album": album._asdict()})
             _track = SpotUtils.extract_track(d)
         except Exception as e:
             print(f"Unable to tuplify track")
             print(f"track_dict: {d}")
             traceback.print_tb(e.__traceback__)
-            return None
+            raise
         else:
             return _track
 

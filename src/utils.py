@@ -1,4 +1,7 @@
+from typing import Dict
+from copy import deepcopy
 from fuzzywuzzy import fuzz
+import datetime
 
 
 class Utils:
@@ -11,3 +14,9 @@ class Utils:
     def fuzzy_match(a: str, b: str):
         return fuzz.token_sort_ratio(a, b)
 
+    @staticmethod
+    def format_dates(d: Dict):
+        for k, v in d.items():
+            if isinstance(v, datetime.datetime):
+                d.update({k: v.strftime('%Y-%m-%d')})
+        return d

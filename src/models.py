@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List
 
 from src.spot.models import AlbumTuple, ArtistTuple, GenreTuple
+from src.utils import Utils
 from . import db
 from sqlalchemy.dialects.postgresql import JSON
 
@@ -138,6 +139,13 @@ class Album(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def as_tuple_dict(self, artists: List[Artist]):
+        exclusions = ["created", "dbp_uri", "mb_id", "mb_obj", "img", "thumb", "last_updated"]
+        _raw = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in exclusions}
+        _uri = _raw.pop("spot_uri")
+        _raw.update({"artists": [{"name": _artist.name, "uri": _artist.spot_uri} for _artist in artists], "uri": _uri})
+        return Utils.format_dates(_raw)
 
     def as_album_tuple(self, artists: List[Artist]):
         return AlbumTuple(

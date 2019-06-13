@@ -95,12 +95,18 @@ class Fetch:
             _album = Album.query.filter_by(spot_uri=uri).first()
             _tracks = sp.download_album_tracks(uri)
 
+            def add_albums():
+                for _track in _tracks:
+                    _track.update({"album": _album.as_tuple_dict(_album.artists)})
+                    yield _track
+
             def _track_tuples():
-                for _t in SpotUtils.tuplify_tracks(_tracks, _album.as_album_tuple(_album.artists)):
+                for _t in SpotUtils.tuplify_tracks(list(add_albums())):
                     if _t is not None:
                         yield _t
 
             track_tuples = list(_track_tuples())
+
         except Exception as e:
             print(f"Unable to retrieve album {uri} tracks:")
             traceback.print_tb(e.__traceback__)
@@ -324,7 +330,7 @@ class Fetch:
         try:
             playlist = sp.download_playlist_tracks(uri)
             track_dicts = SpotUtils.extract_tracks_from_playlist(playlist)
-            track_tuples = [t for t in SpotUtils.tuplify_tracks(track_dicts, None) if t is not None]
+            track_tuples = [t for t in SpotUtils.tuplify_tracks(track_dicts) if t is not None]
         except Exception as e:
             print(f"Unable to retrieve playlist {uri} tracks")
             traceback.print_tb(e.__traceback__)
