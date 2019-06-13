@@ -31,7 +31,6 @@ class Persistence:
     @staticmethod
     def persist_track(track_tuple: TrackTuple) -> None:
         try:
-            print(f"Persisting track '{track_tuple.name}'")
             Persist.persist_track_tuple(track_tuple)
         except Exception as e:
             print(f"Unable to persist track {track_tuple}")
@@ -43,7 +42,7 @@ class Persistence:
         try:
             Persist.persist_album_tuple(album_tuple)
         except Exception as e:
-            print(f"Unable to persist track {album_tuple}")
+            print(f"Unable to persist album {album_tuple}")
             traceback.print_tb(e.__traceback__)
             raise
 
@@ -146,7 +145,6 @@ class Persistence:
         _updates = {model.mb_id: _tuple.id, model.mb_obj: _tuple._asdict()}
         try:
             Persist.update(model, _entity.id, _updates)
-
         except Exception as e:
             print(f"Unable to persist {_id} mb metadata")
             traceback.print_tb(e.__traceback__)
