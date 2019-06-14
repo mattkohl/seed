@@ -9,7 +9,7 @@ from src.geni.models import SectionTuple
 class GenParser:
 
     heading_regex = re.compile(
-        r"\[(?P<block_type>[\w-]+)\s?(?P<block_num>\d?\d?):?\s?(?P<artists>.*?)\]\n\n?(?P<text>(.+\n)+)",
+        r"\[(?P<block_type>[\w-]+)\s?(?P<block_num>\d?\d?):?\s?(?P<artists>.*?)\]\n+(?P<text>(?:[^\n\[\]]+\n\n?\n??)+)",
         flags=re.MULTILINE
     )
 

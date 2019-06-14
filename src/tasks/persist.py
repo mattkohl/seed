@@ -121,6 +121,7 @@ class Persistence:
         _track = Track.query.filter_by(id=track_id).first()
         for section_tuple in sections:
             try:
+                Persist.delete_sections(_track.spot_uri)
                 Persist.persist_section_tuple(section_tuple, track_id)
             except Exception as e:
                 print(f"Unable to persist section {section_tuple}")

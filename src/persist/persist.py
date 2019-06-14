@@ -201,6 +201,22 @@ class Persist:
                 db.session.close()
 
     @staticmethod
+    def delete_sections(uri):
+        _track = Track.query.filter_by(spot_uri=uri).first()
+        current = create_app('docker')
+        with current.app_context():
+            try:
+                db.session.add(_track)
+                for _section in _track.sections:
+                    db.session.delete(_section)
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
+
+    @staticmethod
     def delete_hometown(uri):
         _artist = Artist.query.filter_by(spot_uri=uri).first()
         current = create_app('docker')

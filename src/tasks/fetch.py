@@ -368,14 +368,14 @@ class Fetch:
         if result is None:
             sp = SpotTrack()
             track_dict = sp.download_track(uri)
-            track_tuple = SpotUtils.tuplify_track(track_dict, None)
+            track_tuple = SpotUtils.tuplify_track(track_dict)
             Persistence.persist_track(track_tuple)
             result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         _primary_artists = [_artist.as_dict() for _artist in result.primary_artists]
         _featured_artists = [_artist.as_dict() for _artist in result.featured_artists]
         _album = result.album.as_dict()
-        _sections = [s.as_dict() for s in result.sections]
+        _sections = sorted([s.as_dict() for s in result.sections], key=lambda k: int(k["offset"]))
         _track.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists, "sections": _sections})
         return _track
 
@@ -424,7 +424,7 @@ class Fetch:
         if result.lyrics is not None:
             section_tuples = parser.GenParser.extract_sections(result.lyrics)
             Persistence.persist_sections(result.id, section_tuples)
-            _track.update({"sections": sorted([section_tuple._asdict() for section_tuple in section_tuples], key = lambda k:k["offset"])})
+            _track.update({"sections": sorted([section_tuple._asdict() for section_tuple in section_tuples], key=lambda k: int(k["offset"]))})
         return _track
 
     @staticmethod

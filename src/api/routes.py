@@ -164,6 +164,11 @@ def track_sections(uri):
     return jsonify(Fetch.track_sections(uri))
 
 
+@api.route("/tracks/<uri>/lyrics/sections/run")
+def track_sections(uri):
+    return jsonify(Fetch.track_sections(uri))
+
+
 @api.route("/tracks/<uri>/run")
 def track_run(uri):
     return jsonify(Tasks.run_track(uri))
