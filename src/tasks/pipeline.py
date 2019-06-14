@@ -41,6 +41,13 @@ class Tasks:
         return Fetch.track(track_uri)
 
     @staticmethod
+    def run_track_sections(track_uri) -> Dict:
+        _track = Fetch.track(track_uri)
+        _ = Fetch.track_sections(track_uri)
+        Persist.update(Track, _track['id'], {})
+        return Fetch.track(track_uri)
+
+    @staticmethod
     def run_artist(artist_uri) -> Dict:
         album_tuples = Fetch.artist_albums(artist_uri)
         [Persistence.persist_album(a) for a in album_tuples]
