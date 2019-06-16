@@ -119,7 +119,7 @@ class Persistence:
     @staticmethod
     def persist_sections(track_id: int, sections: List[SectionTuple]):
         _track = Track.query.filter_by(id=track_id).first()
-        Persist.delete_sections(_track.spot_uri)
+        # Persist.delete_sections(_track.spot_uri)
         for section_tuple in sections:
             try:
                 Persist.persist_section_tuple(section_tuple, track_id)

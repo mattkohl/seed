@@ -10,7 +10,7 @@ from src.geni import parser, utils
 from src.mb import metadata
 from src.mb.models import MbArtistTuple, MbAlbumTuple
 from src.mb.mbutils import MbUtils
-from src.models import Artist, Track, Album, Location, Genre
+from src.models import Artist, Track, Album, Location, Genre, Section
 from src.spot.albums import SpotAlbum
 from src.spot.artists import SpotArtist
 from src.spot.models import TrackTuple, AlbumTuple
@@ -347,7 +347,8 @@ class Fetch:
                 "tracks": Track.query.count(),
                 "genres": Genre.query.count(),
                 "locations": Location.query.count(),
-                "lyrics": Track.query.filter(Track.lyrics != None).count()
+                "lyrics": Track.query.filter(Track.lyrics != None).count(),
+                "sections": Section.query.count()
             }
         }
 

@@ -24,6 +24,7 @@ class Spotlight:
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
             response = requests.get(url=url, params=params)
+            assert response.status_code == 200
             cleaned = DbpUtils.strip_html(response.text)
             done = AnnotationTuple(cleaned)
         except Exception as e:
@@ -39,6 +40,7 @@ class Spotlight:
         try:
             params = {"text": text}
             response = requests.get(url=url, params=params, headers={"accept": "application/json"})
+            assert response.status_code == 200
             done = CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
         except Exception as e:
             print(f"Unable to resolve DBP Spotlight {url}")
