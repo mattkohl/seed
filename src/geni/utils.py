@@ -54,8 +54,14 @@ class GenUtils:
         g = "genius"
         c = "com"
         _artist = artists[0]
-        artist = "The " + _artist[:-4] if _artist.endswith(", The") else _artist
+        artist = GenUtils.adjust_artist_name(_artist)
         song_title = GenUtils.prune(song_title)
         _slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
         slug = re.sub(r"[-]+", "-", _slug)
-        return f"{h}://{g}.{c}/{slug}"
+        return f"{h}://{g}.{c}/{slug.capitalize()}"
+
+    @staticmethod
+    def adjust_artist_name(name: str) -> str:
+        _name = "Yasiin Bey" if name.lower() == "mos def" else name
+        _name = "The " + _name[:-4] if _name.endswith(", The") else _name
+        return _name
