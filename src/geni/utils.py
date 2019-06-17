@@ -42,7 +42,10 @@ class GenUtils:
         st = re.sub(r" feat\. .*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Version$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped$", "", st, re.IGNORECASE)
+        st = re.sub(r" - .*?Slabed$", "", st, re.IGNORECASE)
+        st = re.sub(r" - .*?S\.L\.A\.B.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Bonus .*?$", "", st, re.IGNORECASE)
+        st = re.sub(r"^Slabed - (.*)", r"\g<1>", st, re.IGNORECASE)
         return st
 
     @staticmethod
