@@ -202,12 +202,18 @@ class Fetch:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()
         if result.mb_id is None or force_update:
-            mb_results = metadata.MB().search_artists(result.name)
-            _cleaned = {Utils.clean_key(k): v for k, v in mb_results}
-            _cleaned_with_genres = MbUtils.add_genres(_cleaned)
-            _artist_tuple = MbArtistTuple(**_cleaned_with_genres)
-            Persistence.persist_mb_metadata(Artist, result.id, _artist_tuple)
-            _artist.update({"mb_id": _artist_tuple.id, "mb_obj": _artist_tuple._asdict()})
+            try:
+                mb_results = metadata.MB().search_artists(result.name)
+                _cleaned = {Utils.clean_key(k): v for k, v in mb_results}
+                _cleaned_with_genres = MbUtils.add_genres(_cleaned)
+                _artist_tuple = MbArtistTuple(**_cleaned_with_genres)
+                Persistence.persist_mb_metadata(Artist, result.id, _artist_tuple)
+            except Exception as e:
+                print(f"Unable to retrieve artist {uri} metadata:")
+                traceback.print_tb(e.__traceback__)
+               #raise
+            else:
+                _artist.update({"mb_id": _artist_tuple.id, "mb_obj": _artist_tuple._asdict()})
         return _artist
 
     @staticmethod

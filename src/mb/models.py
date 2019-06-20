@@ -5,6 +5,6 @@ _artist_fields = ['alias_list', 'area', 'begin_area', 'end_area', 'country', 'di
 
 MbArtistTuple = namedtuple("ArtistTuple", _artist_fields, defaults=(None,) * len(_artist_fields))
 
-_album_fields = ["first_release_date", "genres", "id", "primary_type", "secondary_type_list", "title", "type"]
+_album_fields = ["first_release_date", "disambiguation", "genres", "id", "primary_type", "secondary_type_list", "title", "type"]
 
 MbAlbumTuple = namedtuple("AlbumTuple", _album_fields, defaults=(None,) * len(_album_fields))
