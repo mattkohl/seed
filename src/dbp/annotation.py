@@ -30,7 +30,6 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve DBP Spotlight {url}")
             traceback.print_tb(e.__traceback__)
-            raise
         else:
             return done
 
@@ -45,7 +44,6 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve DBP Spotlight {url}")
             traceback.print_tb(e.__traceback__)
-            raise
         else:
             return done
 

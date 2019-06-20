@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 _artist_fields = ['alias_list', 'area', 'begin_area', 'end_area', 'country', 'disambiguation', 'ext_score', 'gender',
-                  'genres', 'id', 'ipi_list', 'life_span', 'name', 'sort_name', 'tag_list', 'type']
+                  'genres', 'id', 'ipi_list', 'isni_list', 'life_span', 'name', 'sort_name', 'tag_list', 'type']
 
 MbArtistTuple = namedtuple("ArtistTuple", _artist_fields, defaults=(None,) * len(_artist_fields))
 
