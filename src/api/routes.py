@@ -77,11 +77,6 @@ def artist_run(uri):
     return jsonify(Tasks.run_artist(uri))
 
 
-@api.route("/clear")
-def clear() -> str:
-    return jsonify(Persistence.clear())
-
-
 @api.route("/genres")
 def genres():
     name_filter = request.args.get('filter', default=None)
