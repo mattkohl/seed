@@ -1,10 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.pool import NullPool
 
 from config import config
 
 
-db = SQLAlchemy()
+db = SQLAlchemy(engine_options={"poolclass": NullPool})
 
 
 def create_app(config_name):

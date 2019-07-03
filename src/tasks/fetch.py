@@ -492,3 +492,8 @@ class Fetch:
     def tracks_missing_lyrics():
         return [t.as_dict() for t in Track.query.filter_by(lyrics=None).filter_by(lyrics_url=None).limit(50)]
 
+    @staticmethod
+    def album_tracks_missing_lyrics(album_uri):
+        _album = Album.query.filter_by(spot_uri=album_uri).first()
+        return [t.spot_uri for t in _album.tracks.all() if t.lyrics is None and t.lyrics_url is None]
+

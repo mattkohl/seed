@@ -33,6 +33,11 @@ def album(uri):
     return jsonify(Fetch.album(uri))
 
 
+@api.route("/albums/<uri>/missing-lyrics")
+def album_tracks_missing_lyrics(uri):
+    return jsonify(Fetch.album_tracks_missing_lyrics(uri))
+
+
 @api.route("/albums/<uri>/run")
 def album_run(uri):
     return jsonify(Tasks.run_album(uri))
