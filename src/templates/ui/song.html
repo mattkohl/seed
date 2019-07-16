@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{{ result.songTitle }} ⋅ the Right Rhymes ⋅ Hip-Hop Slang Defined{% endblock %}
+
+{% block search_navigation %}
+{% include "ui/_search.html" %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container song">
+    <a href="{{genius}}" target="_blank" style="float: right"><img src="{{ url_for('static', filename='img/genius.png') }}" height="35" width="35"/></a>
+    <div class="h1">{{ result.artist.name.replace('&', '&amp;') }} - "{{ result.songTitle }}"</div>
+    <div class="container h5">
+      <div class="tag">&lt;example <span class="attribute">id="{{result.id}}"</span>&gt;</div>
+        <div class="indentTag">
+            <span class="tag">&lt;date&gt;</span>{{ result.releaseDate }}<span class="tag">&lt;/date&gt;</span>
+        </div>
+        <div class="indentTag">
+            {% if result.artist.origin %}
+            <span class="tag">&lt;artist <span class="attribute">origin="{{ result.artist.origin }}"</span>&gt;</span>{{ result.artist.name.replace('&', '&amp;') }}<span class="tag">&lt;/artist&gt;</span>
+            {% else %}
+            <span class="tag">&lt;artist&gt;</span>{{ result.artist.name.replace('&', '&amp;') }}<span class="tag">&lt;/artist&gt;</span>
+            {% endif %}
+        </div>
+        <div class="indentTag">
+            <span class="tag">&lt;songTitle&gt;</span>{{ result.songTitle.replace('&', '&amp;') }}<span class="tag">&lt;/songTitle&gt;</span>
+        </div>
+        {% if result.feat %}
+            {% for f in result.feat %}
+                <div class="indentTag">
+                    {% if f.origin %}
+                    <span class="tag">&lt;feat <span class="attribute">origin="{{f.origin}}"</span>&gt;</span>{{ f.name.replace('&', '&amp;') }}<span class="tag">&lt;/feat&gt;</span>
+                    {% else %}
+                    <span class="tag">&lt;feat&gt;</span>{{ f.name }}<span class="tag">&lt;/feat&gt;</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="indentTag">
+            <span class="tag">&lt;album&gt;</span>{{ result.album.replace('&', '&amp;') }}<span class="tag">&lt;/album&gt;</span>
+        </div>
+        <div class="indentTag">
+            <span class="tag">&lt;lyric&gt;</span><span class="tag">&lt;/lyric&gt;</span>
+        </div>
+        <span class="tag">&lt;/example&gt;</span>
+    </div>
+    <a class="btn btn-default" href="{{ url_for('ui.edit_song', song_id=result.id) }}">Edit</a>
+    {% if result.relDateVerified != "MBK" %}
+      <a id="verify_{{result.id}}" style="padding-left: 1em;" onclick="verifyDate({{result.id}})"><i class="fa fa-check-square-o"></i></a>
+    {% endif %}
+    <div class="h5 container">
+        {% for lyric in result.lyrics %}
+            {% if q %}
+                <div class="h5">{{ lyric|replace(q, "<span class='query'>" + q + "</span>")|safe }}</div>
+            {% else %}
+                <div class="h5">{{ lyric }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function verifyDate(songId) {
+    $.post('/' + songId + '/verifyDate')
+    .done(function() {
+        $("#verify_" + songId).hide();
+        console.log("Successfully verified " + songId);
+    }).fail(function() {
+        console.log("Failed to verify " + songId);
+    });
+}
+</script>
+{% endblock %}

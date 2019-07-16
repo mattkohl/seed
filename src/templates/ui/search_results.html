@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block search_navigation %}
+{% include "ui/_search.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="h1">{{ query }}</div>
+    <div class="h5"> ({{ number }} results)</div>
+
+        {% for result in results %}
+            <div class="h5">
+                <span class="release-date">{{ result.releaseDate }}</span>
+                <span class="artist">{{ result.artist.name }}</span>
+                <span class="song-title"><a href="{{ url_for('ui.get_song', song_id=result.id) }}?q={{ query }}" target="_blank">"{{result.songTitle}}"</a></span>
+                {% if result.feat %}
+                    feat.
+                    {% for f in result.feat %}
+                        <span class="feat-artist">{{ f.name }}</span>
+                    {% endfor %}
+                {% endif %}
+                <span class="album">[ {{ result.album }} ]</span>
+                {% for lyric in result.lyrics %}
+                    <div class="lyric">{{ lyric|replace(query, "<span class='query'>" + query + "</span>")|safe }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+</div>
+{% endblock %}

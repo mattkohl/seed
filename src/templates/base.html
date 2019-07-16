@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Right Rhymes - {% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
+    <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+</head>
+
+{% block body %}
+<div id="body-wrapper">
+    {% block navbar %}
+    <div id="site-header" role="navigation">
+        <div id="header" class="container">
+            <div class="navbar-header">
+                <hgroup id="header-title">
+                    <h1 id="site-title"><a title="the Right Rhymes" rel="home" href="/">the Right Rhymes</a></h1>
+                    <h2 id="site-description"><a title="Hip-Hop Slang Defined" rel="home" href="/">Corpus Search</a></h2>
+                </hgroup>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul id="access" class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="" title="add song">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" title="scrape lyrics" target="_blank">
+                            <i class="fa fa-bolt"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <img id="header_image" src="" width="100%" height="100%">
+    </div>
+    {% endblock %}
+
+    {% block search_navigation %}
+    {% endblock %}
+
+    <div class="container">
+    {% block content %}
+    {% endblock %}
+    </div>
+
+    <div class="container">
+    {% block page_content %}
+    {% endblock %}
+    </div>
+
+</div>
+{% endblock %}
+
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+</html>
