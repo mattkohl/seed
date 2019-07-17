@@ -1,0 +1,40 @@
+body {
+  padding-top: 5rem;
+}
+
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.content {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.search_results {
+	margin-left: 2em;
+	margin-top: 2em;
+}
+
+.tag {
+	color: blue;
+	font-weight: bold;
+}
+
+.left {
+	margin-left: 1em;
+}
+
+.attribute {
+	color: orange;
+}
+
+.indentTag {
+	margin-left: 2em;
+	font-weight: bold;
+}

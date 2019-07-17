@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import List
 
@@ -209,6 +210,10 @@ class Track(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def filter_lyrics(self, q):
+        pattern = r'(?:^|\s)' + q + r'(?:\s|$|,|"|\.|\!|\?)'
+        return list(set([line for line in self.lyrics.split("\n") if re.search(pattern, line, re.IGNORECASE)]))
 
 
 class Section(db.Model):
