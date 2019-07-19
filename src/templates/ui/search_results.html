@@ -1,27 +1,24 @@
-{% extends "base.html" %}
-
-{% block search_navigation %}
-{% include "ui/_search.html" %}
-{% endblock %}
+{% extends "_base.html" %}
 
 {% block content %}
 <div class="container">
     <div class="h1">{{ query }}</div>
-    <div class="h5"> ({{ number }} results)</div>
-
+    <div class="h5"> ({{ results|length }} results)</div>
         {% for result in results %}
             <div class="h5">
-                <span class="release-date">{{ result.releaseDate }}</span>
-                <span class="artist">{{ result.artist.name }}</span>
-                <span class="song-title"><a href="{{ url_for('ui.get_song', song_id=result.id) }}?q={{ query }}" target="_blank">"{{result.songTitle}}"</a></span>
-                {% if result.feat %}
+                <span class="release-date">{{ result.album.release_date.strftime('%Y-%m-%d') }}</span>
+                {% for artist in result.primary_artists %}
+                    <span class="artist">{{ artist.name }}</span>
+                {% endfor %}
+                <span class="song-title"><a href="{{ url_for('ui.get_song', song_id=result.id) }}?q={{ query }}" target="_blank">"{{result.name}}"</a></span>
+                {% if result.featured_artists %}
                     feat.
-                    {% for f in result.feat %}
+                    {% for f in result.featured_artists %}
                         <span class="feat-artist">{{ f.name }}</span>
                     {% endfor %}
                 {% endif %}
-                <span class="album">[ {{ result.album }} ]</span>
-                {% for lyric in result.lyrics %}
+                <span class="album">[ {{ result.album.name }} ]</span>
+                {% for lyric in result.filter_lyrics(query) %}
                     <div class="lyric">{{ lyric|replace(query, "<span class='query'>" + query + "</span>")|safe }}</div>
                 {% endfor %}
             </div>

@@ -12,7 +12,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Seed</a>
+      <a class="navbar-brand" href="{{ url_for('ui.index') }}">Seed</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -34,8 +34,9 @@
             </div>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        <form id="header-search-form" class="form-inline my-2 my-lg-0" action="{{ url_for('ui.search') }}" method="post" name="search">
+          {{ g.search_form.hidden_tag() }}
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="search">
           <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
         </form>
       </div>
@@ -44,11 +45,14 @@
 
     <main role="main" class="container">
 
-      <div class="content">
-        <h1>Template</h1>
-        <p class="lead">1</p>
-        <p class="lead">2</p>
-        <p class="lead">3</p>
+      <div class="container">
+      {% block content %}
+      {% endblock %}
+      </div>
+
+      <div class="container">
+      {% block page_content %}
+      {% endblock %}
       </div>
 
     </main>
