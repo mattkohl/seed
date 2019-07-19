@@ -1,9 +1,9 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, BooleanField
 from wtforms.validators import DataRequired
 
 
-class SearchForm(Form):
+class SearchForm(FlaskForm):
     search = StringField('search', validators=[DataRequired()])
     constrain_dates = BooleanField('Constrain Dates')
 

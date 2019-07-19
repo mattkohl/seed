@@ -1,24 +1,26 @@
-{% extends "base.html" %}
-{% block title %}{{ result.songTitle }} ⋅ the Right Rhymes ⋅ Hip-Hop Slang Defined{% endblock %}
-
-{% block search_navigation %}
-{% include "ui/_search.html" %}
-{% endblock %}
+{% extends "_base.html" %}
+{% block title %}{{ result.name }}{% endblock %}
 
 
 {% block content %}
 <div class="container song">
     <a href="{{result.lyrics_url}}" target="_blank" style="float: right"><img src="{{ url_for('static', filename='img/genius.png') }}" height="35" width="35"/></a>
     <div class="h1">
+        {% if result.primary_artists %}
         {% for artist in result.primary_artists %}
         {{ artist.name.replace('&', '&amp;') }}
         {% endfor %}
+        {% elif result.featured_artists %}
+        {% for artist in result.featured_artists %}
+        {{ artist.name.replace('&', '&amp;') }}
+        {% endfor %}
+        {% else %} __ {% endif %}
         - "{{ result.name }}"
     </div>
     <div class="container h5">
       <div class="tag">&lt;example <span class="attribute">id="{{result.id}}"</span>&gt;</div>
         <div class="indentTag">
-            <span class="tag">&lt;date&gt;</span>{{ result.album.release_date }}<span class="tag">&lt;/date&gt;</span>
+            <span class="tag">&lt;date&gt;</span>{{ result.album.release_date.strftime('%Y-%m-%d') }}<span class="tag">&lt;/date&gt;</span>
         </div>
         <div class="indentTag">
             {% for artist in result.primary_artists %}
@@ -34,7 +36,9 @@
             </div>
         {% endfor %}
         <div class="indentTag">
+            <a href="{{ url_for('ui.get_album', album_id=result.album.id) }}">
             <span class="tag">&lt;album&gt;</span>{{ result.album.name.replace('&', '&amp;') }}<span class="tag">&lt;/album&gt;</span>
+            </a>
         </div>
         <div class="indentTag">
             <span class="tag">&lt;lyric&gt;</span><span class="tag">&lt;/lyric&gt;</span>
@@ -43,13 +47,15 @@
     </div>
     <a class="btn btn-default" href="{{ url_for('ui.edit_song', song_id=result.id) }}">Edit</a>
     <div class="h5 container">
-        {% for lyric in result.lyrics.split("\n") %}
-            {% if q %}
-                <div class="h5">{{ lyric|replace(q, "<span class='query'>" + q + "</span>")|safe }}</div>
-            {% else %}
-                <div class="h5">{{ lyric }}</div>
-            {% endif %}
-        {% endfor %}
+        {% if result.lyrics %}
+            {% for lyric in result.lyrics.split("\n") %}
+                {% if q %}
+                    <div class="h5">{{ lyric|replace(q, "<span class='query'>" + q + "</span>")|safe }}</div>
+                {% else %}
+                    <div class="h5">{{ lyric }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

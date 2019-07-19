@@ -8,11 +8,6 @@ from src.models import Track, Album
 
 
 @ui.route("/")
-def test():
-    return render_template('_base.html')
-
-
-@ui.route("/index")
 def index():
     offset = request.args.get('offset') or 0
     offset = int(offset)
@@ -28,7 +23,16 @@ def get_song(song_id: int):
     q = request.args.get('q') if request.args.get('q') else ""
     song = Track.query.filter_by(id=song_id).first()
     if song:
-        return render_template('ui/song.html', song_id=song_id, result=song, q=q)
+        return render_template('ui/song.html', result=song, q=q)
+    return redirect(url_for('.index'))
+
+
+@ui.route("/albums/<album_id>")
+def get_album(album_id: int):
+    q = request.args.get('q') if request.args.get('q') else ""
+    album = Album.query.filter_by(id=album_id).first()
+    if album:
+        return render_template('ui/album.html', result=album, q=q)
     return redirect(url_for('.index'))
 
 

@@ -1,0 +1,48 @@
+{% extends "_base.html" %}
+{% block title %}{{ result.name }} ⋅ the Right Rhymes{% endblock %}
+
+{% block search_navigation %}
+{% include "ui/_search.html" %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container song">
+    <div class="h1">
+        {% for artist in result.artists %}
+            {{ artist.name.replace('&', '&amp;') }}
+        {% endfor %}
+        - "{{ result.name }}"
+    </div>
+    {% for track in result.tracks %}
+        <div class="container h5">
+          <div class="tag">&lt;example <span class="attribute">id="{{result.id}}"</span>&gt;</div>
+            <div class="indentTag">
+                <span class="tag">&lt;date&gt;</span>{{ result.release_date.strftime('%Y-%m-%d') }}<span class="tag">&lt;/date&gt;</span>
+            </div>
+            <div class="indentTag">
+                {% for artist in track.primary_artists %}
+                <span class="tag">&lt;artist&gt;</span>{{ artist.name.replace('&', '&amp;') }}<span class="tag">&lt;/artist&gt;</span>
+                {% endfor %}
+            </div>
+            <div class="indentTag">
+                <a href="{{ url_for('ui.get_song', song_id=track.id) }}">
+                <span class="tag">&lt;songTitle&gt;</span>{{ track.name.replace('&', '&amp;') }}<span class="tag">&lt;/songTitle&gt;</span>
+                </a>
+            </div>
+            {% for f in track.featured_artists %}
+                <div class="indentTag">
+                    <span class="tag">&lt;feat&gt;</span>{{ f.name }}<span class="tag">&lt;/feat&gt;</span>
+                </div>
+            {% endfor %}
+            <div class="indentTag">
+                <span class="tag">&lt;album&gt;</span>{{ result.name.replace('&', '&amp;') }}<span class="tag">&lt;/album&gt;</span>
+            </div>
+            <div class="indentTag">
+                <span class="tag">&lt;lyric&gt;</span><span class="tag">&lt;/lyric&gt;</span>
+            </div>
+            <span class="tag">&lt;/example&gt;</span>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -46,15 +46,15 @@
           {% for artist in song.primary_artists %}
           <span class="song-artist">{{ artist.name }}</span>
           {% endfor %}
-          <span class="song-title">"{{ song.songTitle }}"</span>
+          <span class="song-title">"{{ song.name }}"</span>
           {% if song.featured_artists %}
             <span class="song-feat">feat. </span>
             {% for artist in song.featured_artists %}
-                <span class="song-feat">{{ artist }}</span>
+                <span class="song-feat">{{ artist.name }}</span>
             {% endfor %}
           {% endif %}
       </a>
-      <a href="">
+      <a href="{{ url_for('ui.get_album', album_id=song.album.id) }}">
           <span class="song-album">[{{ song.album.name }}]</span>
       </a>
       <a href="{{ url_for('ui.edit_song', song_id=song.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
