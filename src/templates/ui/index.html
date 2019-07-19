@@ -2,20 +2,20 @@
 
 {% block page_content %}
 <div class="container">
-  <ul class="pagination">
+    <ul class="pagination">
       {% if offset > 9 %}
-    <li class="page-item">
-      <a class="page-link" href="{{ url_for('ui.index')}}?offset=0" aria-label="Previous">
-        <i class="fa fa-fast-backward"></i>
-        <span class="sr-only">Previous</span>
-      </a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="{{ url_for('ui.index')}}?offset={{offset - 10}}" aria-label="Previous">
-        <i class="fa fa-backward"></i>
-        <span class="sr-only">Previous</span>
-      </a>
-    </li>
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('ui.index')}}?offset=0" aria-label="Previous">
+            <i class="fa fa-fast-backward"></i>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('ui.index')}}?offset={{offset - 10}}" aria-label="Previous">
+            <i class="fa fa-backward"></i>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
       {% endif %}
       {% for n in range(start_page+1, end_page) %}
         {% if (offset + n*10) < song_count-10 %}
@@ -23,57 +23,43 @@
         {% endif %}
       {% endfor %}
       {% if (song_count - offset) > 10 %}
-    <li class="page-item">
-      <a class="page-link" href="{{ url_for('ui.index') }}?offset={{offset + 10}}" aria-label="Next">
-        <i class="fa fa-forward"></i>
-        <span class="sr-only">Next</span>
-      </a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="{{ url_for('ui.index') }}?offset={{song_count - 10}}" aria-label="Next">
-        <i class="fa fa-fast-forward"></i>
-        <span class="sr-only">Next</span>
-      </a>
-    </li>
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('ui.index') }}?offset={{offset + 10}}" aria-label="Next">
+            <i class="fa fa-forward"></i>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('ui.index') }}?offset={{song_count - 10}}" aria-label="Next">
+            <i class="fa fa-fast-forward"></i>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
       {% endif %}
-  </ul>
-<ul class="list-group">
-{% for song in songs %}
-  <li class="list-group-item">
-      <a href="{{ url_for('ui.get_song', song_id=song.id) }}">
-          <span class="song-id">{{ song.id }}</span>
-          <span class="song-release-date">{{ song.album_release_date }}</span>
-          {% for artist in song.primary_artists %}
-          <span class="song-artist">{{ artist.name }}</span>
-          {% endfor %}
-          <span class="song-title">"{{ song.name }}"</span>
-          {% if song.featured_artists %}
-            <span class="song-feat">feat. </span>
-            {% for artist in song.featured_artists %}
-                <span class="song-feat">{{ artist.name }}</span>
-            {% endfor %}
-          {% endif %}
-      </a>
-      <a href="{{ url_for('ui.get_album', album_id=song.album.id) }}">
-          <span class="song-album">[{{ song.album.name }}]</span>
-      </a>
-      <a href="{{ url_for('ui.edit_song', song_id=song.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
-  </li>
-{% endfor %}
-</ul>
+    </ul>
+    <ul class="list-group">
+        {% for song in songs %}
+          <li class="list-group-item">
+              <a href="{{ url_for('ui.get_song', song_id=song.id) }}">
+                  <span class="song-id">{{ song.id }}</span>
+                  <span class="song-release-date">{{ song.album_release_date }}</span>
+                  {% for artist in song.primary_artists %}
+                  <span class="song-artist">{{ artist.name }}</span>
+                  {% endfor %}
+                  <span class="song-title">"{{ song.name }}"</span>
+                  {% if song.featured_artists %}
+                    <span class="song-feat">feat. </span>
+                    {% for artist in song.featured_artists %}
+                        <span class="song-feat">{{ artist.name }}</span>
+                    {% endfor %}
+                  {% endif %}
+              </a>
+              <a href="{{ url_for('ui.get_album', album_id=song.album.id) }}">
+                  <span class="song-album">[{{ song.album.name }}]</span>
+              </a>
+              <a href="{{ url_for('ui.edit_song', song_id=song.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
+          </li>
+        {% endfor %}
+    </ul>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-function verifyDate(songId) {
-    $.post('/' + songId + '/verifyDate')
-    .done(function() {
-        $("#verify_" + songId).hide();
-        console.log("Successfully verified " + songId);
-    }).fail(function() {
-        console.log("Failed to verify " + songId);
-    });
-}
-</script>
 {% endblock %}

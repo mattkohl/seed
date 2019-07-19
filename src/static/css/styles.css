@@ -37,4 +37,9 @@ body {
 .indentTag {
 	margin-left: 2em;
 	font-weight: bold;
+	line-height: 1.2rem;
+}
+
+.query {
+	color: #3399FF;
 }

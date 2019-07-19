@@ -212,8 +212,7 @@ class Track(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     def filter_lyrics(self, q):
-        pattern = r'(?:^|\s)' + q + r'(?:\s|$|,|"|\.|\!|\?)'
-        return list(set([line for line in self.lyrics.split("\n") if re.search(pattern, line, re.IGNORECASE)]))
+        return list(set([line for line in self.lyrics.split("\n") if q in line]))
 
 
 class Section(db.Model):

@@ -50,16 +50,9 @@ def search():
 
 @ui.route('/search-results/<query>')
 def search_results(query, in_xml=True):
-    q = query
-    if query.endswith('.*'):
-        q = q.replace('.*', '')
-
-    result = Track.query.filter(Track.lyrics.like('%'+q+'%')).join(Album).order_by(Album.release_date)
-
-    if in_xml:
-        return render_template('ui/xml_search_results.html', query=query, results=result.all(), number=result.count())
-    else:
-        return render_template('ui/search_results.html', query=query, results=result.all(), number=result.count())
+    result = Track.query.filter(Track.lyrics.contains(query)).join(Album).order_by(Album.release_date)
+    template = 'ui/xml_search_results.html' if in_xml else 'ui/search_results.html'
+    return render_template(template, query=query, results=result.all(), number=result.count())
 
 
 @ui.before_request
