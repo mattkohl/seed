@@ -1,19 +1,25 @@
+html {
+    color: whitesmoke;
+}
+
 body {
-  padding-top: 5rem;
+    color: whitesmoke;
+    padding-top: 5rem;
+    background-color: #343a40 !important;
 }
 
 .bd-placeholder-img {
-  font-size: 1.125rem;
-  text-anchor: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .content {
-  padding: 3rem 1.5rem;
-  text-align: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
 }
 
 .search_results {
@@ -21,8 +27,17 @@ body {
 	margin-top: 2em;
 }
 
+/*
+Default 	                        #F8F8E9
+Comment 	                        #F16EAA
+Attribute Key 	                    #1EBEC8
+Attribute Value (double-quoted) 	#DEC065
+Attribute Value (single-quoted) 	#F16EAA
+Tags 	                            #7AB667
+*/
+
 .tag {
-	color: blue;
+	color: #7AB667;
 	font-weight: bold;
 }
 
@@ -35,11 +50,26 @@ body {
 }
 
 .indentTag {
+	color: whitesmoke;
 	margin-left: 2em;
 	font-weight: bold;
-	line-height: 1.2rem;
+	line-height: 1.1rem;
 }
 
 .query {
 	color: #3399FF;
 }
+
+.example {
+    font-size: 0.9rem;
+}
+
+.default {
+    color: #F8F8E9;
+}
+
+.attribute-key {
+    color: #1EBEC8;
+}
+
+.attribute-value{ color: #DEC065; }

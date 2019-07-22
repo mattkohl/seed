@@ -6,7 +6,7 @@
     <div class="h1">{{ results|length }} results found for "{{ query }}"</div>
     {% for result in results %}
         <div class="example">
-          <div class="tag">&lt;example <span class="attribute">id="s<a href="{{ url_for('ui.get_song', song_id=result.id) }}?q={{ query }}" target="_blank">{{result.id}}</a>"</span>&gt;</div>
+            <div class="tag">&lt;example <span class="attribute-key">id="<span class="attribute-value"><a href="{{ url_for('ui.get_song', song_id=result.id) }}?q={{ query }}" target="_blank">s{{result.id}}</a></span>"</span>&gt;</div>
             <div class="indentTag">
                 <span class="tag">&lt;date&gt;</span>{{ result.album.release_date.strftime('%Y-%m-%d') }}<span class="tag">&lt;/date&gt;</span>
             </div>

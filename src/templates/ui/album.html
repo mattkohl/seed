@@ -14,35 +14,30 @@
         {% endfor %}
         - "{{ result.name }}"
     </div>
-    {% for track in result.tracks %}
-        <div class="container h5">
-          <div class="tag">&lt;example <span class="attribute">id="s{{result.id}}"</span>&gt;</div>
-            <div class="indentTag">
-                <span class="tag">&lt;date&gt;</span>{{ result.release_date.strftime('%Y-%m-%d') }}<span class="tag">&lt;/date&gt;</span>
-            </div>
-            <div class="indentTag">
-                {% for artist in track.primary_artists %}
-                <span class="tag">&lt;artist&gt;</span>{{ artist.name.replace('&', '&amp;') }}<span class="tag">&lt;/artist&gt;</span>
-                {% endfor %}
-            </div>
-            <div class="indentTag">
-                <a href="{{ url_for('ui.get_song', song_id=track.id) }}">
-                <span class="tag">&lt;songTitle&gt;</span>{{ track.name.replace('&', '&amp;') }}<span class="tag">&lt;/songTitle&gt;</span>
-                </a>
-            </div>
-            {% for f in track.featured_artists %}
-                <div class="indentTag">
-                    <span class="tag">&lt;feat&gt;</span>{{ f.name }}<span class="tag">&lt;/feat&gt;</span>
-                </div>
-            {% endfor %}
-            <div class="indentTag">
-                <span class="tag">&lt;album&gt;</span>{{ result.name.replace('&', '&amp;') }}<span class="tag">&lt;/album&gt;</span>
-            </div>
-            <div class="indentTag">
-                <span class="tag">&lt;lyric&gt;</span><span class="tag">&lt;/lyric&gt;</span>
-            </div>
-            <span class="tag">&lt;/example&gt;</span>
-        </div>
-    {% endfor %}
+
+    <ul class="list-group">
+        {% for song in result.tracks %}
+          <li class="list-group-item">
+              <a href="{{ url_for('ui.get_song', song_id=song.id) }}">
+                  <span class="song-id">{{ song.id }}</span>
+                  <span class="song-release-date">{{ song.album_release_date }}</span>
+                  {% for artist in song.primary_artists %}
+                  <span class="song-artist">{{ artist.name }}</span>
+                  {% endfor %}
+                  <span class="song-title">"{{ song.name }}"</span>
+                  {% if song.featured_artists %}
+                    <span class="song-feat">feat. </span>
+                    {% for artist in song.featured_artists %}
+                        <span class="song-feat">{{ artist.name }}</span>
+                    {% endfor %}
+                  {% endif %}
+              </a>
+              <a href="{{ url_for('ui.get_album', album_id=song.album.id) }}">
+                  <span class="song-album">[{{ song.album.name }}]</span>
+              </a>
+              <a href="{{ url_for('ui.edit_song', song_id=song.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
+          </li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

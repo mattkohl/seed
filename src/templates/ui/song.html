@@ -7,17 +7,17 @@
     <a href="{{result.lyrics_url}}" target="_blank" style="float: right"><img src="{{ url_for('static', filename='img/genius.png') }}" height="35" width="35"/></a>
     <div class="h1">
         {% if result.primary_artists %}
-        {% for artist in result.primary_artists %}
-        {{ artist.name.replace('&', '&amp;') }}
-        {% endfor %}
+            {% for artist in result.primary_artists %}
+                {{ artist.name.replace('&', '&amp;') }}
+            {% endfor %}
         {% elif result.featured_artists %}
-        {% for artist in result.featured_artists %}
-        {{ artist.name.replace('&', '&amp;') }}
-        {% endfor %}
+            {% for artist in result.featured_artists %}
+                {{ artist.name.replace('&', '&amp;') }}
+            {% endfor %}
         {% else %} __ {% endif %}
         - "{{ result.name }}"
     </div>
-    <div class="container h5">
+    <div class="example">
       <div class="tag">&lt;example <span class="attribute">id="s{{result.id}}"</span>&gt;</div>
         <div class="indentTag">
             <span class="tag">&lt;date&gt;</span>{{ result.album.release_date.strftime('%Y-%m-%d') }}<span class="tag">&lt;/date&gt;</span>

@@ -11,7 +11,7 @@ from src.models import Track, Album
 def index():
     offset = request.args.get('offset') or 0
     offset = int(offset)
-    songs = Track.query.limit(10).offset(offset)
+    songs = Track.query.order_by(Track.id).limit(10).offset(offset)
     start_page = int(offset/10)
     end_page = start_page + 10
     song_count = Track.query.count()
