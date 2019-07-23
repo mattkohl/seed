@@ -2,46 +2,12 @@
 
 {% block page_content %}
 <div class="container">
-    <ul class="pagination">
-      {% if offset > 9 %}
-        <li class="page-item">
-          <a class="page-link" href="{{ url_for('ui.index')}}?offset=0" aria-label="Previous">
-            <span> << </span>
-            <span class="sr-only">Previous</span>
-          </a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="{{ url_for('ui.index')}}?offset={{offset - 10}}" aria-label="Previous">
-            <span> < </span>
-            <span class="sr-only">Previous</span>
-          </a>
-        </li>
-      {% endif %}
-      {% for n in range(start_page+1, end_page) %}
-        {% if (offset + n*10) < song_count-10 %}
-            <li class="page-item"><a class="page-link" href="{{ url_for('ui.index') }}?offset={{n*10}}">{{n}}</a></li>
-        {% endif %}
-      {% endfor %}
-      {% if (song_count - offset) > 10 %}
-        <li class="page-item">
-          <a class="page-link" href="{{ url_for('ui.index') }}?offset={{offset + 10}}" aria-label="Next">
-            <span> > </span>
-            <span class="sr-only">Next</span>
-          </a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="{{ url_for('ui.index') }}?offset={{song_count - 10}}" aria-label="Next">
-            <span> >> </span>
-            <span class="sr-only">Next</span>
-          </a>
-        </li>
-      {% endif %}
-    </ul>
+
     <ul class="list-group">
         {% for song in songs %}
           <li class="list-group-item">
               <a href="{{ url_for('ui.get_song', song_id=song.id) }}">
-                  <span class="song-id">{{ song.id }}</span>
+<!--                  <span class="song-id">{{ song.id }}</span>-->
                   <span class="song-release-date">{{ song.album_release_date }}</span>
                   {% for artist in song.primary_artists %}
                   <span class="song-artist">{{ artist.name }}</span>
@@ -54,12 +20,51 @@
                     {% endfor %}
                   {% endif %}
               </a>
-              <a href="{{ url_for('ui.get_album', album_id=song.album.id) }}">
-                  <span class="song-album">[{{ song.album.name }}]</span>
+              <a href="{{ url_for('ui.get_album', album_id=song.album.id) }}" style="float: right" class="album">
+                  <span class="tooltiptext">{{ song.album.name }}</span>
+                  <img src="{% if song.album.img is not none %} {{ song.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
               </a>
-              <a href="{{ url_for('ui.edit_song', song_id=song.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
           </li>
         {% endfor %}
     </ul>
+
+    <div class="pagination-wrapper">
+        <ul class="pagination">
+          {% if offset > 9 %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('ui.index')}}?offset=0" aria-label="Previous">
+                <span> << </span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('ui.index')}}?offset={{offset - 10}}" aria-label="Previous">
+                <span> < </span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+          {% endif %}
+          {% for n in range(start_page+1, end_page) %}
+            {% if (offset + n*10) < song_count-10 %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('ui.index') }}?offset={{n*10}}">{{n}}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if (song_count - offset) > 10 %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('ui.index') }}?offset={{offset + 10}}" aria-label="Next">
+                <span> > </span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('ui.index') }}?offset={{song_count - 10}}" aria-label="Next">
+                <span> >> </span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+    </div>
+
 </div>
 {% endblock %}

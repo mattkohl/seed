@@ -27,6 +27,13 @@ body {
 	margin-top: 2em;
 }
 
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
 /*
 Default 	                        #F8F8E9
 Comment 	                        #F16EAA
@@ -72,4 +79,29 @@ Tags 	                            #7AB667
     color: #1EBEC8;
 }
 
-.attribute-value{ color: #DEC065; }
+.attribute-value {
+    color: #DEC065;
+}
+
+a.album:hover {
+    text-decoration: none !important;
+}
+
+.album:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: whitesmoke;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
