@@ -3,15 +3,34 @@
 
 {% block content %}
 <div class="container track">
-    <div class="h1">
-        {% for artist in result.artists %}
-            {{ artist.name.replace('&', '&amp;') }}
+    <div class="h1">{{ artist.name.replace('&', '&amp;') }}</div>
+    <ul class="list-group">
+        {% for track in artist.primary_tracks %}
+          <li class="list-group-item">
+              <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
+                  <span class="track-id">{{ track.id }}</span>
+                  <span class="track-release-date">{{ track.album_release_date }}</span>
+                  {% for artist in track.primary_artists %}
+                  <span class="track-artist">{{ artist.name }}</span>
+                  {% endfor %}
+                  <span class="track-title">"{{ track.name }}"</span>
+                  {% if track.featured_artists %}
+                    <span class="track-feat">feat. </span>
+                    {% for artist in track.featured_artists %}
+                        <span class="track-feat">{{ artist.name }}</span>
+                    {% endfor %}
+                  {% endif %}
+              </a>
+              <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}">
+                  <span class="track-album">[{{ track.album.name }}]</span>
+              </a>
+              <a href="{{ url_for('ui.edit_track', track_id=track.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
+          </li>
         {% endfor %}
-        - {{ result.name }}
-    </div>
+    </ul>
 
     <ul class="list-group">
-        {% for track in result.tracks %}
+        {% for track in artist.featured_tracks %}
           <li class="list-group-item">
               <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
                   <span class="track-id">{{ track.id }}</span>

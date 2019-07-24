@@ -4,25 +4,25 @@
 <div class="container">
 
     <ul class="list-group">
-        {% for song in songs %}
+        {% for track in tracks %}
           <li class="list-group-item">
-              <a href="{{ url_for('ui.get_song', song_id=song.id) }}">
-<!--                  <span class="song-id">{{ song.id }}</span>-->
-                  <span class="song-release-date">{{ song.album_release_date }}</span>
-                  {% for artist in song.primary_artists %}
-                  <span class="song-artist">{{ artist.name }}</span>
+              <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
+<!--                  <span class="track-id">{{ track.id }}</span>-->
+                  <span class="track-release-date">{{ track.album_release_date }}</span>
+                  {% for artist in track.primary_artists %}
+                  <span class="track-artist">{{ artist.name }}</span>
                   {% endfor %}
-                  <span class="song-title">"{{ song.name }}"</span>
-                  {% if song.featured_artists %}
-                    <span class="song-feat">feat. </span>
-                    {% for artist in song.featured_artists %}
-                        <span class="song-feat">{{ artist.name }}</span>
+                  <span class="track-title">"{{ track.name }}"</span>
+                  {% if track.featured_artists %}
+                    <span class="track-feat">feat. </span>
+                    {% for artist in track.featured_artists %}
+                        <span class="track-feat">{{ artist.name }}</span>
                     {% endfor %}
                   {% endif %}
               </a>
-              <a href="{{ url_for('ui.get_album', album_id=song.album.id) }}" style="float: right" class="album">
-                  <span class="tooltiptext">{{ song.album.name }}</span>
-                  <img src="{% if song.album.img is not none %} {{ song.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+              <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" style="float: right" class="album">
+                  <span class="tooltiptext">{{ track.album.name }}</span>
+                  <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
               </a>
           </li>
         {% endfor %}
@@ -45,11 +45,11 @@
             </li>
           {% endif %}
           {% for n in range(start_page+1, end_page) %}
-            {% if (offset + n*10) < song_count-10 %}
+            {% if (offset + n*10) < track_count-10 %}
                 <li class="page-item"><a class="page-link" href="{{ url_for('ui.index') }}?offset={{n*10}}">{{n}}</a></li>
             {% endif %}
           {% endfor %}
-          {% if (song_count - offset) > 10 %}
+          {% if (track_count - offset) > 10 %}
             <li class="page-item">
               <a class="page-link" href="{{ url_for('ui.index') }}?offset={{offset + 10}}" aria-label="Next">
                 <span> > </span>
@@ -57,7 +57,7 @@
               </a>
             </li>
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('ui.index') }}?offset={{song_count - 10}}" aria-label="Next">
+              <a class="page-link" href="{{ url_for('ui.index') }}?offset={{track_count - 10}}" aria-label="Next">
                 <span> >> </span>
                 <span class="sr-only">Next</span>
               </a>

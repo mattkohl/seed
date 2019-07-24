@@ -3,7 +3,7 @@
 
 
 {% block content %}
-<div class="container song">
+<div class="container track">
     <a href="{{result.lyrics_url}}" target="_blank" style="float: right"><img src="{{ url_for('static', filename='img/genius.png') }}" height="35" width="35"/></a>
     <div class="h1">
         {% if result.primary_artists %}
@@ -45,7 +45,7 @@
         </div>
         <span class="tag">&lt;/example&gt;</span>
     </div>
-    <a class="btn btn-default" href="{{ url_for('ui.edit_song', song_id=result.id) }}">Edit</a>
+    <a class="btn btn-default" href="{{ url_for('ui.edit_track', track_id=result.id) }}">Edit</a>
     <div class="h5 container">
         {% if result.lyrics %}
             {% for lyric in result.lyrics.split("\n") %}
@@ -58,18 +58,4 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-function verifyDate(songId) {
-    $.post('/' + songId + '/verifyDate')
-    .done(function() {
-        $("#verify_" + songId).hide();
-        console.log("Successfully verified " + songId);
-    }).fail(function() {
-        console.log("Failed to verify " + songId);
-    });
-}
-</script>
 {% endblock %}

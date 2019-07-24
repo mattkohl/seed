@@ -11,33 +11,40 @@ from src.models import Track, Album
 def index():
     offset = request.args.get('offset') or 0
     offset = int(offset)
-    songs = Track.query.order_by(Track.id).limit(10).offset(offset)
+    tracks = Track.query.order_by(Track.id).limit(10).offset(offset)
     start_page = int(offset/10)
     end_page = start_page + 10
-    song_count = Track.query.count()
-    return render_template('ui/index.html', songs=songs, offset=offset, song_count=song_count, start_page=start_page, end_page=end_page)
+    track_count = Track.query.count()
+    return render_template('ui/index.html', tracks=tracks, offset=offset, track_count=track_count, start_page=start_page, end_page=end_page)
 
 
-@ui.route("/<song_id>")
-def get_song(song_id: int):
+@ui.route("/<track_id>")
+def get_track(track_id: int):
     q = request.args.get('q') if request.args.get('q') else ""
-    song = Track.query.filter_by(id=song_id).first()
-    if song:
-        return render_template('ui/song.html', result=song, q=q)
+    track = Track.query.filter_by(id=track_id).first()
+    if track:
+        return render_template('ui/track.html', result=track, q=q)
     return redirect(url_for('.index'))
 
 
 @ui.route("/albums/<album_id>")
 def get_album(album_id: int):
-    q = request.args.get('q') if request.args.get('q') else ""
     album = Album.query.filter_by(id=album_id).first()
     if album:
-        return render_template('ui/album.html', result=album, q=q)
+        return render_template('ui/album.html', result=album)
     return redirect(url_for('.index'))
 
 
-@ui.route("/edit_song")
-def edit_song():
+@ui.route("/artists/<artist_id>")
+def get_artist(artist_id: int):
+    artist = Album.query.filter_by(id=artist_id).first()
+    if artist:
+        return render_template('ui/artist.html', artist=artist)
+    return redirect(url_for('.index'))
+
+
+@ui.route("/edit_track")
+def edit_track():
     return "bar"
 
 
