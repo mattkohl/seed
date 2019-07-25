@@ -1,24 +1,34 @@
 from flask import render_template, request, url_for, g
 from werkzeug.utils import redirect
 
+from src import db
 from src.forms import SearchForm
 from src.ui import ui
 
-from src.models import Track, Album
+from src.models import Track, Album, Artist
 
 
 @ui.route("/")
 def index():
-    offset = request.args.get('offset') or 0
-    offset = int(offset)
-    tracks = Track.query.order_by(Track.id).limit(10).offset(offset)
-    start_page = int(offset/10)
-    end_page = start_page + 10
-    track_count = Track.query.count()
-    return render_template('ui/index.html', tracks=tracks, offset=offset, track_count=track_count, start_page=start_page, end_page=end_page)
+    return render_template('ui/index.html')
 
 
-@ui.route("/<track_id>")
+@ui.route("/tracks")
+def tracks():
+    return render_class(Track, 'ui/tracks.html')
+
+
+@ui.route("/albums")
+def albums():
+    return render_class(Album, 'ui/albums.html')
+
+
+@ui.route("/artists")
+def artists():
+    return render_class(Artist, 'ui/artists.html')
+
+
+@ui.route("/tracks/<track_id>")
 def get_track(track_id: int):
     q = request.args.get('q') if request.args.get('q') else ""
     track = Track.query.filter_by(id=track_id).first()
@@ -65,3 +75,18 @@ def search_results(query, in_xml=True):
 @ui.before_request
 def before_request():
     g.search_form = SearchForm()
+
+
+def pagination(_request) -> (int, int, int):
+    offset = _request.args.get('offset') or 0
+    offset = int(offset)
+    start_page = int(offset/10)
+    end_page = start_page + 10
+    return offset, start_page, end_page
+
+
+def render_class(model: db.Model, template: str):
+    offset, start_page, end_page = pagination(request)
+    instances = model.query.order_by(model.id).limit(10).offset(offset)
+    count = model.query.count()
+    return render_template(template, instances=instances, offset=offset, count=count, start_page=start_page, end_page=end_page)
