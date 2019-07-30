@@ -6,17 +6,12 @@
     <ul class="list-group">
         {% for artist in instances %}
           <li class="list-group-item">
-              <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
-<!--                  <span class="track-id">{{ track.id }}</span>-->
-                  <span class="track-release-date">{{ album.release_date }}</span>
-                  {% for artist in album.artists %}
+              <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
                   <span class="track-artist">{{ artist.name }}</span>
-                  {% endfor %}
-                  <span class="track-title">"{{ track.name }}"</span>
               </a>
-              <a href="{{ url_for('ui.get_album', album_id=album.id) }}" style="float: right" class="album">
-                  <span class="tooltiptext">{{ track.album.name }}</span>
-                  <img src="{% if album.img is not none %} {{ album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+              <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}" style="float: right" class="artist">
+                  <span class="tooltiptext">{{ artist.name }}</span>
+                  <img src="{% if artist.thumb is not none %} {{ artist.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
               </a>
           </li>
         {% endfor %}

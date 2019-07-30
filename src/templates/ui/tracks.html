@@ -7,7 +7,7 @@
         {% for track in instances %}
           <li class="list-group-item">
               <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
-                  <span class="track-release-date">{{ track.album.release_date }}</span>
+                  <span class="track-release-date">{{ track.album.release_date.strftime('%Y-%m-%d') }}</span>
                   {% for artist in track.primary_artists %}
                   <span class="track-artist">{{ artist.name }}</span>
                   {% endfor %}

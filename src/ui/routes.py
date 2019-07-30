@@ -47,9 +47,9 @@ def get_album(album_id: int):
 
 @ui.route("/artists/<artist_id>")
 def get_artist(artist_id: int):
-    artist = Album.query.filter_by(id=artist_id).first()
+    artist = Artist.query.filter_by(id=artist_id).first()
     if artist:
-        return render_template('ui/artist.html', artist=artist)
+        return render_template('ui/artist.html', result=artist)
     return redirect(url_for('.index'))
 
 

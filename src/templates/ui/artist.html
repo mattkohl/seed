@@ -3,13 +3,12 @@
 
 {% block content %}
 <div class="container track">
-    <div class="h1">{{ artist.name.replace('&', '&amp;') }}</div>
+    <div class="h1">{{ result.name.replace('&', '&amp;') }}</div>
     <ul class="list-group">
-        {% for track in artist.primary_tracks %}
+        {% for track in result.primary_tracks %}
           <li class="list-group-item">
               <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
-                  <span class="track-id">{{ track.id }}</span>
-                  <span class="track-release-date">{{ track.album_release_date }}</span>
+                  <span class="track-release-date">{{ track.album.release_date.strftime('%Y-%m-%d') }}</span>
                   {% for artist in track.primary_artists %}
                   <span class="track-artist">{{ artist.name }}</span>
                   {% endfor %}
@@ -21,8 +20,9 @@
                     {% endfor %}
                   {% endif %}
               </a>
-              <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}">
-                  <span class="track-album">[{{ track.album.name }}]</span>
+              <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" style="float: right" class="album">
+                  <span class="tooltiptext">{{ track.album.name }}</span>
+                  <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
               </a>
               <a href="{{ url_for('ui.edit_track', track_id=track.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
           </li>
@@ -30,11 +30,10 @@
     </ul>
 
     <ul class="list-group">
-        {% for track in artist.featured_tracks %}
+        {% for track in result.featured_tracks %}
           <li class="list-group-item">
               <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
-                  <span class="track-id">{{ track.id }}</span>
-                  <span class="track-release-date">{{ track.album_release_date }}</span>
+                  <span class="track-release-date">{{ track.album.release_date.strftime('%Y-%m-%d') }}</span>
                   {% for artist in track.primary_artists %}
                   <span class="track-artist">{{ artist.name }}</span>
                   {% endfor %}
@@ -46,8 +45,9 @@
                     {% endfor %}
                   {% endif %}
               </a>
-              <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}">
-                  <span class="track-album">[{{ track.album.name }}]</span>
+              <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" style="float: right" class="album">
+                  <span class="tooltiptext">{{ track.album.name }}</span>
+                  <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
               </a>
               <a href="{{ url_for('ui.edit_track', track_id=track.id) }}" style="float:right; padding-left: 1em;"><i class="fa fa-pencil-square-o"></i></a>
           </li>
