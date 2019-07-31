@@ -172,3 +172,13 @@ class Persistence:
             print(f"Unable to persist track {track_id} annotations")
             traceback.print_tb(e.__traceback__)
             raise
+
+    @staticmethod
+    def delete_track(_id: int) -> None:
+        try:
+            Persist.delete_track(_id)
+        except Exception as e:
+            print(f"Unable to delete track {_id} hometown")
+            traceback.print_tb(e.__traceback__)
+            raise
+

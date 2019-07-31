@@ -30,27 +30,17 @@ def artists():
 
 @ui.route("/tracks/<track_id>")
 def get_track(track_id: int):
-    q = request.args.get('q') if request.args.get('q') else ""
-    track = Track.query.filter_by(id=track_id).first()
-    if track:
-        return render_template('ui/track.html', result=track, q=q)
-    return redirect(url_for('.index'))
+    return render_instance(Track, track_id, 'ui/track.html')
 
 
 @ui.route("/albums/<album_id>")
 def get_album(album_id: int):
-    album = Album.query.filter_by(id=album_id).first()
-    if album:
-        return render_template('ui/album.html', result=album)
-    return redirect(url_for('.index'))
+    return render_instance(Album, album_id, 'ui/album.html')
 
 
 @ui.route("/artists/<artist_id>")
 def get_artist(artist_id: int):
-    artist = Artist.query.filter_by(id=artist_id).first()
-    if artist:
-        return render_template('ui/artist.html', result=artist)
-    return redirect(url_for('.index'))
+    return render_instance(Artist, artist_id, 'ui/artist.html')
 
 
 @ui.route("/edit_track")
@@ -86,7 +76,16 @@ def pagination(_request) -> (int, int, int):
 
 
 def render_class(model: db.Model, template: str):
+    q = request.args.get('q') or ""
     offset, start_page, end_page = pagination(request)
-    instances = model.query.order_by(model.id).limit(10).offset(offset)
+    instances = model.query.filter(model.name.ilike(f"%{q}%")).order_by(model.id).limit(10).offset(offset)
     count = model.query.count()
     return render_template(template, instances=instances, offset=offset, count=count, start_page=start_page, end_page=end_page)
+
+
+def render_instance(model: db.Model, _id: int, template: str):
+    q = request.args.get('q') if request.args.get('q') else ""
+    instance = model.query.filter_by(id=_id).first()
+    if instance:
+        return render_template(template, result=instance, q=q)
+    return redirect(url_for('.index'))

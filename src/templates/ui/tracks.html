@@ -13,11 +13,13 @@
                       <span class="track-artist">{{ artist.name }}</span>
                   </a>
                   {% endfor %}
-                  <span class="track-title">"{{ track.name }}"</span>
+                  <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
+                      <span class="track-title">"{{ track.name }}"</span>
+                  </a>
                   {% if track.featured_artists %}
                     <span class="track-feat">feat. </span>
                     {% for artist in track.featured_artists %}
-                        <span class="track-feat">{{ artist.name }}</span>
+                        <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}"><span class="track-feat">{{ artist.name }}</span></a>
                     {% endfor %}
                   {% endif %}
               </a>

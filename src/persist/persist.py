@@ -201,6 +201,20 @@ class Persist:
                 db.session.close()
 
     @staticmethod
+    def delete_track(_id: int):
+        _track = Track.query.filter_by(id=_id).first()
+        current = create_app('docker')
+        with current.app_context():
+            try:
+                db.session.delete(_track)
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
+
+    @staticmethod
     def delete_sections(uri):
         _track = Track.query.filter_by(spot_uri=uri).first()
         current = create_app('docker')
