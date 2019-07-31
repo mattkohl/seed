@@ -1,4 +1,4 @@
-{% extends "_base.html" %}
+{% extends "base.html" %}
 {% block title %}{{ query }} ⋅ the Right Rhymes ⋅ Hip-Hop Slang Defined{% endblock %}
 
 {% block content %}
@@ -12,7 +12,7 @@
             </div>
             <div class="indentTag">
                 {% for artist in result.primary_artists %}
-                <span class="tag">&lt;artist&gt;</span>{{ artist.name.replace('&', '&amp;') }}<span class="tag">&lt;/artist&gt;</span>
+                <span class="tag">&lt;artist&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}"><span class="track-artist">{{ artist.name.replace('&', '&amp;') }}</span></a><span class="tag">&lt;/artist&gt;</span>
                 {% endfor %}
             </div>
             <div class="indentTag">
@@ -20,11 +20,11 @@
             </div>
             {% for f in result.featured_artists %}
                 <div class="indentTag">
-                    <span class="tag">&lt;feat&gt;</span>{{ f.name }}<span class="tag">&lt;/feat&gt;</span>
+                    <span class="tag">&lt;feat&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=f.id) }}">{{ f.name }}</a><span class="tag">&lt;/feat&gt;</span>
                 </div>
             {% endfor %}
             <div class="indentTag">
-                <span class="tag">&lt;album&gt;</span>{{ result.album.name.replace('&', '&amp;') }}<span class="tag">&lt;/album&gt;</span>
+                <span class="tag">&lt;album&gt;</span><a href="{{ url_for('ui.get_album', album_id=result.album.id) }}" class="album">{{ result.album.name.replace('&', '&amp;') }}</a><span class="tag">&lt;/album&gt;</span>
             </div>
             {% for lyric in result.filter_lyrics(query) %}
                 <div class="indentTag"><span class="tag">&lt;lyric&gt;</span>{{ lyric|replace(query, "<span class='query'>" + query + "</span>")|safe }}<span class="tag">&lt;/lyric&gt;</span></div>
