@@ -1,33 +1,37 @@
 <div class="track">
-    <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
-        <span class="track-release-date">{{ track.album.release_date.strftime('%Y-%m-%d') }}</span>
-    </a>
-    {% for artist in track.primary_artists %}
-    <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
-        <span class="track-artist">{{ artist.name }}</span>
-    </a>
-    {% endfor %}
-    <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
-        <span class="track-title">"{{ track.name }}"</span>
-    </a>
-    {% if track.featured_artists %}
-    <span class="track-feat">feat. </span>
-    {% for artist in track.featured_artists %}
-    <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
-        <span class="track-artist">{{ artist.name }}</span>
-    </a>
-    {% endfor %}
-    {% endif %}
-    <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}">[{{ track.album.name.replace('&', '&amp;')}}]</a>
-    {% if track.lyrics is not none %}
-    <span style="color: darkgray;">✓</span>
-    {% else %}
-    <a id="{{track.spot_uri}}" class="run-button run-track" style="color: darkgray;">➤</a>
-    {% endif %}
-    <div style="float: right">
-        <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" class="album">
-            <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+    <div>
+        <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
+            <span class="track-release-date">{{ track.album.release_date.strftime('%Y-%m-%d') }}</span>
         </a>
+        {% for artist in track.primary_artists %}
+        <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
+            <span class="track-artist">{{ artist.name }}</span>
+        </a>
+        {% endfor %}
+        <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
+            <span class="track-title">"{{ track.name }}"</span>
+        </a>
+        {% if track.featured_artists %}
+        <span class="track-feat">feat. </span>
+        {% for artist in track.featured_artists %}
+        <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
+            <span class="track-artist">{{ artist.name }}</span>
+        </a>
+        {% endfor %}
+        {% endif %}
+        <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}">[{{ track.album.name.replace('&', '&amp;')}}]</a>
+        {% if track.lyrics is not none %}
+        <span style="color: darkgray;">✓</span>
+        {% else %}
+        <a id="{{track.spot_uri}}" class="run-button run-track">➢</a>
+        {% endif %}
+        <div style="float: right">
+            <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" class="album">
+                <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+            </a>
+        </div>
+    </div>
+    <div class="track-data">
         <a id="track_{{track.id}}" class="delete-button" onclick="deleteInstance('track', {{track.id}})">x</a>
     </div>
 </div>

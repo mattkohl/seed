@@ -9,7 +9,7 @@
         <a style="float:right" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
     </div>
     <ul class="list-group">
-        {% for album in result.albums %}
+        {% for album in result.albums|sort(attribute='release_date') %}
             <li class="list-group-item">
                 {% include "ui/_album.html" %}
             </li>
