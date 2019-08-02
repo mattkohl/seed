@@ -75,7 +75,7 @@ class Artist(db.Model):
     primary_tracks = db.relationship('Track', secondary=track_primary_artist, lazy='subquery', backref=db.backref('primary_artists', lazy=True))
     featured_tracks = db.relationship('Track', secondary=track_featured_artist, lazy='subquery', backref=db.backref('featured_artists', lazy=True))
     sections = db.relationship('Section', secondary=section_artist, lazy='subquery', backref=db.backref('section_artists', lazy=True))
-    albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('albums_artists', lazy='dynamic'))
+    albums = db.relationship('Album', secondary=album_artist, lazy='subquery', backref=db.backref('artists', lazy='dynamic'))
     hometown = db.relationship('Location', secondary=artist_hometown, lazy='subquery', uselist=False, backref=db.backref('hometown_of', lazy='dynamic'))
     birthplace = db.relationship('Location', secondary=artist_birthplace, lazy='subquery', uselist=False, backref=db.backref('birthplace_of', lazy='dynamic'))
     last_updated = db.Column(db.DateTime)

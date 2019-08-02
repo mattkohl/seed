@@ -15,7 +15,7 @@
             {% endfor %}
         {% else %} __ {% endif %}
         - "{{ result.name }}"
-        <a id="track_{{result.id}}" class="run-button" onclick="runInstance('track', '{{result.spot_uri}}')">➢</a>
+        <a id="{{result.spot_uri}}" class="run-button run-track">➢</a>
         <div style="float:right" >
             <a href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
             <a href="{{result.lyrics_url}}" target="_blank"><img src="{{ url_for('static', filename='img/genius.svg') }}"/></a>

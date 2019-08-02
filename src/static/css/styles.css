@@ -1,11 +1,19 @@
-html {
+body {
+    padding-top: 5rem;
+    background-color: #343a40 !important;
+    color: slategray;
+}
+
+.h1 {
     color: whitesmoke;
 }
 
-body {
-    color: whitesmoke;
-    padding-top: 5rem;
-    background-color: #343a40 !important;
+.album-data, .artist-data, .track-data {
+    float: left;
+}
+
+.count {
+    font-style: italic;
 }
 
 .bd-placeholder-img {
@@ -117,6 +125,7 @@ a.album:hover {
     cursor: pointer;
     color: red !important;
     font-weight: bold;
+    margin-right: 0.5rem;
 }
 
 .run-button {

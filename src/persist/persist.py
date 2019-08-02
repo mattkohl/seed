@@ -64,12 +64,18 @@ class Persist:
                                                 name=artist.name,
                                                 spot_uri=artist.uri)
 
-                _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in artist.genres] if artist.genres else None
-                _artist.img = artist.images[0]["url"] if artist.images else None
-                _artist.thumb = artist.images[-1]["url"] if len(artist.images) > 1 else None
+                _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in artist.genres] if artist.genres else list()
+
+                img = artist.images[0]["url"] if artist.images else None
+                if img:
+                    _artist.img = img
+                thumb = artist.images[-1]["url"] if len(artist.images) > 1 else None
+                if thumb:
+                    _artist.thumb = thumb
                 db.session.add(_artist)
-                if _genres:
-                    _artist.genres.extend(_genres)
+
+                [_artist.genres.append(g) for g in _genres if g not in _artist.genres]
+
                 db.session.commit()
             except Exception:
                 db.session.rollback()
@@ -122,11 +128,14 @@ class Persist:
                                                            name=artist.name,
                                                            spot_uri=artist.uri)
                                      for artist in track.featured_artists]
-                _album.img = img
-                _album.thumb = thumb
-                _album.artists.extend(_primary_artists)
-                _track.primary_artists.extend(_primary_artists)
-                _track.featured_artists.extend(_featured_artists)
+                if img:
+                    _album.img = img
+                if thumb:
+                    _album.thumb = thumb
+
+                [_album.artists.append(a) for a in _primary_artists if a not in _album.artists]
+                [_track.primary_artists.append(a) for a in _primary_artists if a not in _track.primary_artists]
+                [_track.primary_artists.append(a) for a in _featured_artists if a not in _track.featured_artists]
                 db.session.commit()
             except Exception:
                 db.session.rollback()
@@ -141,7 +150,7 @@ class Persist:
             with current.app_context():
                 img = album.images[0]["url"] if album.images else None
                 thumb = album.images[-1]["url"] if len(album.images) > 1 else None
-                _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in album.genres] if album.genres else None
+                _genres = [Persist.get_or_create(db.session, Genre, name=genre.name) for genre in album.genres] if album.genres else list()
                 _album = Persist.get_or_create(db.session, Album,
                                                name=album.name,
                                                spot_uri=album.uri,
@@ -152,12 +161,12 @@ class Persist:
                                                   spot_uri=artist.uri)
                             for artist in album.artists]
                 db.session.commit()
-                _album.img = img
-                _album.thumb = thumb
-                if _artists:
-                    _album.artists.extend(_artists)
-                if _genres:
-                    _album.genres.extend(_genres)
+                if img:
+                    _album.img = img
+                if thumb:
+                    _album.thumb = thumb
+                [_album.artists.append(a) for a in _artists if a not in _album.artists]
+                [_album.genres.append(g) for g in _genres if g not in _album.genres]
                 db.session.commit()
         except Exception:
             db.session.rollback()

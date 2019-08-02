@@ -1,0 +1,19 @@
+<div id="artist_{{artist.id}}" class="artist">
+    <div>
+      <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
+          <span class="track-artist">{{ artist.name }}</span>
+      </a>
+      <a id="{{artist.spot_uri}}" class="run-button run-artist">➢</a>
+      <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}" style="float: right" class="artist">
+          <img src="{% if artist.thumb is not none %} {{ artist.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+      </a>
+    </div>
+    <div class="artist-data">
+        <a class="delete-button" onclick="deleteInstance('artist', {{artist.id}})">x</a>
+        <span class="count">{{ artist.albums|length }} albums</span>
+        <span> | </span>
+        <span class="count">{{ artist.primary_tracks|length }} primary</span>
+        <span> | </span>
+        <span class="count">{{ artist.featured_tracks|length }} feat</span>
+    </div>
+</div>
