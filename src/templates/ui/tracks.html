@@ -5,7 +5,7 @@
 
     <ul class="list-group">
         {% for track in instances %}
-          <li class="list-group-item">
+          <li id="track_{{ track.id }}" class="list-group-item track-listed">
               <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
                   <span class="track-release-date">{{ track.album.release_date.strftime('%Y-%m-%d') }}</span>
                   {% for artist in track.primary_artists %}
@@ -23,10 +23,13 @@
                     {% endfor %}
                   {% endif %}
               </a>
-              <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" style="float: right" class="album">
-                  <span class="tooltiptext">{{ track.album.name }}</span>
-                  <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
-              </a>
+              <span style="float: right">
+                  <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" class="album">
+                      <span class="tooltiptext">{{ track.album.name }}</span>
+                      <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+                  </a>
+                  <a id="track_{{track.id}}" class="delete-button" onclick="deleteInstance('track', {{track.id}})">x</a>
+              </span>
           </li>
         {% endfor %}
     </ul>
@@ -71,3 +74,5 @@
 
 </div>
 {% endblock %}
+
+{% block scripts %}{% endblock %}

@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict
 import traceback
 
 from src.geni.models import SectionTuple
@@ -119,7 +119,6 @@ class Persistence:
     @staticmethod
     def persist_sections(track_id: int, sections: List[SectionTuple]):
         _track = Track.query.filter_by(id=track_id).first()
-        # Persist.delete_sections(_track.spot_uri)
         for section_tuple in sections:
             try:
                 Persist.persist_section_tuple(section_tuple, track_id)
@@ -174,11 +173,24 @@ class Persistence:
             raise
 
     @staticmethod
-    def delete_track(_id: int) -> None:
+    def delete_track(_id: int) -> Dict:
         try:
             Persist.delete_track(_id)
         except Exception as e:
-            print(f"Unable to delete track {_id} hometown")
+            print(f"Unable to delete track {_id}")
             traceback.print_tb(e.__traceback__)
             raise
+        finally:
+            return dict(message=f"Deleted track: {_id}")
+
+    @staticmethod
+    def delete_album(_id: int) -> Dict:
+        try:
+            Persist.delete_album(_id)
+        except Exception as e:
+            print(f"Unable to album {_id}")
+            traceback.print_tb(e.__traceback__)
+            raise
+        finally:
+            return dict(message=f"Deleted album: {_id}")
 

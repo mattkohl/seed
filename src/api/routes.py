@@ -33,6 +33,11 @@ def album(uri):
     return jsonify(Fetch.album(uri))
 
 
+@api.route("/albums/<_id>/delete", methods=['GET', 'POST'])
+def album_delete(_id):
+    return jsonify(Persistence.delete_album(_id))
+
+
 @api.route("/albums/<uri>/missing-lyrics")
 def album_tracks_missing_lyrics(uri):
     return jsonify(Fetch.album_tracks_missing_lyrics(uri))
@@ -142,6 +147,11 @@ def tracks():
     if len(fetched) == 1:
         return redirect(url_for("api.track", uri=fetched[0]["spot_uri"]))
     return jsonify(fetched)
+
+
+@api.route("/tracks/<_id>/delete", methods=['GET', 'POST'])
+def track_delete(_id):
+    return jsonify(Persistence.delete_track(_id))
 
 
 @api.route("/tracks/with-lyrics")

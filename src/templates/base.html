@@ -54,4 +54,15 @@
   </body>
   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+  <script>
+  function deleteInstance(cls, _id) {
+      let endpoint = `/api/v1/${cls}s/${_id}/delete`;
+        $.post(endpoint)
+       .done(function() {
+          $(`#${cls}_${_id}`).hide();
+          console.log(`Successfully deleted ${_id}`);
+      }).fail(function() { console.log(`Failed to delete ${_id}`); });
+  }
+  </script>
+  {% block scripts %}{% endblock %}
 </html>

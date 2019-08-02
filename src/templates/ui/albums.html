@@ -15,10 +15,13 @@
                   {% endfor %}
               </a>
               <a href="{{ url_for('ui.get_album', album_id=album.id) }}" class="album">[{{ album.name }}]</a>
-              <a href="{{ url_for('ui.get_album', album_id=album.id) }}" style="float: right" class="album">
-                  <span class="tooltiptext">{{ album.name }}</span>
-                  <img src="{% if album.img is not none %} {{ album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
-              </a>
+              <span style="float: right">
+                  <a href="{{ url_for('ui.get_album', album_id=album.id) }}" class="album">
+                      <span class="tooltiptext">{{ track.album.name }}</span>
+                      <img src="{% if album.img is not none %} {{ album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+                  </a>
+                  <a id="album_{{album.id}}" class="delete-button" onclick="deleteInstance('album', {{album.id}})">x</a>
+              </span>
           </li>
         {% endfor %}
     </ul>

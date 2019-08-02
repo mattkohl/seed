@@ -105,3 +105,17 @@ a.album:hover {
     margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 
+.track-listed:hover {
+    background: lightgray;
+}
+
+.track-listed:active {
+    background: lightgray;
+}
+
+.delete-button {
+    cursor: pointer;
+    color: red !important;
+    font-weight: bold;
+}
+
