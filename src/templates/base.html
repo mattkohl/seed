@@ -72,6 +72,14 @@
           window.location.reload(true);
       }).fail(function() { console.log(`Failed to run ${uri}`); });
   }
+
+  $("a.run-track")
+     .click(function(){
+      $(this).html($('<img>',{id:'theImg', height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
+       let _id = $(this).attr('id');
+       runInstance("track", _id)
+     });
+
   </script>
 
   </script>
