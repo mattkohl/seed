@@ -10,7 +10,6 @@
                   <span class="track-artist">{{ artist.name }}</span>
               </a>
               <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}" style="float: right" class="artist">
-                  <span class="tooltiptext">{{ artist.name }}</span>
                   <img src="{% if artist.thumb is not none %} {{ artist.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
               </a>
           </li>
@@ -21,13 +20,13 @@
         <ul class="pagination">
           {% if offset > 9 %}
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('ui.albums')}}?offset=0" aria-label="Previous">
+              <a class="page-link" href="{{ url_for('ui.artists')}}?offset=0" aria-label="Previous">
                 <span> << </span>
                 <span class="sr-only">Previous</span>
               </a>
             </li>
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('ui.albums')}}?offset={{offset - 10}}" aria-label="Previous">
+              <a class="page-link" href="{{ url_for('ui.artists')}}?offset={{offset - 10}}" aria-label="Previous">
                 <span> < </span>
                 <span class="sr-only">Previous</span>
               </a>
@@ -35,18 +34,18 @@
           {% endif %}
           {% for n in range(start_page+1, end_page) %}
             {% if (offset + n*10) < count-10 %}
-                <li class="page-item"><a class="page-link" href="{{ url_for('ui.albums') }}?offset={{n*10}}">{{n}}</a></li>
+                <li class="page-item"><a class="page-link" href="{{ url_for('ui.artists') }}?offset={{n*10}}">{{n}}</a></li>
             {% endif %}
           {% endfor %}
           {% if (count - offset) > 10 %}
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('ui.albums') }}?offset={{offset + 10}}" aria-label="Next">
+              <a class="page-link" href="{{ url_for('ui.artists') }}?offset={{offset + 10}}" aria-label="Next">
                 <span> > </span>
                 <span class="sr-only">Next</span>
               </a>
             </li>
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('ui.albums') }}?offset={{count - 10}}" aria-label="Next">
+              <a class="page-link" href="{{ url_for('ui.artists') }}?offset={{count - 10}}" aria-label="Next">
                 <span> >> </span>
                 <span class="sr-only">Next</span>
               </a>

@@ -119,3 +119,6 @@ a.album:hover {
     font-weight: bold;
 }
 
+.run-button {
+    cursor: pointer;
+}

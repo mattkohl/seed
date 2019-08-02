@@ -63,6 +63,17 @@
           console.log(`Successfully deleted ${_id}`);
       }).fail(function() { console.log(`Failed to delete ${_id}`); });
   }
+
+  function runInstance(cls, uri) {
+      let endpoint = `/api/v1/${cls}s/${uri}/run`;
+        $.get(endpoint)
+       .done(function() {
+          console.log(`Successfully run ${uri}`);
+          window.location.reload(true);
+      }).fail(function() { console.log(`Failed to run ${uri}`); });
+  }
+  </script>
+
   </script>
   {% block scripts %}{% endblock %}
 </html>
