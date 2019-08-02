@@ -5,21 +5,14 @@
 <div class="container track">
     <div class="h1">
         {{ result.name.replace('&', '&amp;') }}
-         <a id="artist_{{result.id}}" class="run-button" onclick="runInstance('artist', '{{result.spot_uri}}')">➤</a>
+        <a id="artist_{{result.id}}" class="run-button" onclick="runInstance('artist', '{{result.spot_uri}}')">➢</a>
+        <a style="float:right" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
     </div>
     <ul class="list-group">
-        {% for track in result.primary_tracks %}
-          <li class="list-group-item">
-            {% include "ui/_track.html" %}
-          </li>
-        {% endfor %}
-    </ul>
-
-    <ul class="list-group">
-        {% for track in result.featured_tracks %}
-        <li class="list-group-item">
-            {% include "ui/_track.html" %}
-          </li>
+        {% for album in result.albums %}
+            <li class="list-group-item">
+                {% include "ui/_album.html" %}
+            </li>
         {% endfor %}
     </ul>
 </div>

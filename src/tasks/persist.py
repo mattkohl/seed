@@ -188,7 +188,7 @@ class Persistence:
         try:
             Persist.delete_album(_id)
         except Exception as e:
-            print(f"Unable to album {_id}")
+            print(f"Unable to delete album {_id}")
             traceback.print_tb(e.__traceback__)
             raise
         finally:

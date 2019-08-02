@@ -21,12 +21,16 @@ class GenUtils:
         slug = re.sub(r"&", "and", slug)
         slug = re.sub(r"\+", "and", slug)
         slug = re.sub(r"é", "e", slug)
+        slug = re.sub(r"–", "-", slug)
         slug = re.sub(r"ó", "o", slug)
         slug = re.sub(r"á", "a", slug)
         slug = re.sub(r"@", "at", slug)
         slug = re.sub(r"½", "half", slug)
         slug = re.sub(r"ō", "o", slug)
         slug = re.sub(r"'", "", slug)
+        slug = re.sub(r"’", "", slug)
+        slug = re.sub(r"“", "", slug)
+        slug = re.sub(r"”", "", slug)
         slug = re.sub(r",", "", slug)
         slug = re.sub(r"-$", "", slug)
         slug = re.sub(r"\?", "", slug)
@@ -54,8 +58,12 @@ class GenUtils:
         h = "https"
         g = "genius"
         c = "com"
-        _artist = artists[0]
-        artist = GenUtils.adjust_artist_name(_artist)
+        if len(artists) == 2:
+            _a1, _a2 = artists
+            artist = f"{GenUtils.adjust_artist_name(_a1)} and {GenUtils.adjust_artist_name(_a2)}"
+        else:
+            _artist = artists[0]
+            artist = GenUtils.adjust_artist_name(_artist)
         song_title = GenUtils.prune(song_title)
         _slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
         slug = re.sub(r"[-]+", "-", _slug)
@@ -64,5 +72,6 @@ class GenUtils:
     @staticmethod
     def adjust_artist_name(name: str) -> str:
         _name = "Yasiin Bey" if name.lower() == "mos def" else name
+        _name = "2Pac" if name.lower() == "makaveli" else name
         _name = "The " + _name[:-4] if _name.endswith(", The") else _name
         return _name

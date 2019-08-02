@@ -4,7 +4,6 @@
 
 {% block content %}
 <div class="container track">
-    <a href="{{result.lyrics_url}}" target="_blank" style="float: right"><img src="{{ url_for('static', filename='img/genius.png') }}" height="35" width="35"/></a>
     <div class="h1">
         {% if result.primary_artists %}
             {% for artist in result.primary_artists %}
@@ -16,7 +15,11 @@
             {% endfor %}
         {% else %} __ {% endif %}
         - "{{ result.name }}"
-        <a id="track_{{result.id}}" class="run-button" onclick="runInstance('track', '{{result.spot_uri}}')">➤</a>
+        <a id="track_{{result.id}}" class="run-button" onclick="runInstance('track', '{{result.spot_uri}}')">➢</a>
+        <div style="float:right" >
+            <a href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
+            <a href="{{result.lyrics_url}}" target="_blank"><img src="{{ url_for('static', filename='img/genius.svg') }}"/></a>
+        </div>
     </div>
     <div class="example">
       <div class="tag">&lt;example <span class="attribute">id="s{{result.id}}"</span>&gt;</div>

@@ -8,7 +8,8 @@
             {{ artist.name.replace('&', '&amp;') }}
         {% endfor %}
         - {{ result.name }}
-        <a id="album_{{result.id}}" class="run-button" onclick="runInstance('album', '{{result.spot_uri}}')">➤</a>
+        <a id="album_{{result.id}}" class="run-button" onclick="runInstance('album', '{{result.spot_uri}}')">➢</a>
+        <a style="float:right" href="/api/v1/albums/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
     </div>
 
     <ul class="list-group">

@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 from typing import Dict
 
@@ -216,16 +217,16 @@ class Persist:
 
     @staticmethod
     def delete_album(_id: int):
-        _album = Album.query.filter_by(id=_id).first()
         current = create_app('docker')
         with current.app_context():
             try:
-                for _track in _album.tracks:
-                    db.session.delete(_track)
+                _album = db.session.query(Album).filter(Album.id==_id).first()
+                db.session.add(_album)
                 db.session.delete(_album)
                 db.session.commit()
-            except Exception:
+            except Exception as e:
                 db.session.rollback()
+                traceback.print_tb(e.__traceback__)
                 raise
             finally:
                 db.session.close()

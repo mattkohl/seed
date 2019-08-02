@@ -50,6 +50,7 @@ class Tasks:
     @staticmethod
     def run_artist(artist_uri) -> Dict:
         album_tuples = Fetch.artist_albums(artist_uri)
+        print(f"Downloaded {len(album_tuples)} albums for {artist_uri}")
         [Persistence.persist_album(a) for a in album_tuples]
         _artist = Fetch.artist_mb_metadata(artist_uri)
         _ = Fetch.artist_dbp_uri(artist_uri, True)

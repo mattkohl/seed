@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 from typing import List
 
@@ -128,8 +127,6 @@ class Album(db.Model):
     thumb = db.Column(db.Text)
     name = db.Column(db.Text)
     tracks = db.relationship('Track', backref='album', lazy='dynamic')
-    artists = db.relationship('Artist', secondary=album_artist, lazy='subquery',
-                              backref=db.backref('artists_albums', lazy=True))
     last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
