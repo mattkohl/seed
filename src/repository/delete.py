@@ -22,8 +22,22 @@ class Delete:
             db.session.close()
 
     @staticmethod
-    def delete_track(_id: int):
-        _track = Track.query.filter_by(id=_id).first()
+    def delete_artist(_id: int):
+        _artist = Artist.query.filter_by(id=_id).first()
+        current = create_app('docker')
+        with current.app_context():
+            try:
+                db.session.delete(_artist)
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
+
+    @staticmethod
+    def delete_track(track_id: int):
+        _track = Track.query.filter_by(id=track_id).first()
         current = create_app('docker')
         with current.app_context():
             try:
@@ -36,12 +50,11 @@ class Delete:
                 db.session.close()
 
     @staticmethod
-    def delete_album(_id: int):
+    def delete_album(album_id: int):
+        _album = Album.query.filter_by(id=album_id).first()
         current = create_app('docker')
         with current.app_context():
             try:
-                _album = db.session.query(Album).filter(Album.id==_id).first()
-                db.session.add(_album)
                 db.session.delete(_album)
                 db.session.commit()
             except Exception as e:
@@ -52,8 +65,8 @@ class Delete:
                 db.session.close()
 
     @staticmethod
-    def delete_sections(uri):
-        _track = Track.query.filter_by(spot_uri=uri).first()
+    def delete_sections(track_uri: str):
+        _track = Track.query.filter_by(spot_uri=track_uri).first()
         current = create_app('docker')
         with current.app_context():
             try:
@@ -68,8 +81,8 @@ class Delete:
                 db.session.close()
 
     @staticmethod
-    def delete_hometown(uri):
-        _artist = Artist.query.filter_by(spot_uri=uri).first()
+    def delete_hometown(artist_uri: str):
+        _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
         current = create_app('docker')
         with current.app_context():
             try:
@@ -83,9 +96,9 @@ class Delete:
                 db.session.close()
 
     @staticmethod
-    def delete_birthplace(uri):
+    def delete_birthplace(artist_uri: str):
         try:
-            _artist = Artist.query.filter_by(spot_uri=uri).first()
+            _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
             current = create_app('docker')
             with current.app_context():
                 db.session.add(_artist)

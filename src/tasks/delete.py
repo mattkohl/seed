@@ -25,6 +25,15 @@ class Deletion:
             return {"status": message}
 
     @staticmethod
+    def delete_artist(_id: int) -> None:
+        try:
+            Delete.delete_artist(_id)
+        except Exception as e:
+            print(f"Unable to delete artist {_id}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
     def delete_artist_birthplace(artist_uri: str) -> None:
         try:
             Delete.delete_birthplace(artist_uri)

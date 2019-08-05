@@ -5,7 +5,7 @@ from src.api import api
 from src.tasks.fetch import Fetch
 from src.tasks.persist import Persistence
 from src.tasks.pipeline import Tasks
-from tasks.delete import Deletion
+from src.tasks.delete import Deletion
 
 
 @api.route("/")
@@ -36,7 +36,7 @@ def album(uri):
 
 @api.route("/albums/<_id>/delete", methods=['GET', 'POST'])
 def album_delete(_id):
-    return jsonify(Persistence.delete_album(_id))
+    return jsonify(Deletion.delete_album(_id))
 
 
 @api.route("/albums/<uri>/missing-lyrics")
@@ -63,6 +63,11 @@ def artist(uri):
     return jsonify(Fetch.artist(uri))
 
 
+@api.route("/artists/<_id>/delete")
+def artist_delete(_id):
+    return jsonify(Deletion.delete_artist(_id))
+
+
 @api.route("/artists/<uri>/hometown")
 def artist_hometown(uri):
     return jsonify(Fetch.artist_hometown(uri))
@@ -70,7 +75,7 @@ def artist_hometown(uri):
 
 @api.route("/artists/<uri>/hometown/delete")
 def artist_hometown_delete(uri):
-    return jsonify(Persistence.delete_artist_hometown(uri))
+    return jsonify(Deletion.delete_artist_hometown(uri))
 
 
 @api.route("/artists/<uri>/birthplace")
