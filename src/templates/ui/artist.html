@@ -3,17 +3,15 @@
 
 {% block content %}
 <div class="container">
-
-    <header class="header-with-img"">
-            <img src="{% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
-            <div class="h1 header-title">
-                {{ result.name.replace('&', '&amp;') }}
-                <a id="{{result.spot_uri}}" class="run-button run-artist">➢</a>
-            </div>
-            <a class="api-button" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank">
-                <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
-            </a>
-
+    <header class="header-with-img">
+        <img class="header-img" src="{% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
+        <div class="h1 header-title">
+            {{ result.name }}
+            <a id="{{result.spot_uri}}" class="run-button run-artist">➢</a>
+        </div>
+        <a class="api-button" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank">
+            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+        </a>
     </header>
     <ul class="list-group">
         {% for album in result.albums|sort(attribute='release_date') %}

@@ -2,15 +2,20 @@
 {% block title %}{{ result.name }} ⋅ the Right Rhymes{% endblock %}
 
 {% block content %}
-<div class="container track">
-    <div class="h1">
-        {% for artist in result.artists %}
-            {{ artist.name.replace('&', '&amp;') }}
-        {% endfor %}
-        - {{ result.name }}
-        <a id="{{result.spot_uri}}" class="run-button run-album">➢</a>
-        <a style="float:right" href="/api/v1/albums/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
-    </div>
+<div class="container">
+    <header class="header-with-img">
+        <img class="header-img" src="{% if result.img is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
+        <div class="h1 header-title">
+            {% for artist in result.artists %}
+                {{ artist.name }}
+            {% endfor %}
+            - {{ result.name }}
+            <a id="{{result.spot_uri}}" class="run-button run-album">➢</a>
+        </div>
+        <a class="api-button" href="/api/v1/albums/{{ result.spot_uri }}" target="_blank">
+            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+        </a>
+    </header>
 
     <ul class="list-group">
         {% for track in result.tracks %}
@@ -19,5 +24,6 @@
           </li>
         {% endfor %}
     </ul>
+
 </div>
 {% endblock %}

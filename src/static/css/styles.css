@@ -137,20 +137,23 @@ a.album:hover {
     height: 200px;
     justify-content: space-between;
     filter: grayscale(100%);
+    overflow: hidden;
+    position: relative;
 }
 
 .header-title {
-    align-self: end;
-    padding-left: 1rem;
+    cursor: pointer;
+    padding-left: 8px;
 }
 
-header.run-button {
-    align-self: flex-end
+.api-button, geni-button {
+    padding-right: 8px;
 }
 
-.api-button {
-    align-self: flex-end;
-    padding-right: 1rem;
+.geni-button {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
 }
 
 .list-group-item:first-child {
@@ -158,11 +161,14 @@ header.run-button {
     border-top-right-radius: 0rem !important;
 }
 
-.header-with-img img {
+.header-img {
     background-size: cover !important;
     margin: auto;
     width: 100%;
     opacity: 0.25;
+    position: absolute;
+    top: -50px;
+    z-index: -1000;
 }
 
 .lyrics {
