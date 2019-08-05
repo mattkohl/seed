@@ -63,7 +63,7 @@ def artist(uri):
     return jsonify(Fetch.artist(uri))
 
 
-@api.route("/artists/<_id>/delete")
+@api.route("/artists/<_id>/delete", methods=['GET', 'POST'])
 def artist_delete(_id):
     return jsonify(Deletion.delete_artist(_id))
 

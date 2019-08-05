@@ -36,6 +36,22 @@ class Delete:
                 db.session.close()
 
     @staticmethod
+    def delete_artist_and_albums(_id: int):
+        _artist = Artist.query.filter_by(id=_id).first()
+        current = create_app('docker')
+        with current.app_context():
+            try:
+                for _album in _artist.albums:
+                    db.session.delete(_album)
+                db.session.delete(_artist)
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
+
+    @staticmethod
     def delete_track(track_id: int):
         _track = Track.query.filter_by(id=track_id).first()
         current = create_app('docker')

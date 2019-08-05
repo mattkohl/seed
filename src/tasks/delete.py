@@ -27,7 +27,7 @@ class Deletion:
     @staticmethod
     def delete_artist(_id: int) -> None:
         try:
-            Delete.delete_artist(_id)
+            Delete.delete_artist_and_albums(_id)
         except Exception as e:
             print(f"Unable to delete artist {_id}")
             traceback.print_tb(e.__traceback__)
