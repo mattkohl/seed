@@ -5,6 +5,7 @@ from src.api import api
 from src.tasks.fetch import Fetch
 from src.tasks.persist import Persistence
 from src.tasks.pipeline import Tasks
+from tasks.delete import Deletion
 
 
 @api.route("/")
@@ -79,7 +80,7 @@ def artist_birthplace(uri):
 
 @api.route("/artists/<uri>/birthplace/delete")
 def artist_birthplace_delete(uri):
-    return jsonify(Persistence.delete_artist_birthplace(uri))
+    return jsonify(Deletion.delete_artist_birthplace(uri))
 
 
 @api.route("/artists/<uri>/run")
@@ -151,7 +152,7 @@ def tracks():
 
 @api.route("/tracks/<_id>/delete", methods=['GET', 'POST'])
 def track_delete(_id):
-    return jsonify(Persistence.delete_track(_id))
+    return jsonify(Deletion.delete_track(_id))
 
 
 @api.route("/tracks/with-lyrics")

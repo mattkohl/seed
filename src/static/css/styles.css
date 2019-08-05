@@ -131,3 +131,36 @@ a.album:hover {
 .run-button {
     cursor: pointer;
 }
+
+.header-with-img {
+    display: flex;
+    height: 200px;
+    justify-content: space-between;
+    filter: grayscale(100%);
+}
+
+.header-title {
+    align-self: end;
+    padding-left: 1rem;
+}
+
+header.run-button {
+    align-self: flex-end
+}
+
+.api-button {
+    align-self: flex-end;
+    padding-right: 1rem;
+}
+
+.list-group-item:first-child {
+    border-top-left-radius: 0rem !important;
+    border-top-right-radius: 0rem !important;
+}
+
+.header-with-img img {
+    background-size: cover !important;
+    margin: auto;
+    width: 100%;
+    opacity: 0.25;
+}

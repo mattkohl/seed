@@ -3,7 +3,7 @@ from typing import Dict, List
 from src.models import Track, Artist, Album
 from src.tasks.fetch import Fetch
 from src.tasks.persist import Persistence
-from src.persist.persist import Persist
+from src.repository.persist import Persist
 from sqlalchemy.sql.expression import func
 
 

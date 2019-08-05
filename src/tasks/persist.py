@@ -1,32 +1,15 @@
-from typing import Optional, List, Dict
+from typing import Optional, List
 import traceback
 
 from src.geni.models import SectionTuple
 from src import db
 from src.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
-from src.models import Track, Artist, Album, Location, Genre
-from src.persist.persist import Persist
+from src.models import Track, Artist
+from src.repository.persist import Persist
 from src.spot.models import TrackTuple, AlbumTuple, ArtistTuple
 
 
 class Persistence:
-
-    @staticmethod
-    def clear():
-        message = f"Deleted " \
-            f"{Track.query.count()} Tracks, " \
-            f"{Artist.query.count()} Artists, " \
-            f"{Album.query.count()} Albums, " \
-            f"{Genre.query.count()} Genres, & " \
-            f"{Location.query.count()} Locations"
-        try:
-            Persist.clear()
-        except Exception as e:
-            print(f"Unable to delete everything")
-            traceback.print_tb(e.__traceback__)
-            raise
-        else:
-            return {"status": message}
 
     @staticmethod
     def persist_track(track_tuple: TrackTuple) -> None:
@@ -72,24 +55,6 @@ class Persistence:
             Persist.persist_location_tuple(_updated)
         except Exception as e:
             print(f"Unable to persist artist {artist_id} hometown {location_tuple}")
-            traceback.print_tb(e.__traceback__)
-            raise
-
-    @staticmethod
-    def delete_artist_birthplace(artist_uri: str) -> None:
-        try:
-            Persist.delete_birthplace(artist_uri)
-        except Exception as e:
-            print(f"Unable to delete artist {artist_uri} birthplace")
-            traceback.print_tb(e.__traceback__)
-            raise
-
-    @staticmethod
-    def delete_artist_hometown(artist_uri: str) -> None:
-        try:
-            Persist.delete_hometown(artist_uri)
-        except Exception as e:
-            print(f"Unable to delete artist {artist_uri} hometown")
             traceback.print_tb(e.__traceback__)
             raise
 
@@ -171,26 +136,3 @@ class Persistence:
             print(f"Unable to persist track {track_id} annotations")
             traceback.print_tb(e.__traceback__)
             raise
-
-    @staticmethod
-    def delete_track(_id: int) -> Dict:
-        try:
-            Persist.delete_track(_id)
-        except Exception as e:
-            print(f"Unable to delete track {_id}")
-            traceback.print_tb(e.__traceback__)
-            raise
-        finally:
-            return dict(message=f"Deleted track: {_id}")
-
-    @staticmethod
-    def delete_album(_id: int) -> Dict:
-        try:
-            Persist.delete_album(_id)
-        except Exception as e:
-            print(f"Unable to delete album {_id}")
-            traceback.print_tb(e.__traceback__)
-            raise
-        finally:
-            return dict(message=f"Deleted album: {_id}")
-

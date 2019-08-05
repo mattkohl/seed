@@ -8,6 +8,7 @@ class GenUtils:
     def slugify(text: str) -> str:
         slug = text.strip().lower()
         slug = slug[1:] if slug[0] == "'" or slug[0] == "-" else slug
+        slug = re.sub(r"\$", "s", slug)
         slug = re.sub(r"^[\-']]", "", slug)
         slug = re.sub(r"\s", "-", slug)
         slug = re.sub(r"\.", "", slug)
@@ -73,5 +74,6 @@ class GenUtils:
     def adjust_artist_name(name: str) -> str:
         _name = "Yasiin Bey" if name.lower() == "mos def" else name
         _name = "2Pac" if name.lower() == "makaveli" else name
-        _name = "The " + _name[:-4] if _name.endswith(", The") else _name
+        _name = _name[:-4] if _name.endswith(", The") else _name
+        _name = _name[4:] if _name.startswith("The ") else _name
         return _name
