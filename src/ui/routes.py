@@ -4,13 +4,14 @@ from werkzeug.utils import redirect
 from src import db
 from src.forms import SearchForm
 from src.ui import ui
-
 from src.models import Track, Album, Artist
 
 
 @ui.route("/")
 def index():
-    return render_template('ui/index.html')
+    queries = ["wack", "dope"]
+    stats = [build_lyric_query_stat(q) for q in queries]
+    return render_template('ui/index.html', stats=stats)
 
 
 @ui.route("/tracks")
@@ -89,3 +90,7 @@ def render_instance(model: db.Model, _id: int, template: str):
     if instance:
         return render_template(template, result=instance, q=q)
     return redirect(url_for('.index'))
+
+
+def build_lyric_query_stat(query: str):
+    return {"query": query, "count": Track.query.filter(Track.lyrics.contains(query)).count()}

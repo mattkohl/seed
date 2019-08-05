@@ -19,5 +19,7 @@
     <div class="album-data">
         <a class="delete-button" onclick="deleteInstance('album', {{album.id}})">x</a>
         <span class="count">{{ album.tracks.all()|length }} tracks</span>
+        <span> · </span>
+        <span class="count">{{ album.lyrics_count() }} lyrics</span>
     </div>
 </div>

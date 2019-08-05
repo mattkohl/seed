@@ -23,7 +23,7 @@ class GenParser:
             page = requests.get(url)
             lyrics = GenParser.extract_lyrics_text(page)
         except Exception as e:
-            print(f"Nothing found at {urls}: {e}")
+            print(f"Lyric extraction error: {e}")
             if len(urls) >= 1:
                 GenParser.download(urls)
             else:
@@ -37,7 +37,7 @@ class GenParser:
             html = BeautifulSoup(page.text, "html.parser")
             lyrics = html.find("div", class_="lyrics").get_text()
         except Exception as e:
-            print(f"No lyrics found: {e}")
+            print(f"No lyrics found at {page.url}")
             raise
         else:
             return lyrics

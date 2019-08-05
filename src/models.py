@@ -154,6 +154,9 @@ class Album(db.Model):
             artists=[_a.as_artist_tuple()._asdict() for _a in artists]
         )
 
+    def lyrics_count(self):
+        return len([1 for _track in self.tracks if _track.lyrics is not None])
+
 
 class Genre(db.Model):
     __tablename__ = "genres"

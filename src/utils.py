@@ -1,5 +1,4 @@
 from typing import Dict
-from copy import deepcopy
 from fuzzywuzzy import fuzz
 import datetime
 
