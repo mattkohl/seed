@@ -48,7 +48,7 @@
         <span class="tag">&lt;/example&gt;</span>
     </div>
     <a class="btn btn-default" href="{{ url_for('ui.edit_track', track_id=result.id) }}">Edit</a>
-    <div class="h5 container">
+    <div class="h5 container lyrics">
         {% if result.lyrics %}
             {% for lyric in result.lyrics.split("\n") %}
                 {% if q %}

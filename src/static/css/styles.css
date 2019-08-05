@@ -164,3 +164,7 @@ header.run-button {
     width: 100%;
     opacity: 0.25;
 }
+
+.lyrics {
+    color: whitesmoke;
+}

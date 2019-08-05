@@ -346,17 +346,15 @@ class Fetch:
 
     @staticmethod
     def stats():
-        return {
-            "counts": {
-                "artists": Artist.query.count(),
-                "albums": Album.query.count(),
-                "tracks": Track.query.count(),
-                "genres": Genre.query.count(),
-                "locations": Location.query.count(),
-                "lyrics": Track.query.filter(Track.lyrics != None).count(),
-                "sections": Section.query.count()
-            }
-        }
+        return [
+            {"type": "artists", "count": Artist.query.count()},
+            {"type": "albums", "count": Album.query.count()},
+            {"type": "tracks", "count": Track.query.count()},
+            {"type": "genres", "count": Genre.query.count()},
+            {"type": "locations", "count": Location.query.count()},
+            {"type": "lyrics", "count": Track.query.filter(Track.lyrics != None).count()},
+            {"type": "sections", "count": Section.query.count()}
+        ]
 
     @staticmethod
     def text_annotate(text) -> AnnotationTuple:
@@ -412,7 +410,7 @@ class Fetch:
         _album = result.album.as_dict()
         _track.update({"album": _album, "artists": _artists})
         if result.lyrics is None or force_update:
-            urls = parser.GenParser.build_urls(result.primary_artists, result.featured_artists, result.name)
+            urls = parser.GenParser.build_urls(result)
             lyrics, url = parser.GenParser.download(urls)
             Persistence.persist_lyrics(result.id, lyrics, url)
             _track.update({"lyrics": lyrics, "lyrics_url": url})

@@ -55,7 +55,7 @@ class GenUtils:
         return st
 
     @staticmethod
-    def link(artists: List[str], song_title: str) -> str:
+    def link(artists: List[str], song_title: str, album_title: str = "") -> str:
         h = "https"
         g = "genius"
         c = "com"
@@ -65,7 +65,7 @@ class GenUtils:
         else:
             _artist = artists[0]
             artist = GenUtils.adjust_artist_name(_artist)
-        song_title = GenUtils.prune(song_title)
+        song_title = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
         _slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
         slug = re.sub(r"[-]+", "-", _slug)
         return f"{h}://{g}.{c}/{slug.capitalize()}"

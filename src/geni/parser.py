@@ -3,6 +3,8 @@ from typing import Optional, List, Tuple
 import re
 from bs4 import BeautifulSoup
 import requests
+
+
 from src.geni import utils
 from src.geni.models import SectionTuple
 
@@ -57,11 +59,11 @@ class GenParser:
         )
 
     @staticmethod
-    def build_urls(primary_artists, featured_artists, track_title):
-        _artists = primary_artists if len(primary_artists) > 0 else featured_artists
+    def build_urls(_track):
+        _artists = _track.primary_artists if len(_track.primary_artists) > 0 else _track.featured_artists
         if len(_artists) == 2:
-            url1 = utils.GenUtils.link([_artist.name for _artist in _artists], track_title)
-            url2 = utils.GenUtils.link([_artist.name for _artist in _artists[:1]], track_title)
+            url1 = utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)
+            url2 = utils.GenUtils.link([_artist.name for _artist in _artists[:1]], _track.name, _track.album.name)
             return [url1, url2]
         else:
-            return [utils.GenUtils.link([_artist.name for _artist in _artists], track_title)]
+            return [utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)]

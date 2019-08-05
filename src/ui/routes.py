@@ -2,6 +2,7 @@ from flask import render_template, request, url_for, g
 from werkzeug.utils import redirect
 
 from src import db
+from src.tasks.fetch import Fetch
 from src.forms import SearchForm
 from src.ui import ui
 from src.models import Track, Album, Artist
@@ -10,8 +11,9 @@ from src.models import Track, Album, Artist
 @ui.route("/")
 def index():
     queries = ["wack", "dope"]
-    stats = [build_lyric_query_stat(q) for q in queries]
-    return render_template('ui/index.html', stats=stats)
+    counts = [build_lyric_query_stat(q) for q in queries]
+    stats = Fetch.stats()
+    return render_template('ui/index.html', stats=stats, counts=counts)
 
 
 @ui.route("/tracks")

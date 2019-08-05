@@ -3,7 +3,6 @@ from werkzeug.utils import redirect
 
 from src.api import api
 from src.tasks.fetch import Fetch
-from src.tasks.persist import Persistence
 from src.tasks.pipeline import Tasks
 from src.tasks.delete import Deletion
 
