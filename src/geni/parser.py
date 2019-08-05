@@ -1,8 +1,9 @@
-from typing import Optional, List
+import traceback
+from typing import Optional, List, Tuple
 import re
 from bs4 import BeautifulSoup
 import requests
-
+from src.geni import utils
 from src.geni.models import SectionTuple
 
 
@@ -14,13 +15,29 @@ class GenParser:
     )
 
     @staticmethod
-    def download(url) -> Optional[str]:
+    def download(urls: List[str]) -> Tuple[Optional[str], str]:
+        assert len(urls) > 0
+        url = urls.pop()
+        lyrics = None
         try:
             page = requests.get(url)
+            lyrics = GenParser.extract_lyrics_text(page)
+        except Exception as e:
+            print(f"Nothing found at {urls}: {e}")
+            if len(urls) >= 1:
+                GenParser.download(urls)
+            else:
+                traceback.print_tb(e.__traceback__)
+                return None, url
+        return lyrics, url
+
+    @staticmethod
+    def extract_lyrics_text(page: requests.Response) -> str:
+        try:
             html = BeautifulSoup(page.text, "html.parser")
             lyrics = html.find("div", class_="lyrics").get_text()
         except Exception as e:
-            print(f"Nothing found at {url}: {e}")
+            print(f"No lyrics found: {e}")
             raise
         else:
             return lyrics
@@ -38,3 +55,13 @@ class GenParser:
             offset=match.start(),
             text=match.group("text").strip() if match.group("text").strip() else None
         )
+
+    @staticmethod
+    def build_urls(primary_artists, featured_artists, track_title):
+        _artists = primary_artists if len(primary_artists) > 0 else featured_artists
+        if len(_artists) == 2:
+            url1 = utils.GenUtils.link([_artist.name for _artist in _artists], track_title)
+            url2 = utils.GenUtils.link([_artist.name for _artist in _artists[:1]], track_title)
+            return [url1, url2]
+        else:
+            return [utils.GenUtils.link([_artist.name for _artist in _artists], track_title)]

@@ -412,16 +412,10 @@ class Fetch:
         _album = result.album.as_dict()
         _track.update({"album": _album, "artists": _artists})
         if result.lyrics is None or force_update:
-            _artists = result.primary_artists if len(result.primary_artists) > 0 else result.featured_artists
-            url = utils.GenUtils.link([_artist.name for _artist in _artists], result.name)
-            try:
-                lyrics = parser.GenParser.download(url)
-            except Exception as e:
-                print(f"Could not connect to {url}:", e)
-                # TODO check if () in result.name & try again with trimmed version
-            else:
-                Persistence.persist_lyrics(result.id, lyrics, url)
-                _track.update({"lyrics": lyrics, "lyrics_url": url})
+            urls = parser.GenParser.build_urls(result.primary_artists, result.featured_artists, result.name)
+            lyrics, url = parser.GenParser.download(urls)
+            Persistence.persist_lyrics(result.id, lyrics, url)
+            _track.update({"lyrics": lyrics, "lyrics_url": url})
         return _track
 
     @staticmethod
