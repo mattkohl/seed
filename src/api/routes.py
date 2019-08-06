@@ -87,6 +87,15 @@ def artist_birthplace_delete(uri):
     return jsonify(Deletion.delete_artist_birthplace(uri))
 
 
+@api.route("/artists/<uri>/metadata/run")
+def artist_metadata_run(uri):
+    _ = Fetch.artist_mb_metadata(uri)
+    _ = Fetch.artist_dbp_uri(uri, True)
+    _ = Fetch.artist_hometown(uri)
+    _ = Fetch.artist_birthplace(uri)
+    return jsonify({"Message": "done"})
+
+
 @api.route("/artists/<uri>/run")
 def artist_run(uri):
     return jsonify(Tasks.run_artist(uri))

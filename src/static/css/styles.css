@@ -128,6 +128,13 @@ header .delete-button {
     color: yellow !important;
 }
 
+header .metadata-button {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    color: yellow !important;
+}
+
 .delete-button {
     cursor: pointer;
     color: red !important;
@@ -135,7 +142,7 @@ header .delete-button {
     margin-right: 0.5rem;
 }
 
-.run-button {
+.run-button, .metadata-button {
     cursor: pointer;
 }
 
@@ -153,13 +160,12 @@ header .delete-button {
     padding-left: 8px;
 }
 
-.api-button, geni-button {
-    padding-right: 8px;
-}
-
-.geni-button {
+.api-button, .geni-button, .metadata-button {
     position: absolute;
     right: 8px;
+}
+
+.geni-button, .metadata-button {
     bottom: 8px;
 }
 

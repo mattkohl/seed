@@ -85,6 +85,15 @@
       }).fail(function() { console.log(`Failed to run ${uri}`); });
   }
 
+  function runMetadata(cls, uri) {
+      let endpoint = `/api/v1/${cls}s/${uri}/metadata/run`;
+        $.get(endpoint)
+       .done(function() {
+          console.log(`Successfully run ${uri}`);
+          window.location.reload(true);
+      }).fail(function() { console.log(`Failed to run ${uri}`); });
+  }
+
   $("a.run-track")
      .click(function(){
       $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
@@ -95,7 +104,7 @@
   $("a.run-artist")
      .click(function(){
       $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
-       let _id = $(this).attr('id');
+       let _id = $(this).closest("header").attr('id');
        runInstance("artist", _id)
      });
 
@@ -104,6 +113,13 @@
       $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
        let _id = $(this).attr('id');
        runInstance("album", _id)
+     });
+
+  $("a.run-artist-metadata")
+     .click(function(){
+      $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
+       let _id = $(this).closest("header").attr('id');
+       runMetadata("artist", _id)
      });
 
   </script>
