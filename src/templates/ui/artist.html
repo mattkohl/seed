@@ -12,7 +12,21 @@
         <a class="api-button" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank">
             <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
         </a>
+        <a class="delete-button" onclick="deleteInstanceAndRedirect('artist', {{result.id}})">x</a>
     </header>
+    <div class="locations">
+        {% if result.birthplace %}
+                <span class="location-label">Birthplace: </span>
+                <span class="location">{{ result.birthplace.name }}</span>
+        {% endif %}
+        {% if result.birthplace and result.hometown %}
+            <span> ⋅ </span>
+        {% endif %}
+        {% if result.hometown %}
+                <span class="location-label">Hometown: </span>
+                <span class="location">{{ result.hometown.name }}</span>
+        {% endif %}
+    </div>
     <ul class="list-group">
         {% for album in result.albums|sort(attribute='release_date') %}
             <li class="list-group-item">

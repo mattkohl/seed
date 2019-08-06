@@ -55,13 +55,25 @@
   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
   <script>
+  let redirect="ui.index";
+
   function deleteInstance(cls, _id) {
       let endpoint = `/api/v1/${cls}s/${_id}/delete`;
         $.post(endpoint)
        .done(function() {
-          $(`#${cls}_${_id}`).hide();
+          $(`#${cls}_${_id}`).parent().hide();
           console.log(`Successfully deleted ${_id}`);
       }).fail(function() { console.log(`Failed to delete ${_id}`); });
+  }
+
+  function deleteInstanceAndRedirect(cls, _id) {
+    let endpoint = `/api/v1/${cls}s/${_id}/delete`;
+      $.post(endpoint)
+     .done(function() {
+        $(`#${cls}_${_id}`).parent().hide();
+        console.log(`Successfully deleted ${_id}`);
+        window.location.href = "{{ url_for('ui.index') }}";
+    }).fail(function() { console.log(`Failed to delete ${_id}`); });
   }
 
   function runInstance(cls, uri) {

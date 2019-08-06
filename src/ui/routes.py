@@ -18,17 +18,17 @@ def index():
 
 @ui.route("/tracks")
 def tracks():
-    return render_class(Track, 'ui/tracks.html')
+    return render_class(Track, 'ui/tracks.html', 'ui.tracks')
 
 
 @ui.route("/albums")
 def albums():
-    return render_class(Album, 'ui/albums.html')
+    return render_class(Album, 'ui/albums.html', 'ui.albums')
 
 
 @ui.route("/artists")
 def artists():
-    return render_class(Artist, 'ui/artists.html')
+    return render_class(Artist, 'ui/artists.html', 'ui.artists')
 
 
 @ui.route("/tracks/<track_id>")
@@ -73,17 +73,17 @@ def before_request():
 def pagination(_request) -> (int, int, int):
     offset = _request.args.get('offset') or 0
     offset = int(offset)
-    start_page = int(offset/10)
-    end_page = start_page + 10
+    start_page = int(offset/100)
+    end_page = start_page + 100
     return offset, start_page, end_page
 
 
-def render_class(model: db.Model, template: str):
+def render_class(model: db.Model, template: str, endpoint: str):
     q = request.args.get('q') or ""
     offset, start_page, end_page = pagination(request)
-    instances = model.query.filter(model.name.ilike(f"%{q}%")).order_by(model.id).limit(10).offset(offset)
+    instances = model.query.filter(model.name.ilike(f"%{q}%")).order_by(model.id).limit(100).offset(offset)
     count = model.query.count()
-    return render_template(template, instances=instances, offset=offset, count=count, start_page=start_page, end_page=end_page)
+    return render_template(template, endpoint=endpoint, instances=instances, offset=offset, count=count, start_page=start_page, end_page=end_page, q=q)
 
 
 def render_instance(model: db.Model, _id: int, template: str):
