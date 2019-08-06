@@ -6,7 +6,7 @@ from src import db
 from src.dbp.annotation import Spotlight
 from src.dbp.models import CandidatesTuple, AnnotationTuple
 from src.dbp.sparql import Sparql
-from src.geni import parser, utils
+from src.geni import parser
 from src.mb import metadata
 from src.mb.models import MbArtistTuple, MbAlbumTuple
 from src.mb.mbutils import MbUtils
@@ -24,10 +24,10 @@ from src.utils import Utils
 class Fetch:
 
     @staticmethod
-    def album(uri: str) -> Dict:
+    def album(uri: str, force=False) -> Dict:
         try:
             result = Album.query.filter_by(spot_uri=uri).first()
-            if result is None:
+            if result is None or force:
                 sp = SpotAlbum()
                 _album = sp.download_album(uri)
                 _album_tuple = SpotUtils.extract_album(_album)
@@ -92,11 +92,13 @@ class Fetch:
     def album_tracks(uri: str):
         sp = SpotAlbum()
         try:
+            result = sp.download_album(uri)
+            _album_tuple = SpotUtils.extract_album(result)
+            Persistence.persist_album(_album_tuple)
             _album = Album.query.filter_by(spot_uri=uri).first()
-            _tracks = sp.download_album_tracks(uri)
 
             def add_albums():
-                for _track in _tracks:
+                for _track in result["tracks"]["items"]:
                     _track.update({"album": _album.as_tuple_dict(_album.artists)})
                     yield _track
 
