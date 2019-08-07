@@ -156,8 +156,11 @@ header .metadata-button {
 }
 
 .header-title {
-    cursor: pointer;
     padding-left: 8px;
+}
+
+.api-button {
+    top: 2px;
 }
 
 .api-button, .geni-button, .metadata-button {
@@ -194,4 +197,9 @@ header .metadata-button {
 
 .location-label {
     padding-left: 8px;
+}
+
+.dbp {
+    float: right;
+    padding-right: 8px;
 }

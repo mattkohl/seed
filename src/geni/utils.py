@@ -83,4 +83,6 @@ class GenUtils:
         title = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
         title = title.replace("F**k", "Fuck")
         title = title.replace("Sh*t", "Shit")
+        title = title.replace("S***", "Shit")
+        title = title.replace("Muthaf*cka", "Muthafucka")
         return title

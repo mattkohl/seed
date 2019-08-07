@@ -183,7 +183,7 @@ class Fetch:
         _artist = Artist.query.filter_by(spot_uri=artist_uri).first()
         _disambiguation = _artist.mb_obj['disambiguation'] if _artist.mb_obj is not None else None
         _clause = f"({_disambiguation})" if _disambiguation is not None else "the hip-hop artist"
-        _albums = [_album for _album in _artist.albums if len(_album.artists) == 1]
+        _albums = [_album for _album in _artist.albums]
         _statements = set([f"""{_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
         message = f"{_artist.name}, {_clause}, released the albums " + ", ".join(_statements)
         print(message)
@@ -269,7 +269,8 @@ class Fetch:
             local_name = first["@URI"].split("/")[-1].replace("_", " ")
             fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
             dbp_uri = first["@URI"] if ((offset_is_zero and fuzzy_match_score > 85) or fuzzy_match_score == 100) else None
-            Persistence.persist_dbp_uri(model, instance_id, dbp_uri)
+            if dbp_uri is not None:
+                Persistence.persist_dbp_uri(model, instance_id, dbp_uri)
         except Exception as e:
             print(f"Could not get DBP URI for {instance_name}")
             traceback.print_tb(e.__traceback__)

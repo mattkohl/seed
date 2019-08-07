@@ -6,7 +6,7 @@ import musicbrainzngs as mb
 
 class MB:
 
-    mb.set_useragent("seed-trr", 0.1)
+    mb.set_useragent("seed-trr-0", 0.1)
 
     @staticmethod
     def search_artists(name: str) -> List[Dict]:

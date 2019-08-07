@@ -26,8 +26,14 @@
             <span> ⋅ </span>
         {% endif %}
         {% if result.hometown %}
-                <span class="location-label">Hometown: </span>
-                <span class="location">{{ result.hometown.name }}</span>
+            <span class="location-label">Hometown: </span>
+            <span class="location">{{ result.hometown.name }}</span>
+        {% endif %}
+        {% if not result.birthplace and not result.hometown %}
+            <span class="location-label">_</span>
+        {% endif %}
+        {% if result.dbp_uri %}
+        <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">{{ result.dbp_uri }}</a>&gt;</span>
         {% endif %}
     </div>
     <ul class="list-group">
