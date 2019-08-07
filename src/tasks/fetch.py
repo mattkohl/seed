@@ -382,7 +382,7 @@ class Fetch:
         _track = result.as_dict()
         _primary_artists = [_artist.as_dict() for _artist in result.primary_artists]
         _featured_artists = [_artist.as_dict() for _artist in result.featured_artists]
-        _album = result.album.as_dict()
+        _album = result.album.as_dict() if result.album else {}
         _sections = sorted([s.as_dict() for s in result.sections], key=lambda k: int(k["offset"]))
         _track.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists, "sections": _sections})
         return _track

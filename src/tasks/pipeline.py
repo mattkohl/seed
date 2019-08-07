@@ -17,7 +17,7 @@ class Tasks:
 
     @staticmethod
     def run_random_track() -> Dict:
-        _track = Track.query.filter(Track.last_updated == None).order_by(func.random()).first()
+        _track = Track.query.filter(Track.lyrics == None).order_by(func.random()).first()
         return Tasks.run_track(_track.spot_uri) if _track and _track.spot_uri is not None else {"error": "No tracks found"}
 
     @staticmethod

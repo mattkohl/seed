@@ -193,7 +193,7 @@ class Track(db.Model):
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
     name = db.Column(db.Text)
-    album_id = db.Column(db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"))
+    album_id = db.Column(db.Integer, db.ForeignKey('albums.id', ondelete="CASCADE"), nullable=False)
     preview_url = db.Column(db.Text)
     lyrics = db.Column(db.Text)
     lyrics_url = db.Column(db.Text)
@@ -219,7 +219,7 @@ class Section(db.Model):
     __tablename__ = "sections"
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
-    track_id = db.Column(db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"))
+    track_id = db.Column(db.Integer, db.ForeignKey('tracks.id', ondelete="CASCADE"), nullable=False)
     type = db.Column(db.Text)
     number = db.Column(db.Integer)
     artists_raw = db.Column(db.Text)
