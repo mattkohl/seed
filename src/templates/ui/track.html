@@ -22,9 +22,11 @@
             <a class="run-button run-track">➢</a>
         </div>
         <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
+        {% if result.lyrics_url is not none %}
         <a class="geni-button" href="{{result.lyrics_url}}" target="_blank">
             <img src="{{ url_for('static', filename='img/genius.svg') }}"/>
         </a>
+        {% endif %}
     </header>
 
     <div class="example">
@@ -53,7 +55,7 @@
         </div>
         <span class="tag">&lt;/example&gt;</span>
     </div>
-    <a class="btn btn-default" href="{{ url_for('ui.edit_track', track_id=result.id) }}">Edit</a>
+<!--    <a class="btn btn-default" href="{{ url_for('ui.edit_track', track_id=result.id) }}">Edit</a>-->
     <div class="h5 container lyrics">
         {% if result.lyrics_annotated %}
             {% for lyric in result.lyrics_annotated.split("\n") %}

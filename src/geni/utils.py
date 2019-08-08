@@ -9,6 +9,7 @@ class GenUtils:
         slug = text.strip().lower()
         slug = slug[1:] if slug[0] == "'" or slug[0] == "-" else slug
         slug = re.sub(r"a\$ap", "a-ap", slug)
+        slug = re.sub(r"curren\$y", "curren-y", slug)
         slug = re.sub(r"\$", "s", slug)
         slug = re.sub(r"^[\-']]", "", slug)
         slug = re.sub(r"\s", "-", slug)
@@ -47,6 +48,7 @@ class GenUtils:
         st = re.sub(r" feat\. .*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Version$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped$", "", st, re.IGNORECASE)
+        st = re.sub(r" - .*?Slowed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Screwed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped & Screwed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Screwed & Chopped$", "", st, re.IGNORECASE)
@@ -85,7 +87,11 @@ class GenUtils:
     def adjust_song_title(song_title: str, album_title: str) -> str:
         title = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
         title = title.replace("F**k", "Fuck")
+        title = title.replace("F--k", "Fuck")
+        title = title.replace("A--", "Ass")
+        title = title.replace("B-t-h", "Bitch")
         title = title.replace("Sh*t", "Shit")
+        title = title.replace("Bullsh--", "Bullshit")
         title = title.replace("S***", "Shit")
         title = title.replace("Muthaf*cka", "Muthafucka")
         return title
