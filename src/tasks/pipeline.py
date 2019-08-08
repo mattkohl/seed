@@ -33,7 +33,7 @@ class Tasks:
     @staticmethod
     def run_track(track_uri) -> Dict:
         _track = Fetch.track(track_uri)
-        _ = Fetch.track_dbp_uri(track_uri)
+        # _ = Fetch.track_dbp_uri(track_uri)
         _ = Fetch.track_lyrics(track_uri, force_update=True)
         _ = Fetch.track_lyrics_annotate(track_uri)
         _ = Fetch.track_sections(track_uri)
