@@ -23,15 +23,16 @@ class GenParser:
         lyrics = None
         try:
             page = requests.get(url)
-            lyrics = GenParser.extract_lyrics_text(page)
+            raw = GenParser.extract_lyrics_text(page)
+            lyrics = GenParser.clean(raw)
         except Exception as e:
             print(f"Lyric extraction error: {e}")
             if len(urls) >= 1:
                 GenParser.download(urls)
             else:
-                traceback.print_tb(e.__traceback__)
+                # traceback.print_tb(e.__traceback__)
                 return None, url
-        return GenParser.clean(lyrics), url
+        return lyrics, url
 
     @staticmethod
     def clean(lyrics: str) -> str:
@@ -45,7 +46,7 @@ class GenParser:
             lyrics = html.find("div", class_="lyrics").get_text()
         except Exception as e:
             print(f"No lyrics found at {page.url}")
-            raise
+            raise e
         else:
             return lyrics
 
