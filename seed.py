@@ -1,5 +1,4 @@
 import os
-
 from flask_migrate import upgrade, Migrate
 from src import create_app, db
 

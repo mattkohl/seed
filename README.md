@@ -13,5 +13,5 @@ flask run
 
 with Gunicorn
 ```bash
-gunicorn --workers 3 --bind 127.0.0.1:5000 wsgi:application
+gunicorn --bind 127.0.0.1:5000 --workers 3 --error-logfile=- --access-logfile=- --capture-output --log-level debug wsgi:application
 ```

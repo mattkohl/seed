@@ -97,7 +97,8 @@
   $("a.run-track")
      .click(function(){
       $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
-       let _id = $(this).attr('id');
+       let header_id = $(this).closest("header").attr('id');
+       let _id = header_id == null ? $(this).attr('id') : header_id;
        runInstance("track", _id)
      });
 

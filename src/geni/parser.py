@@ -31,7 +31,12 @@ class GenParser:
             else:
                 traceback.print_tb(e.__traceback__)
                 return None, url
-        return lyrics, url
+        return GenParser.clean(lyrics), url
+
+    @staticmethod
+    def clean(lyrics: str) -> str:
+        lyrics = lyrics.replace("‘", "'")
+        return lyrics
 
     @staticmethod
     def extract_lyrics_text(page: requests.Response) -> str:
