@@ -70,6 +70,16 @@ class Persistence:
             raise
 
     @staticmethod
+    def persist_artist_dbp_uri(artist_id: int, dbp_uri: str) -> None:
+        try:
+            _artist = Artist.query.filter_by(id=artist_id).first()
+            Persistence.persist_dbp_uri(Artist, artist_id, dbp_uri)
+        except Exception as e:
+            print(f"Unable to persist artist {artist_id} dbp_uri {dbp_uri}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
     def persist_lyrics(track_id: int, lyrics: Optional[str], url: str) -> None:
         _track = Track.query.filter_by(id=track_id).first()
         if lyrics:
@@ -93,14 +103,14 @@ class Persistence:
                 raise
 
     @staticmethod
-    def persist_dbp_uri(model: db.Model, artist_id: int, dbp_uri: Optional[str]) -> None:
-        _instance = model.query.filter_by(id=artist_id).first()
+    def persist_dbp_uri(model: db.Model, _id: int, dbp_uri: Optional[str]) -> None:
+        _instance = model.query.filter_by(id=_id).first()
         if dbp_uri:
             _updates = {model.dbp_uri: dbp_uri}
             try:
                 Persist.update(model, _instance.id, _updates)
             except Exception as e:
-                print(f"Unable to persist {artist_id} dbp uri")
+                print(f"Unable to persist {_id} dbp uri")
                 traceback.print_tb(e.__traceback__)
                 raise
 

@@ -8,6 +8,7 @@ class GenUtils:
     def slugify(text: str) -> str:
         slug = text.strip().lower()
         slug = slug[1:] if slug[0] == "'" or slug[0] == "-" else slug
+        slug = re.sub(r"ma\$e", "ma-e", slug)
         slug = re.sub(r"a\$ap", "a-ap", slug)
         slug = re.sub(r"curren\$y", "curren-y", slug)
         slug = re.sub(r"\$", "s", slug)
@@ -51,6 +52,7 @@ class GenUtils:
         st = re.sub(r" - .*?Slowed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Screwed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped & Screwed$", "", st, re.IGNORECASE)
+        st = re.sub(r" - .*?Album Version\s?\(Edited\)$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Screwed & Chopped$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Remastered.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Slabed$", "", st, re.IGNORECASE)

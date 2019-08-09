@@ -3,7 +3,7 @@ from werkzeug.utils import redirect
 
 from src import db
 from src.tasks.fetch import Fetch
-from src.forms import SearchForm
+from src.forms import SearchForm, UriForm
 from src.ui import ui
 from src.models import Track, Album, Artist
 
@@ -68,6 +68,7 @@ def search_results(query, in_xml=True):
 @ui.before_request
 def before_request():
     g.search_form = SearchForm()
+    g.uri_form = UriForm()
 
 
 def pagination(_request) -> (int, int, int):
