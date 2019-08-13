@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="container">
+
+    <ul class="list-group">
+        {% for location in instances %}
+          <li class="list-group-item">
+            {% include "ui/_location.html" %}
+          </li>
+        {% endfor %}
+    </ul>
+
+    {% include 'ui/_pagination.html' %}
+
+</div>
+{% endblock %}

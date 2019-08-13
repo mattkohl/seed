@@ -5,7 +5,7 @@ from src import db
 from src.tasks.fetch import Fetch
 from src.forms import SearchForm, UriForm
 from src.ui import ui
-from src.models import Track, Album, Artist
+from src.models import Track, Album, Artist, Location
 
 
 @ui.route("/")
@@ -29,6 +29,11 @@ def albums():
 @ui.route("/artists")
 def artists():
     return render_class(Artist, 'ui/artists.html', 'ui.artists')
+
+
+@ui.route("/locations")
+def locations():
+    return render_class(Location, 'ui/locations.html', 'ui.locations')
 
 
 @ui.route("/tracks/<track_id>")

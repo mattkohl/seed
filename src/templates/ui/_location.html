@@ -1,0 +1,26 @@
+<div id="location_{{location.id}}" class="location">
+    <div>
+      <a href="{{ url_for('ui.get_location', location_id=album.id) }}" class="album">[{{ album.name }}]</a>
+      {% for artist in location.hometown_of %}
+      <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
+          <span class="track-artist">{{ artist.name }}</span>
+      </a>
+      {% endfor %}
+      {% if album.last_updated is not none %}
+        <span style="color: darkgray;">✓</span>
+      {% else %}
+        <a id="{{album.spot_uri}}" class="run-button run-album">➢</a>
+      {% endif %}
+      <span style="float: right">
+          <a href="{{ url_for('ui.get_album', album_id=album.id) }}" class="album">
+              <img src="{% if album.img is not none %} {{ album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+          </a>
+      </span>
+    </div>
+    <div class="album-data">
+        <a class="delete-button" onclick="deleteInstance('album', {{album.id}})">x</a>
+        <span class="count">{{ album.tracks.all()|length }} tracks</span>
+        <span> · </span>
+        <span class="count">{{ album.lyrics_count() }} lyrics</span>
+    </div>
+</div>
