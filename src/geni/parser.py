@@ -66,7 +66,12 @@ class GenParser:
 
     @staticmethod
     def build_urls(_track):
-        _artists = _track.primary_artists if len(_track.primary_artists) > 0 else _track.featured_artists
+        _artists = _track.album.artists.all()
+        for a in _track.primary_artists:
+            if a not in _artists:
+                _artists.append(a)
+        if len(_artists) == 0:
+            _artists = _track.featured_artists
         if len(_artists) == 2:
             url1 = utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)
             url2 = utils.GenUtils.link([_artist.name for _artist in _artists[:1]], _track.name, _track.album.name)

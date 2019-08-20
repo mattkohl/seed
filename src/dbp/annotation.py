@@ -30,9 +30,8 @@ class Spotlight:
         except Exception as e:
             print(f"Unable to resolve DBP Spotlight {url}")
             traceback.print_tb(e.__traceback__)
-            raise
-        else:
-            return done
+            done = AnnotationTuple(text)
+        return done
 
     @staticmethod
     def candidates(text) -> CandidatesTuple:
