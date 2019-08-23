@@ -22,6 +22,8 @@
         <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}">[{{ track.album.name.replace('&', '&amp;')}}]</a>
         {% if track.lyrics is not none %}
         <span style="color: darkgray;">✓</span>
+        {% elif track.lyrics is none and track.lyrics_url is not none %}
+        <a id="{{track.spot_uri}}" class="run-button run-track">↻</span>
         {% else %}
         <a id="{{track.spot_uri}}" class="run-button run-track">➢</a>
         {% endif %}

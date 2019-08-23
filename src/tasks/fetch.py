@@ -242,7 +242,7 @@ class Fetch:
         _artist = result.as_dict()
         if result.dbp_uri is not None:
             _location_tuple = Sparql.hometown(result.dbp_uri)
-            if _location_tuple:
+            if _location_tuple and _location_tuple.uri is not None:
                 Persistence.persist_artist_hometown(result.id, _location_tuple)
                 _location = Location.query.filter_by(dbp_uri=_location_tuple.uri).first()
                 _artist.update({"hometown": _location.as_dict()})
@@ -254,7 +254,7 @@ class Fetch:
         _artist = result.as_dict()
         if result.dbp_uri is not None:
             _location_tuple = Sparql.birthplace(result.dbp_uri)
-            if _location_tuple:
+            if _location_tuple and _location_tuple.uri is not None:
                 Persistence.persist_artist_birthplace(result.id, _location_tuple)
                 _location = Location.query.filter_by(dbp_uri=_location_tuple.uri).first()
                 _artist.update({"birthplace": _location.as_dict()})

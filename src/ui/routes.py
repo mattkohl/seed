@@ -1,5 +1,6 @@
 from flask import render_template, request, url_for, g
 from werkzeug.utils import redirect
+from sqlalchemy import or_
 
 from src import db
 from src.tasks.fetch import Fetch
@@ -65,7 +66,7 @@ def search():
 
 @ui.route('/search-results/<query>')
 def search_results(query, in_xml=True):
-    result = Track.query.filter(Track.lyrics.contains(query)).join(Album).order_by(Album.release_date)
+    result = Track.query.filter(or_(Track.lyrics.ilike(f"% {query}%"), Track.lyrics.ilike(f"{query}%"))).join(Album).order_by(Album.release_date)
     template = 'ui/xml_search_results.html' if in_xml else 'ui/search_results.html'
     return render_template(template, query=query, results=result.all(), number=result.count())
 

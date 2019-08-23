@@ -16,7 +16,12 @@
             <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
         </a>
     </header>
-
+    <div class="locations">
+        {% if result.dbp_uri %}
+        <span> ⋅ </span>
+        <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">{{ result.dbp_uri }}</a>&gt;</span>
+        {% endif %}
+    </div>
     <ul class="list-group">
         {% for track in result.tracks %}
           <li class="list-group-item">

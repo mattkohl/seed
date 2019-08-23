@@ -13,16 +13,18 @@ class GenUtils:
         slug = re.sub(r"curren\$y", "curren-y", slug)
         slug = re.sub(r"\$", "s", slug)
         slug = re.sub(r"^[\-']]", "", slug)
+        slug = re.sub(r"/", "-", slug)
         slug = re.sub(r"\s", "-", slug)
+        slug = re.sub(r"\.\.\.\.", "-", slug)
         slug = re.sub(r"\.", "", slug)
         slug = re.sub(r"!", "", slug)
-        slug = re.sub(r"[:/]", "", slug)
+        slug = re.sub(r":", "-", slug)
         slug = re.sub(r"\*", "", slug)
-        slug = re.sub(r"#", " ", slug)
-        slug = re.sub(r"%", "percent", slug)
+        slug = re.sub(r"#", "-", slug)
+        slug = re.sub(r"%", "", slug)
         slug = re.sub(r"&amp;", "and", slug)
         slug = re.sub(r"&", "and", slug)
-        slug = re.sub(r"\+", "and", slug)
+        slug = re.sub(r"\+", "-", slug)
         slug = re.sub(r"é", "e", slug)
         slug = re.sub(r"–", "-", slug)
         slug = re.sub(r"ó", "o", slug)
@@ -32,6 +34,7 @@ class GenUtils:
         slug = re.sub(r"ō", "o", slug)
         slug = re.sub(r"'", "", slug)
         slug = re.sub(r"’", "", slug)
+        slug = re.sub(r'"', "", slug)
         slug = re.sub(r"“", "", slug)
         slug = re.sub(r"”", "", slug)
         slug = re.sub(r",", "", slug)
@@ -47,6 +50,7 @@ class GenUtils:
         st = re.sub(r" \(feat.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" - feat.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" feat\. .*?$", "", st, re.IGNORECASE)
+        st = re.sub(r" - Dirty$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Version$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Slowed$", "", st, re.IGNORECASE)
@@ -58,6 +62,10 @@ class GenUtils:
         st = re.sub(r" - .*?Slabed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?S\.L\.A\.B.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Bonus .*?$", "", st, re.IGNORECASE)
+        st = re.sub(r" - radio edit.*?$", "", st, re.IGNORECASE)
+        st = re.sub(r" - Acapella.*?$", "", st, re.IGNORECASE)
+        st = re.sub(r" - \d\d\d\d Remaster$", "", st, re.IGNORECASE)
+        st = re.sub(r" - \d\d\d\d Mix\/Master$", "", st, re.IGNORECASE)
         st = re.sub(r"^Slabed - (.*)", r"\g<1>", st, re.IGNORECASE)
         return st
 
@@ -82,14 +90,19 @@ class GenUtils:
         _name = "Yasiin Bey" if name.lower() == "mos def" else name
         _name = "2Pac" if name.lower() == "makaveli" else name
         _name = _name[:-4] if _name.endswith(", The") else _name
-        # _name = _name[4:] if _name.startswith("The ") else _name
+        _name = _name[4:] if _name.startswith("The Egyptian") else _name
         return _name
 
     @staticmethod
     def adjust_song_title(song_title: str, album_title: str) -> str:
         title = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
+        title = title.replace("H*es", "Hoes")
+        title = title.replace("N***a", "Nigga")
+        title = title.replace("N*gga", "Nigga")
         title = title.replace("F**k", "Fuck")
+        title = title.replace("F***", "Fuck")
         title = title.replace("F--k", "Fuck")
+        title = title.replace("A**", "Ass")
         title = title.replace("A--", "Ass")
         title = title.replace("B-t-h", "Bitch")
         title = title.replace("Sh*t", "Shit")

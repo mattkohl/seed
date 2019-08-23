@@ -19,8 +19,8 @@
     </header>
     <div class="locations">
         {% if result.birthplace %}
-                <span class="location-label">Birthplace: </span>
-                <span class="location">{{ result.birthplace.name }}</span>
+            <span class="location-label">Birthplace: </span>
+            <span class="location">{{ result.birthplace.name }}</span>
         {% endif %}
         {% if result.birthplace and result.hometown %}
             <span> ⋅ </span>
@@ -33,7 +33,7 @@
             <span class="location-label">_</span>
         {% endif %}
         {% if result.dbp_uri %}
-        <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">{{ result.dbp_uri }}</a>&gt;</span>
+            <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">{{ result.dbp_uri }}</a>&gt;</span>
         {% endif %}
     </div>
     <ul class="list-group">

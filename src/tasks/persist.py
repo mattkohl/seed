@@ -84,12 +84,14 @@ class Persistence:
         _track = Track.query.filter_by(id=track_id).first()
         if lyrics:
             _updates = {Track.lyrics: lyrics, Track.lyrics_url: url}
-            try:
-                Persist.update(Track, _track.id, _updates)
-            except Exception as e:
-                print(f"Unable to persist track lyrics {track_id}")
-                traceback.print_tb(e.__traceback__)
-                raise
+        else:
+            _updates = {Track.lyrics_url: url}
+        try:
+            Persist.update(Track, _track.id, _updates)
+        except Exception as e:
+            print(f"Unable to persist track lyrics {track_id}")
+            traceback.print_tb(e.__traceback__)
+            raise
 
     @staticmethod
     def persist_sections(track_id: int, sections: List[SectionTuple]):
