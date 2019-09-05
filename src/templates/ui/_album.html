@@ -23,7 +23,13 @@
     <div class="album-data">
         <a class="delete-button" onclick="deleteInstance('album', {{album.id}})">x</a>
         <span class="count">{{ album.tracks.all()|length }} tracks</span>
+        {% if album.tracks.all()|length > 0 %}
         <span> · </span>
         <span class="count">{{ album.lyrics_count() }} lyrics</span>
+            {% if album.lyrics_count() < album.tracks.all()|length %}
+            <span> / </span>
+            <span class="count">{{ album.lyric_miss_count() }} missed</span>
+            {% endif %}
+        {% endif %}
     </div>
 </div>

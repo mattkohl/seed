@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-    <header class="header-with-img">
+    <header id="{{result.spot_uri}}"  class="header-with-img">
         <img class="header-img" src="{% if result.img is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
         <div class="h1 header-title">
             {% for artist in result.artists %}
@@ -14,6 +14,9 @@
         </div>
         <a class="api-button" href="/api/v1/albums/{{ result.spot_uri }}" target="_blank">
             <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+        </a>
+        <a class="metadata-button run-album-metadata">
+            <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
         </a>
     </header>
     <div class="locations">

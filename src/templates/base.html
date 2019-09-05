@@ -124,6 +124,13 @@
        runMetadata("artist", _id)
      });
 
+  $("a.run-album-metadata")
+     .click(function(){
+      $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
+       let _id = $(this).closest("header").attr('id');
+       runMetadata("album", _id)
+     });
+
   </script>
   {% block scripts %}{% endblock %}
 </html>

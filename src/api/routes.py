@@ -101,6 +101,13 @@ def artist_metadata_run(uri):
     return jsonify({"Message": "done"})
 
 
+@api.route("/albums/<uri>/metadata/run")
+def album_metadata_run(uri):
+    _ = Fetch.album_mb_metadata(uri)
+    _ = Fetch.album_dbp_uri(uri)
+    return jsonify({"Message": "done"})
+
+
 @api.route("/artists/<uri>/run")
 def artist_run(uri):
     return jsonify(Tasks.run_artist(uri))

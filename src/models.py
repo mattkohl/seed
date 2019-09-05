@@ -157,6 +157,9 @@ class Album(db.Model):
     def lyrics_count(self):
         return len([1 for _track in self.tracks if _track.lyrics is not None])
 
+    def lyric_miss_count(self):
+        return len([1 for _track in self.tracks if _track.lyrics is None and _track.lyrics_url is not None])
+
 
 class Genre(db.Model):
     __tablename__ = "genres"

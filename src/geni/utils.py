@@ -51,6 +51,7 @@ class GenUtils:
         st = re.sub(r" - feat.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" feat\. .*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Dirty$", "", st, re.IGNORECASE)
+        st = re.sub(r" - Explici?t$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Version$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Slowed$", "", st, re.IGNORECASE)
@@ -88,7 +89,8 @@ class GenUtils:
     @staticmethod
     def adjust_artist_name(name: str) -> str:
         _name = "Yasiin Bey" if name.lower() == "mos def" else name
-        _name = "2Pac" if name.lower() == "makaveli" else name
+        _name = "Masta Ace" if name.lower() == "masta ace incorporated" else _name
+        _name = "2Pac" if name.lower() == "makaveli" else _name
         _name = _name[:-4] if _name.endswith(", The") else _name
         _name = _name[4:] if _name.startswith("The Egyptian") else _name
         return _name
@@ -97,13 +99,17 @@ class GenUtils:
     def adjust_song_title(song_title: str, album_title: str) -> str:
         title = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
         title = title.replace("H*es", "Hoes")
+        title = title.replace("N____", "Nigga")
+        title = title.replace("N****", "Nigga")
         title = title.replace("N***a", "Nigga")
         title = title.replace("N*gga", "Nigga")
+        title = title.replace("F*ck", "Fuck")
         title = title.replace("F**k", "Fuck")
         title = title.replace("F***", "Fuck")
         title = title.replace("F--k", "Fuck")
         title = title.replace("A**", "Ass")
         title = title.replace("A--", "Ass")
+        title = title.replace("B____", "Bitch")
         title = title.replace("B-t-h", "Bitch")
         title = title.replace("Sh*t", "Shit")
         title = title.replace("Bullsh--", "Bullshit")

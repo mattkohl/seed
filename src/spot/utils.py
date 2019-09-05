@@ -55,16 +55,23 @@ class SpotUtils:
             'external_urls', 'href', 'id', 'is_local', 'name',
             'popularity', 'preview_url', 'track', 'track_number', 'type', 'uri'
         """
-        raw.pop("available_markets", None)
-        _raw = deepcopy(raw)
-        _album = SpotUtils.extract_album(_raw["album"])
-        _primary_artists = _album.artists
-        _primary_artists_names = [_pa.name for _pa in _primary_artists]
-        _featured_artists_raw = [SpotUtils.extract_artist(a) for a in _raw["artists"]]
-        _featured_artists = [_fa for _fa in _featured_artists_raw if _fa.name not in _primary_artists_names]
-        _raw.pop("artists")
-        _raw.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists})
-        return TrackTuple(**_raw)
+        try:
+            raw.pop("available_markets", None)
+            _raw = deepcopy(raw)
+            _album = SpotUtils.extract_album(_raw["album"])
+            _primary_artists = _album.artists
+            _primary_artists_names = [_pa.name for _pa in _primary_artists]
+            _featured_artists_raw = [SpotUtils.extract_artist(a) for a in _raw["artists"]]
+            _featured_artists = [_fa for _fa in _featured_artists_raw if _fa.name not in _primary_artists_names]
+            _raw.pop("artists")
+            _raw.update({"album": _album, "primary_artists": _primary_artists, "featured_artists": _featured_artists})
+        except Exception as e:
+            print(f"Exception when trying to extract track")
+            print(raw)
+            traceback.print_tb(e.__traceback__)
+            raise
+        else:
+            return TrackTuple(**_raw)
 
     @staticmethod
     def extract_tracks_from_playlist(track_items: List[Dict]) -> List[Dict]:
@@ -82,7 +89,7 @@ class SpotUtils:
             print(f"Unable to tuplify track")
             print(d)
             traceback.print_tb(e.__traceback__)
-            raise
+            return None
         else:
             return _track
 

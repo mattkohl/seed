@@ -58,7 +58,7 @@ class Fetch:
     def album_and_artist_annotations(album_uri: str) -> CandidatesTuple:
         _album = Album.query.filter_by(spot_uri=album_uri).first()
         _artists = [_artist for _artist in _album.artists]
-        message = f"{_album.name}, a hip-hop album, was released in {_album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
+        message = f"{_album.name.replace('[', '(').replace(']', ')')}, a hip-hop album, was released in {_album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
         print(message)
         return Spotlight.candidates(message)
 

@@ -71,6 +71,8 @@ class Delete:
         current = create_app('docker')
         with current.app_context():
             try:
+                for t in _album.tracks:
+                    db.session.delete(t)
                 db.session.delete(_album)
                 db.session.commit()
             except Exception as e:
