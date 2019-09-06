@@ -66,12 +66,19 @@ class GenParser:
 
     @staticmethod
     def build_urls(_track):
-        _artists = _track.album.artists.all()
+
+        def remove_various_artists(xs):
+            return list(filter(lambda x: x.name.lower() != "various artists", xs))
+
+        _artists = remove_various_artists(_track.album.artists)
         for a in _track.primary_artists:
-            if a not in _artists:
+            if a.name.lower() != "various artists"and a not in _artists:
                 _artists.append(a)
         if len(_artists) == 0:
-            _artists = _track.featured_artists
+            _artists = remove_various_artists(_track.featured_artists)
+
+        _artists = list(set(_artists))
+
         if len(_artists) == 2:
             url1 = utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)
             url2 = utils.GenUtils.link([_artist.name for _artist in _artists[::-1]], _track.name, _track.album.name)
