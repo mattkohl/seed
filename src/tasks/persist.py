@@ -117,6 +117,18 @@ class Persistence:
                 raise
 
     @staticmethod
+    def persist_wikipedia_uri(model: db.Model, _id: int, wikipedia_uri: Optional[str]) -> None:
+        _instance = model.query.filter_by(id=_id).first()
+        if wikipedia_uri:
+            _updates = {model.wikipedia_uri: wikipedia_uri}
+            try:
+                Persist.update(model, _instance.id, _updates)
+            except Exception as e:
+                print(f"Unable to persist {_id} wikipedia uri")
+                traceback.print_tb(e.__traceback__)
+                raise
+
+    @staticmethod
     def persist_mb_metadata(model: db.Model, _id: int, _tuple) -> None:
         _entity = model.query.filter_by(id=_id).first()
         _updates = {model.mb_id: _tuple.id, model.mb_obj: _tuple._asdict()}

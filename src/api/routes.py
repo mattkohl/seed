@@ -89,13 +89,14 @@ def artist_birthplace_delete(uri):
 
 @api.route("/artists/<uri>/wikipedia")
 def artist_wikipedia_url(uri: str):
-    pass
+    return jsonify(Fetch.artist_wikipedia_uri(uri))
 
 
 @api.route("/artists/<uri>/metadata/run")
 def artist_metadata_run(uri):
     _ = Fetch.artist_mb_metadata(uri)
     _ = Fetch.artist_dbp_uri(uri, True)
+    _ = Fetch.artist_wikipedia_uri(uri)
     _ = Fetch.artist_hometown(uri)
     _ = Fetch.artist_birthplace(uri)
     return jsonify({"Message": "done"})
@@ -104,6 +105,7 @@ def artist_metadata_run(uri):
 @api.route("/albums/<uri>/metadata/run")
 def album_metadata_run(uri):
     _ = Fetch.album_mb_metadata(uri)
+    _ = Fetch.album_wikipedia_uri(uri)
     _ = Fetch.album_dbp_uri(uri)
     return jsonify({"Message": "done"})
 

@@ -32,8 +32,12 @@
         {% if not result.birthplace and not result.hometown %}
             <span class="location-label">_</span>
         {% endif %}
+        {% if result.wikipedia_uri %}
+        <span class="dbp">&lt;<a href="{{result.wikipedia_uri}}" target="_blank">Wikipedia</a>&gt;</span>
+        <span> ⋅ </span>
+        {% endif %}
         {% if result.dbp_uri %}
-            <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">{{ result.dbp_uri }}</a>&gt;</span>
+            <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">DBPedia</a>&gt;</span>
         {% endif %}
     </div>
     <ul class="list-group">

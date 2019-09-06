@@ -1,5 +1,5 @@
 import collections
-from typing import Dict, Optional, List, Callable
+from typing import Dict, Optional, List, Callable, Tuple
 import traceback
 
 from src import db
@@ -19,6 +19,8 @@ from src.spot.tracks import SpotTrack
 from src.spot.utils import SpotUtils
 from src.tasks.persist import Persistence
 from src.utils import Utils
+
+import wikipedia
 
 
 class Fetch:
@@ -200,6 +202,26 @@ class Fetch:
         return _artist
 
     @staticmethod
+    def album_wikipedia_uri(uri: str, force_update: bool = False) -> Dict:
+        result = Album.query.filter_by(spot_uri=uri).first()
+        _album = result.as_dict()
+
+        if result.wikipedia_uri is None or force_update:
+            wikipedia_uri = Fetch.wikipedia_uri(instance_id=result.id, instance_name=result.artist_and_album_name(), model=Album, uri=uri)
+            _album.update({"wikipedia_uri": wikipedia_uri})
+        return _album
+
+    @staticmethod
+    def artist_wikipedia_uri(uri: str, force_update: bool = False) -> Dict:
+        result = Artist.query.filter_by(spot_uri=uri).first()
+        _artist = result.as_dict()
+
+        if result.wikipedia_uri is None or force_update:
+            wikipedia_uri = Fetch.wikipedia_uri(instance_id=result.id, instance_name=result.name, model=Artist, uri=uri)
+            _artist.update({"wikipedia_uri": wikipedia_uri})
+        return _artist
+
+    @staticmethod
     def artist_mb_metadata(uri: str, force_update: bool = False) -> Dict:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()
@@ -259,6 +281,37 @@ class Fetch:
                 _location = Location.query.filter_by(dbp_uri=_location_tuple.uri).first()
                 _artist.update({"birthplace": _location.as_dict()})
         return _artist
+
+    @staticmethod
+    def wikipedia_uri(instance_id: int, instance_name: str, model: db.Model, uri: str) -> Optional[str]:
+
+        model_name = model.__name__.lower()
+        wikipedia_uri = None
+
+        def confirm(pages: List[str], limit: int) -> Optional[wikipedia.wikipedia.WikipediaPage]:
+            if limit <= 0 or not pages:
+                return None
+            page_name = pages.pop(0)
+            _page = wikipedia.page(page_name)
+            for c in _page.categories:
+                if model_name in c.lower():
+                    return _page
+            return confirm(pages, limit-1)
+
+        try:
+            candidates = wikipedia.search(instance_name.split(" [")[0])
+            page = confirm(candidates, 2)
+            if page is not None:
+                wikipedia_uri = page.url
+                print(instance_name, ':', wikipedia_uri)
+                Persistence.persist_wikipedia_uri(model, instance_id, wikipedia_uri)
+        except Exception as e:
+            print(f"Could not get Wikipedia uri for {instance_name}")
+            traceback.print_tb(e.__traceback__)
+        else:
+            if wikipedia_uri is None:
+                print(f"Wikipedia resolution rejected for: {instance_name}")
+            return wikipedia_uri
 
     @staticmethod
     def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, fetch_candidates: Callable) -> Optional[str]:

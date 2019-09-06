@@ -129,7 +129,7 @@ class Album(db.Model):
     img = db.Column(db.Text)
     thumb = db.Column(db.Text)
     name = db.Column(db.Text)
-    tracks = db.relationship('Track', backref='album', lazy='dynamic')
+    tracks = db.relationship('Track', cascade="all,delete,delete-orphan", backref='album', lazy='dynamic')
     last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
@@ -210,7 +210,7 @@ class Track(db.Model):
     lyrics_url = db.Column(db.Text)
     lyrics_annotated = db.Column(db.Text)
     lyrics_annotations_json = db.Column(JSON)
-    sections = db.relationship('Section', backref='track', lazy='dynamic')
+    sections = db.relationship('Section', cascade="all,delete,delete-orphan", backref='track', lazy='dynamic')
     last_updated = db.Column(db.DateTime)
 
     def __repr__(self):

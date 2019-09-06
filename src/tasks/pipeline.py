@@ -53,6 +53,7 @@ class Tasks:
         [Persistence.persist_album(a) for a in album_tuples]
         _artist = Fetch.artist_mb_metadata(artist_uri)
         _ = Fetch.artist_dbp_uri(artist_uri, True)
+        _ = Fetch.artist_wikipedia_uri(artist_uri, True)
         _ = Fetch.artist_hometown(artist_uri)
         _ = Fetch.artist_birthplace(artist_uri)
         _ = Fetch.artist_spot_metadata(artist_uri)
@@ -64,6 +65,7 @@ class Tasks:
         track_tuples = Fetch.album_tracks(album_uri)
         [Persistence.persist_track(t) for t in track_tuples]
         _album = Fetch.album_dbp_uri(album_uri)
+        _ = Fetch.album_wikipedia_uri(album_uri, True)
         _ = Fetch.album_mb_metadata(album_uri)
         Persist.update(Album, _album['id'], {})
         return Fetch.album(album_uri)
