@@ -160,6 +160,9 @@ class Album(db.Model):
     def lyric_miss_count(self):
         return len([1 for _track in self.tracks if _track.lyrics is None and _track.lyrics_url is not None])
 
+    def artist_and_album_name(self):
+        return f"{', '.join([a.name for a in self.artists])} - {self.name}"
+
 
 class Genre(db.Model):
     __tablename__ = "genres"
@@ -215,7 +218,10 @@ class Track(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     def filter_lyrics(self, q):
-        return list(set([line for line in self.lyrics.split("\n") if q in line]))
+        return list(set([line for line in self.lyrics.split("\n") if q.lower() in line.lower()]))
+
+    def artist_and_track_name(self):
+        return f"{', '.join([a.name for a in self.album.artists])} - {self.name}"
 
 
 class Section(db.Model):

@@ -7,18 +7,7 @@
     <header id="{{result.spot_uri}}" class="header-with-img">
         <img class="header-img" src="{% if result.album.img is not none %} {{ result.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
         <div class="h1 header-title">
-            {% if result.primary_artists %}
-                {% for artist in result.primary_artists %}
-                    {{ artist.name }}
-                {% endfor %}
-            {% elif result.featured_artists %}
-                {% for artist in result.featured_artists %}
-                    {{ artist.name }}
-                {% endfor %}
-            {% else %}
-                <span>__</span>
-            {% endif %}
-            - "{{ result.name }}"
+            {{ result.artist_and_album_name() }}
             <a class="run-button run-track">➢</a>
         </div>
         <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
