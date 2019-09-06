@@ -67,6 +67,7 @@ class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
+    wikipedia_uri = db.Column(db.Text)
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
     img = db.Column(db.Text)
@@ -99,6 +100,7 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
+    wikipedia_uri = db.Column(db.Text)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     last_updated = db.Column(db.DateTime)
@@ -121,6 +123,7 @@ class Album(db.Model):
     release_date = db.Column(db.DateTime)
     spot_uri = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
+    wikipedia_uri = db.Column(db.Text)
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
     img = db.Column(db.Text)
@@ -169,6 +172,7 @@ class Genre(db.Model):
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     dbp_uri = db.Column(db.Text)
+    wikipedia_uri = db.Column(db.Text)
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
     name = db.Column(db.Text)
@@ -196,6 +200,7 @@ class Track(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     spot_uri = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
+    wikipedia_uri = db.Column(db.Text)
     mb_id = db.Column(db.Text)
     mb_obj = db.Column(JSON)
     name = db.Column(db.Text)
@@ -238,7 +243,7 @@ class Section(db.Model):
     last_updated = db.Column(db.DateTime)
 
     def __repr__(self):
-        return f"<Section {self.name}>"
+        return f"<Section '{self.text[:10]}...'>"
 
     def __str__(self):
         return f"SECTION {self.offset} [{self.artists_raw}]: {self.text}"

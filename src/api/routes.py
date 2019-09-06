@@ -87,8 +87,8 @@ def artist_birthplace_delete(uri):
     return jsonify(Deletion.delete_artist_birthplace(uri))
 
 
-@api.route("/artists/<_id>/dbpUri", methods=['GET', 'POST'])
-def artist_dbp_uri(_id: int):
+@api.route("/artists/<uri>/wikipedia")
+def artist_wikipedia_url(uri: str):
     pass
 
 
