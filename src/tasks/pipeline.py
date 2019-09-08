@@ -27,7 +27,7 @@ class Tasks:
 
     @staticmethod
     def run_random_artist() -> Dict:
-        _artist = Artist.query.filter(Artist.last_updated == None).order_by(func.random()).first()
+        _artist = Artist.query.filter_by(last_updated=None).order_by(func.random()).first()
         return Tasks.run_artist(_artist.spot_uri) if _artist and _artist.spot_uri is not None else {"error": "No albums found"}
 
     @staticmethod
