@@ -66,7 +66,8 @@ def search():
 
 @ui.route('/search-results/<query>')
 def search_results(query, in_xml=True):
-    result = Track.query.filter(or_(Track.lyrics.ilike(f"% {query}%"), Track.lyrics.ilike(f"{query}%"))).join(Album).order_by(Album.release_date)
+    result = Track.query.filter(or_(Track.lyrics.ilike(f"% {query}%"), Track.lyrics.ilike(f"{query}%"), Track.lyrics.ilike(f"%\n{query}%"))).join(Album).order_by(Album.release_date)
+    print(result.count())
     template = 'ui/xml_search_results.html' if in_xml else 'ui/search_results.html'
     return render_template(template, query=query, results=result.all(), number=result.count())
 
@@ -87,6 +88,7 @@ def pagination(_request) -> (int, int, int):
 
 def render_class(model: db.Model, template: str, endpoint: str):
     q = request.args.get('q') or ""
+    date = request.args.get('date') or ""
     offset, start_page, end_page = pagination(request)
     instances = model.query.filter(model.name.ilike(f"%{q}%")).order_by(model.id).limit(100).offset(offset)
     count = model.query.count()

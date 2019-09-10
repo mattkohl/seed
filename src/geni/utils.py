@@ -48,6 +48,7 @@ class GenUtils:
     def prune(song_title: str) -> str:
         st = re.sub(r" \(with.*?\)", "", song_title, re.IGNORECASE)
         st = re.sub(r" \(feat.*?\)", "", st, re.IGNORECASE)
+        st = re.sub(r" \(Sky High\)", "", st, re.IGNORECASE)
         st = re.sub(r" - feat.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" feat\. .*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Dirty$", "", st, re.IGNORECASE)
@@ -63,6 +64,7 @@ class GenUtils:
         st = re.sub(r" - .*?Slabed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?S\.L\.A\.B.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Bonus .*?$", "", st, re.IGNORECASE)
+        st = re.sub(r" - From \"House Party\" Soundtrack", "", st, re.IGNORECASE)
         st = re.sub(r" - radio edit.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Acapella.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - \d\d\d\d Remaster$", "", st, re.IGNORECASE)
@@ -89,6 +91,9 @@ class GenUtils:
     @staticmethod
     def adjust_artist_name(name: str) -> str:
         _name = "Yasiin Bey" if name.lower() == "mos def" else name
+        _name = "Rob Base and DJ E-Z Rock" if name == "Rob Base & DJ EZ Rock" else _name
+        _name = "Treacherous Three" if name == "The Treacherous Three" else _name
+        _name = "Sugarhill Gang" if name == "The Sugarhill Gang" else _name
         _name = "Masta Ace" if name.lower() == "masta ace incorporated" else _name
         _name = "2Pac" if name.lower() == "makaveli" else _name
         _name = _name[:-4] if _name.endswith(", The") else _name
@@ -111,14 +116,21 @@ class GenUtils:
         title = title.replace("F*ck", "Fuck")
         title = title.replace("F**k", "Fuck")
         title = title.replace("F***", "Fuck")
+        title = title.replace("****", "Fuck")
         title = title.replace("F--k", "Fuck")
+        title = title.replace("D**k", "Dick")
+        title = title.replace("A*s", "Ass")
         title = title.replace("A**", "Ass")
         title = title.replace("A--", "Ass")
         title = title.replace("B____", "Bitch")
+        title = title.replace("B@#$H", "Bitch")
         title = title.replace("B@!Ch", "Bitch")
+        title = title.replace("B***h", "Bitch")
         title = title.replace("B-t-h", "Bitch")
         title = title.replace("Sh*t", "Shit")
         title = title.replace("Sh!t", "Shit")
+        title = title.replace("Sh--", "Shit")
+        title = title.replace("S...", "Shit")
         title = title.replace("Bullsh--", "Bullshit")
         title = title.replace("S***", "Shit")
         title = title.replace("Muthaf*cka", "Muthafucka")

@@ -15,17 +15,15 @@
         <a class="metadata-button run-album-metadata">
             <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
         </a>
+        <div class="locations">
+            {% if result.wikipedia_uri %}
+            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank">&lt;Wikipedia&gt;</a></span>
+            {% endif %}
+            {% if result.dbp_uri %}
+            <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank">&lt;DBPedia&gt;</a></span>
+            {% endif %}
+        </div>
     </header>
-    <div class="locations">
-        {% if result.wikipedia_uri %}
-        <span> ⋅ </span>
-        <span class="dbp">&lt;<a href="{{result.wikipedia_uri}}" target="_blank">Wikipedia</a>&gt;</span>
-        {% endif %}
-        {% if result.dbp_uri %}
-        <span> ⋅ </span>
-        <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">DBPedia</a>&gt;</span>
-        {% endif %}
-    </div>
     <ul class="list-group">
         {% for track in result.tracks %}
           <li class="list-group-item">

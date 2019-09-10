@@ -16,7 +16,7 @@
       {% endif %}
       <span style="float: right">
           <a href="{{ url_for('ui.get_album', album_id=album.id) }}" class="album">
-              <img src="{% if album.img is not none %} {{ album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+<!--              <img src="{% if album.img is not none %} {{ album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>-->
           </a>
       </span>
     </div>

@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container">
     <header id="{{result.spot_uri}}"  class="header-with-img">
-        <img class="header-img" src="{% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
+<!--        <img class="header-img" src="{% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>-->
         <div class="h1 header-title">
             {{ result.name }}
             <a class="run-button run-artist">➢</a>
@@ -12,40 +12,57 @@
         <a class="api-button" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank">
             <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
         </a>
-        <a class="delete-button" onclick="deleteInstanceAndRedirect('artist', {{result.id}})">x</a>
+<!--        <a class="delete-button" onclick="deleteInstanceAndRedirect('artist', {{result.id}})">x</a>-->
         <a class="metadata-button run-artist-metadata">
             <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
         </a>
+        <div class="locations">
+            {% if result.birthplace %}
+                <span class="location-label">Birthplace: </span>
+                <span class="location">{{ result.birthplace.name }}</span>
+            {% endif %}
+            {% if result.hometown %}
+                <span class="location-label">Hometown: </span>
+                <span class="location">{{ result.hometown.name }}</span>
+            {% endif %}
+            {% if result.wikipedia_uri %}
+            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank">&lt;Wikipedia&gt;</a></span>
+            {% endif %}
+            {% if result.dbp_uri %}
+                <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank">&lt;DBPedia&gt;</a></span>
+            {% endif %}
+        </div>
     </header>
-    <div class="locations">
-        {% if result.birthplace %}
-            <span class="location-label">Birthplace: </span>
-            <span class="location">{{ result.birthplace.name }}</span>
+    {% if result.albums|length > 0 %}
+        <h4 class="albums-label">{{ result.albums|length }} Albums</h4>
+        <ul class="list-group">
+            {% for album in result.albums|sort(attribute='release_date') %}
+                <li class="list-group-item">
+                    {% include "ui/_album.html" %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {% if result.primary_tracks|length > 0 %}
+            <h4 class="tracks-label">{{ result.primary_tracks|length }} Primary Tracks </h4>
+            <ul class="list-group">
+                {% for track in result.primary_tracks|sort(attribute='album.release_date') %}
+                    <li class="list-group-item">
+                        {% include "ui/_track.html" %}
+                    </li>
+                {% endfor %}
+            </ul>
         {% endif %}
-        {% if result.birthplace and result.hometown %}
-            <span> ⋅ </span>
+        {% if result.featured_tracks|length > 0 %}
+            <h4 class="tracks-label">{{ result.featured_tracks|length }} Featured Tracks</h4>
+            <ul class="list-group">
+                {% for track in result.featured_tracks|sort(attribute='album.release_date') %}
+                    <li class="list-group-item">
+                        {% include "ui/_track.html" %}
+                    </li>
+                {% endfor %}
+            </ul>
         {% endif %}
-        {% if result.hometown %}
-            <span class="location-label">Hometown: </span>
-            <span class="location">{{ result.hometown.name }}</span>
-        {% endif %}
-        {% if not result.birthplace and not result.hometown %}
-            <span class="location-label">_</span>
-        {% endif %}
-        {% if result.wikipedia_uri %}
-        <span class="dbp">&lt;<a href="{{result.wikipedia_uri}}" target="_blank">Wikipedia</a>&gt;</span>
-        <span> ⋅ </span>
-        {% endif %}
-        {% if result.dbp_uri %}
-            <span class="dbp">&lt;<a href="{{result.dbp_uri}}" target="_blank">DBPedia</a>&gt;</span>
-        {% endif %}
-    </div>
-    <ul class="list-group">
-        {% for album in result.albums|sort(attribute='release_date') %}
-            <li class="list-group-item">
-                {% include "ui/_album.html" %}
-            </li>
-        {% endfor %}
-    </ul>
+    {% endif %}
 </div>
 {% endblock %}
