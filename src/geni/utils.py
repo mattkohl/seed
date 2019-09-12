@@ -47,6 +47,7 @@ class GenUtils:
     @staticmethod
     def prune(song_title: str) -> str:
         st = re.sub(r" \(Vocal\)", "", song_title, re.IGNORECASE)
+        st = re.sub(r" \(screwed\)", "", song_title, re.IGNORECASE)
         st = re.sub(r" \(with.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(feat.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(Sky High\)", "", st, re.IGNORECASE)
@@ -143,6 +144,7 @@ class GenUtils:
         title = title.replace("S***", "Shit")
         title = title.replace("Sh**", "Shit")
         title = title.replace("Muthaf*cka", "Muthafucka")
+        title = title.replace("#!*@", "Fuck")
         title = title.replace("****", "Fuck")
 
         return title

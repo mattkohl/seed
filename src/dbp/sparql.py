@@ -12,7 +12,7 @@ class Sparql:
         query = """
                 SELECT DISTINCT ?releaseDate
                 WHERE { ?subject <http://dbpedia.org/ontology/releaseDate> ?releaseDate }
-                """.replace("?subject", f"<{dbp_uri}>")
+                """.replace("?subject", f"<{dbp_uri.replace('https://', 'http://')}>")
         return Sparql.execute_release_date_query(query)
 
     @staticmethod
@@ -58,6 +58,7 @@ class Sparql:
         endpoint.setQuery(query)
         results = endpoint.query()
         if results.bindings:
+            print(results.bindings)
             return ReleaseDateTuple(**{v: b[v].value for v in results.variables for b in results.bindings if v in b})
         else:
             return None

@@ -81,6 +81,26 @@ class Persistence:
             raise
 
     @staticmethod
+    def persist_album_wikipedia_uri(album_id: int, wikipedia_uri: str) -> None:
+        try:
+            _artist = Album.query.filter_by(id=album_id).first()
+            Persistence.persist_wikipedia_uri(Album, album_id, wikipedia_uri)
+        except Exception as e:
+            print(f"Unable to persist Album {album_id} wikipedia_uri {wikipedia_uri}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
+    def persist_album_dbp_uri(album_id: int, dbp_uri: str) -> None:
+        try:
+            _artist = Album.query.filter_by(id=album_id).first()
+            Persistence.persist_dbp_uri(Album, album_id, dbp_uri)
+        except Exception as e:
+            print(f"Unable to persist Album {album_id} dbp_uri {dbp_uri}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
     def persist_lyrics(track_id: int, lyrics: Optional[str], url: str) -> None:
         _track = Track.query.filter_by(id=track_id).first()
         if lyrics:
@@ -98,7 +118,6 @@ class Persistence:
     def persist_release_date(album_id: int, release_date: datetime.datetime, release_date_string: str) -> None:
         _album = Album.query.filter_by(id=album_id).first()
         _updates = {Album.release_date: release_date, Album.release_date_string: release_date_string}
-        print(_updates)
         try:
             Persist.update(Album, _album.id, _updates)
         except Exception as e:

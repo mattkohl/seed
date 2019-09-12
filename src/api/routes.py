@@ -4,6 +4,7 @@ from werkzeug.utils import redirect
 from src.api import api
 from src.tasks.fetch import Fetch
 from src.tasks.pipeline import Tasks
+from src.tasks.persist import Persistence
 from src.tasks.delete import Deletion
 
 
@@ -47,6 +48,24 @@ def album_tracks_missing_lyrics(uri):
 def album_release_date(album_uri):
     force_update = request.args.get('update', default=False)
     return jsonify(Fetch.album_release_date(album_uri, force_update))
+
+
+@api.route("/albums/<album_uri>/dbp/update", methods=['POST'])
+def album_dbp_update(album_uri):
+    updated = request.json
+    if updated and "uri" in updated:
+        _album = Fetch.album(album_uri)
+        Persistence.persist_album_dbp_uri(_album["id"], updated["uri"])
+    return redirect(url_for("api.album", uri=album_uri))
+
+
+@api.route("/albums/<album_uri>/wikipedia/update", methods=['POST'])
+def album_wikipedia_update(album_uri):
+    updated = request.json
+    if updated and "uri" in updated:
+        _album = Fetch.album(album_uri)
+        Persistence.persist_album_wikipedia_uri(_album["id"], updated["uri"])
+    return redirect(url_for("api.album", uri=album_uri))
 
 
 @api.route("/albums/<uri>/run")
@@ -101,8 +120,8 @@ def artist_wikipedia_url(uri: str):
 @api.route("/artists/<uri>/metadata/run")
 def artist_metadata_run(uri):
     _ = Fetch.artist_mb_metadata(uri)
-    _ = Fetch.artist_dbp_uri(uri, True)
     _ = Fetch.artist_wikipedia_uri(uri)
+    _ = Fetch.artist_dbp_uri(uri, True)
     _ = Fetch.artist_hometown(uri)
     _ = Fetch.artist_birthplace(uri)
     return jsonify({"Message": "done"})

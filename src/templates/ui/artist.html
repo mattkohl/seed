@@ -26,10 +26,10 @@
                 <span class="location">{{ result.hometown.name }}</span>
             {% endif %}
             {% if result.wikipedia_uri %}
-            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank">&lt;Wikipedia&gt;</a></span>
+            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/wikipedia.png') }}"></a></span>
             {% endif %}
             {% if result.dbp_uri %}
-                <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank">&lt;DBPedia&gt;</a></span>
+                <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
             {% endif %}
         </div>
     </header>

@@ -52,7 +52,7 @@ class Fetch:
         result = Album.query.filter_by(spot_uri=uri).first()
         _album = result.as_dict()
         if result.dbp_uri is None or force_update:
-            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Album, uri=uri,
+            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Album, uri=uri, wikipedia_uri=result.wikipedia_uri,
                                     fetch_candidates=Fetch.album_and_artist_annotations)
             _album.update({"dbp_uri": dbp_uri})
         return _album
@@ -62,7 +62,6 @@ class Fetch:
         _album = Album.query.filter_by(spot_uri=album_uri).first()
         _artists = [_artist for _artist in _album.artists]
         message = f"{_album.name.replace('[', '(').replace(']', ')')}, a hip-hop album, was released in {_album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
-        print(message)
         return Spotlight.candidates(message)
 
     @staticmethod
@@ -189,7 +188,6 @@ class Fetch:
         _albums = [_album for _album in _artist.albums]
         _statements = set([f"""{_album.name} in {_album.release_date_string[:4]}""" for _album in _albums])
         message = f"{_artist.name}, {_clause}, released the albums " + ", ".join(_statements)
-        print(message)
         return Spotlight.candidates(message)
 
     @staticmethod
@@ -197,8 +195,9 @@ class Fetch:
         result = Artist.query.filter_by(spot_uri=uri).first()
         _artist = result.as_dict()
         if result.dbp_uri is None or force_update:
-            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Artist, uri=uri,
+            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Artist, uri=uri, wikipedia_uri=result.wikipedia_uri,
                                     fetch_candidates=Fetch.artist_and_track_name_annotations)
+
             _artist.update({"dbp_uri": dbp_uri})
         return _artist
 
@@ -236,7 +235,6 @@ class Fetch:
             except Exception as e:
                 print(f"Unable to retrieve artist {uri} metadata:")
                 traceback.print_tb(e.__traceback__)
-               #raise
             else:
                 _artist.update({"mb_id": _artist_tuple.id, "mb_obj": _artist_tuple._asdict()})
         return _artist
@@ -315,7 +313,7 @@ class Fetch:
             return wikipedia_uri
 
     @staticmethod
-    def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, fetch_candidates: Callable) -> Optional[str]:
+    def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, wikipedia_uri: Optional[str], fetch_candidates: Callable) -> Optional[str]:
         try:
             candidates = fetch_candidates(uri)
             first = candidates.Resources[0]
@@ -323,6 +321,14 @@ class Fetch:
             local_name = first["@URI"].split("/")[-1].replace("_", " ")
             fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
             dbp_uri = first["@URI"] if ((offset_is_zero and fuzzy_match_score > 85) or fuzzy_match_score == 100) else None
+            if wikipedia_uri and not dbp_uri:
+                local_name = wikipedia_uri.split("/")[-1]
+                candidate = f"http://dbpedia.org/resource/{local_name}"
+                import requests
+                response = requests.get(candidate)
+                if response.status_code == 200:
+                    dbp_uri = candidate
+
             if dbp_uri is not None:
                 Persistence.persist_dbp_uri(model, instance_id, dbp_uri)
         except Exception as e:
@@ -446,7 +452,6 @@ class Fetch:
         _track = Track.query.filter_by(spot_uri=track_uri).first()
         _artists = [_artist for _artist in _track.primary_artists]
         message = f"{_track.name}, a track on the a hip-hop album {_track.album.name}, released in {_track.album.release_date_string[:4]} by " + ", ".join([_artist.name for _artist in _artists])
-        print(message)
         return Spotlight.candidates(message)
 
     @staticmethod
@@ -454,7 +459,7 @@ class Fetch:
         result = Track.query.filter_by(spot_uri=uri).first()
         _track = result.as_dict()
         if result.dbp_uri is None or force_update:
-            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Track, uri=uri,
+            dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Track, uri=uri, wikipedia_uri=result.wikipedia_uri,
                                     fetch_candidates=Fetch.track_album_and_artist_annotations)
             _track.update({"dbp_uri": dbp_uri})
         return _track
@@ -481,6 +486,7 @@ class Fetch:
         _album.update({"artists": _artists})
         if force_update and result.dbp_uri is not None:
             _release_date_tuple = Sparql.release_date(result.dbp_uri)
+            print(_release_date_tuple)
             if _release_date_tuple and _release_date_tuple.releaseDate is not None:
                 _release_date_string = _release_date_tuple.releaseDate
                 _release_date = datetime.strptime(SpotUtils.clean_up_date(_release_date_string), '%Y-%m-%d')
