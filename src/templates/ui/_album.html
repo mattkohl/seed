@@ -28,8 +28,14 @@
         <span class="count">{{ album.lyrics_count() }} lyrics</span>
             {% if album.lyrics_count() < album.tracks.all()|length %}
             <span> / </span>
-            <span class="count">{{ album.lyric_miss_count() }} missed</span>
+            <span class="count">{{ album.lyrics_missed_count() }} missed</span>
             {% endif %}
         {% endif %}
+    </div>
+</div>
+<div class="album-progress">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ album.lyrics_percentage() }}%" aria-valuenow="{{ album.lyrics_percentage() }}" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ album.lyrics_missed_percentage() }}%" aria-valuenow="{{ album.lyrics_missed_percentage() }}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
 </div>

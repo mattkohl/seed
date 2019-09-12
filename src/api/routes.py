@@ -158,6 +158,11 @@ def run_random_artist():
     return jsonify(Tasks.run_random_artist())
 
 
+@api.route("/run-random-artist-track/<_id>")
+def run_random_artist_track(_id):
+    return jsonify(Tasks.run_random_artist_track(_id))
+
+
 @api.route("/run-random-track")
 def run_random_track():
     return jsonify(Tasks.run_random_track())

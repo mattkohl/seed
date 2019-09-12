@@ -46,12 +46,15 @@ class GenUtils:
 
     @staticmethod
     def prune(song_title: str) -> str:
-        st = re.sub(r" \(with.*?\)", "", song_title, re.IGNORECASE)
+        st = re.sub(r" \(Vocal\)", "", song_title, re.IGNORECASE)
+        st = re.sub(r" \(with.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(feat.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(Sky High\)", "", st, re.IGNORECASE)
         st = re.sub(r" - feat.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" feat\. .*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Dirty$", "", st, re.IGNORECASE)
+        st = re.sub(r" - Edit$", "", st, re.IGNORECASE)
+        st = re.sub(r" - LP Mix$", "", st, re.IGNORECASE)
         st = re.sub(r" - Explici?t$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Version$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped$", "", st, re.IGNORECASE)
@@ -103,6 +106,7 @@ class GenUtils:
     @staticmethod
     def adjust_song_title(song_title: str, album_title: str) -> str:
         title = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
+        title = title.replace("H-E", "Hoe")
         title = title.replace("H*es", "Hoes")
         title = title.replace("N____", "Nigga")
         title = title.replace("N****", "Nigga")
@@ -112,11 +116,11 @@ class GenUtils:
         title = title.replace("N**ga", "Nigga")
         title = title.replace("N**gas", "Niggas")
         title = title.replace("N**gaz", "Niggaz")
+        title = title.replace("N***az", "Niggaz")
         title = title.replace("F*", "Fuck")
         title = title.replace("F*ck", "Fuck")
         title = title.replace("F**k", "Fuck")
         title = title.replace("F***", "Fuck")
-        title = title.replace("****", "Fuck")
         title = title.replace("F--k", "Fuck")
         title = title.replace("D**k", "Dick")
         title = title.replace("A*s", "Ass")
@@ -125,13 +129,20 @@ class GenUtils:
         title = title.replace("B____", "Bitch")
         title = title.replace("B@#$H", "Bitch")
         title = title.replace("B@!Ch", "Bitch")
+        title = title.replace("B---H", "Bitch")
+        title = title.replace("B**ch", "Bitch")
         title = title.replace("B***h", "Bitch")
         title = title.replace("B-t-h", "Bitch")
+        title = title.replace("B*tches", "Bitches")
+        title = title.replace("B****es", "Bitches")
         title = title.replace("Sh*t", "Shit")
         title = title.replace("Sh!t", "Shit")
         title = title.replace("Sh--", "Shit")
         title = title.replace("S...", "Shit")
         title = title.replace("Bullsh--", "Bullshit")
         title = title.replace("S***", "Shit")
+        title = title.replace("Sh**", "Shit")
         title = title.replace("Muthaf*cka", "Muthafucka")
+        title = title.replace("****", "Fuck")
+
         return title

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ result.name }} ⋅ the Right Rhymes{% endblock %}
+{% block title %}{{ result.artist_and_album_name() }} ⋅ {% endblock %}
 
 {% block content %}
 <div class="container">
@@ -24,6 +24,10 @@
             {% endif %}
         </div>
     </header>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ result.lyrics_percentage() }}%" aria-valuenow="{{ result.lyrics_percentage() }}" aria-valuemin="0" aria-valuemax="100">{{ result.lyrics_percentage() }}% DONE</div>
+        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ result.lyrics_missed_percentage() }}%" aria-valuenow="{{ result.lyrics_missed_percentage() }}" aria-valuemin="0" aria-valuemax="100">{{ result.lyrics_missed_percentage() }}% MISSED</div>
+    </div>
     <ul class="list-group">
         {% for track in result.tracks %}
           <li class="list-group-item">

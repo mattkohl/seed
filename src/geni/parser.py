@@ -77,8 +77,6 @@ class GenParser:
         if len(_artists) == 0:
             _artists = remove_various_artists(_track.featured_artists)
 
-        _artists = list(set(_artists))
-
         if len(_artists) == 2:
             url1 = utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)
             url2 = utils.GenUtils.link([_artist.name for _artist in _artists[::-1]], _track.name, _track.album.name)

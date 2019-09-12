@@ -93,6 +93,20 @@ class Artist(db.Model):
     def as_artist_tuple(self):
         return ArtistTuple(uri=self.spot_uri, name=self.name)
 
+    def lyrics_count(self):
+        return len([l for l in self.primary_tracks if l.lyrics is not None])
+
+    def lyrics_missed_count(self):
+        return len([l for l in self.primary_tracks if l.lyrics is None and l.lyrics_url is not None])
+
+    def lyrics_missed_percentage(self):
+        _tracks_count = len(self.primary_tracks) if len(self.primary_tracks) != 0 else 0.1
+        return round(float(self.lyrics_missed_count()) / float(_tracks_count) * 100, 2)
+
+    def lyrics_percentage(self):
+        _tracks_count = len(self.primary_tracks) if len(self.primary_tracks) != 0 else 0.1
+        return round(float(self.lyrics_count()) / float(_tracks_count) * 100, 2)
+
 
 class Location(db.Model):
     __tablename__ = "locations"
@@ -158,10 +172,18 @@ class Album(db.Model):
         )
 
     def lyrics_count(self):
-        return len([1 for _track in self.tracks if _track.lyrics is not None])
+        return len([_track for _track in self.tracks if _track.lyrics is not None])
 
-    def lyric_miss_count(self):
-        return len([1 for _track in self.tracks if _track.lyrics is None and _track.lyrics_url is not None])
+    def lyrics_missed_count(self):
+        return len([_track for _track in self.tracks if _track.lyrics is None and _track.lyrics_url is not None])
+
+    def lyrics_missed_percentage(self):
+        _tracks_count = self.tracks.count() if self.tracks.count() != 0 else 0.1
+        return round(float(self.lyrics_missed_count()) / float(_tracks_count) * 100, 2)
+
+    def lyrics_percentage(self):
+        _tracks_count = self.tracks.count() if self.tracks.count() != 0 else 0.1
+        return round(float(self.lyrics_count()) / float(_tracks_count) * 100, 2)
 
     def artist_and_album_name(self):
         return f"{', '.join([a.name for a in self.artists])} - {self.name}"

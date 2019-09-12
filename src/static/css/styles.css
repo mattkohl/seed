@@ -212,6 +212,22 @@ header .metadata-button {
     color: white !important;
 }
 
+.progress {
+    border-radius: 0 !important;
+}
+
+.progress-bar {
+    overflow: hidden !important;
+}
+
+.album-progress {
+    position: absolute;
+    bottom: -14px;
+    width: 100%;
+    left: 0px;
+    opacity: 0.5;
+}
+
 .albums-label, .tracks-label {
     background-color: darkslategrey;
     color: whitesmoke;
@@ -219,4 +235,8 @@ header .metadata-button {
     margin-bottom: 0;
     padding: 0.25rem;
 
+}
+
+.list-group {
+    overflow: hidden !important;
 }
