@@ -153,6 +153,10 @@ header .metadata-button {
     cursor: pointer;
 }
 
+.run-album-release-date {
+    padding-left: 0.5em;
+}
+
 .header-with-img {
     display: flex;
     height: 200px;

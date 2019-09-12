@@ -8,3 +8,5 @@ AnnotationTuple = namedtuple("AnnotationTuple", ["text"], defaults=(None,))
 _location_fields = ["uri", "label", "latitude", "longitude", "hometown_of", "birthplace_of"]
 LocationTuple = namedtuple("LocationTuple", _location_fields, defaults=((None,) * (len(_location_fields))))
 
+ReleaseDateTuple = namedtuple("ReleaseDateTuple", ["releaseDate"], defaults=(None,))
+

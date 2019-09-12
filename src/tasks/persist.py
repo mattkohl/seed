@@ -1,10 +1,11 @@
+import datetime
 from typing import Optional, List
 import traceback
 
 from src.geni.models import SectionTuple
 from src import db
 from src.dbp.models import CandidatesTuple, AnnotationTuple, LocationTuple
-from src.models import Track, Artist
+from src.models import Track, Artist, Album
 from src.repository.persist import Persist
 from src.spot.models import TrackTuple, AlbumTuple, ArtistTuple
 
@@ -90,6 +91,18 @@ class Persistence:
             Persist.update(Track, _track.id, _updates)
         except Exception as e:
             print(f"Unable to persist track lyrics {track_id}")
+            traceback.print_tb(e.__traceback__)
+            raise
+
+    @staticmethod
+    def persist_release_date(album_id: int, release_date: datetime.datetime, release_date_string: str) -> None:
+        _album = Album.query.filter_by(id=album_id).first()
+        _updates = {Album.release_date: release_date, Album.release_date_string: release_date_string}
+        print(_updates)
+        try:
+            Persist.update(Album, _album.id, _updates)
+        except Exception as e:
+            print(f"Unable to persist track release date {album_id}")
             traceback.print_tb(e.__traceback__)
             raise
 

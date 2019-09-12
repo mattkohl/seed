@@ -17,10 +17,11 @@
         </a>
         <div class="locations">
             {% if result.wikipedia_uri %}
-            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank">&lt;Wikipedia&gt;</a></span>
+            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/wikipedia.png') }}"></a></span>
             {% endif %}
             {% if result.dbp_uri %}
-            <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank">&lt;DBPedia&gt;</a></span>
+            <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
+            <a class="dbp run-button run-album-release-date">📅</a>
             {% endif %}
         </div>
     </header>
@@ -37,4 +38,24 @@
     </ul>
 
 </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+  function runReleaseDate(cls, uri) {
+      let endpoint = `/api/v1/${cls}s/${uri}/release-date/run?update=True`;
+        $.get(endpoint)
+       .done(function() {
+          console.log(`Successfully run ${uri}`);
+          window.location.reload(true);
+      }).fail(function() { console.log(`Failed to run ${uri}`); });
+  }
+
+  $("a.run-album-release-date")
+     .click(function(){
+      $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
+       let _id = $(this).closest("header").attr('id');
+       runReleaseDate("album", _id)
+     });
+     </script>
 {% endblock %}

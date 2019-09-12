@@ -2,20 +2,28 @@ from typing import Optional
 
 from SPARQLWrapper import SPARQLWrapper2
 
-from src.dbp.models import LocationTuple
+from src.dbp.models import LocationTuple, ReleaseDateTuple
 
 
 class Sparql:
 
     @staticmethod
+    def release_date(dbp_uri: str) -> Optional[ReleaseDateTuple]:
+        query = """
+                SELECT DISTINCT ?releaseDate
+                WHERE { ?subject <http://dbpedia.org/ontology/releaseDate> ?releaseDate }
+                """.replace("?subject", f"<{dbp_uri}>")
+        return Sparql.execute_release_date_query(query)
+
+    @staticmethod
     def hometown(dbp_uri: str) -> Optional[LocationTuple]:
         query = Sparql.location_query("http://dbpedia.org/ontology/hometown").replace("?subject", f"<{dbp_uri}>")
-        return Sparql.execute(query)
+        return Sparql.execute_location_query(query)
 
     @staticmethod
     def birthplace(dbp_uri: str) -> Optional[LocationTuple]:
         query = Sparql.location_query("http://dbpedia.org/ontology/birthPlace").replace("?subject", f"<{dbp_uri}>")
-        return Sparql.execute(query)
+        return Sparql.execute_location_query(query)
 
     @staticmethod
     def location_query(predicate: str) -> str:
@@ -35,11 +43,21 @@ class Sparql:
         """.replace("?predicate", f"<{predicate}>")
 
     @staticmethod
-    def execute(query: str) -> Optional[LocationTuple]:
+    def execute_location_query(query: str) -> Optional[LocationTuple]:
         endpoint = SPARQLWrapper2("http://dbpedia.org/sparql")
         endpoint.setQuery(query)
         results = endpoint.query()
         if results.bindings:
             return LocationTuple(**{v: b[v].value for v in results.variables for b in results.bindings if v in b})
+        else:
+            return None
+
+    @staticmethod
+    def execute_release_date_query(query: str) -> Optional[ReleaseDateTuple]:
+        endpoint = SPARQLWrapper2("http://dbpedia.org/sparql")
+        endpoint.setQuery(query)
+        results = endpoint.query()
+        if results.bindings:
+            return ReleaseDateTuple(**{v: b[v].value for v in results.variables for b in results.bindings if v in b})
         else:
             return None

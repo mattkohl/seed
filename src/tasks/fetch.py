@@ -1,6 +1,7 @@
 import collections
 from typing import Dict, Optional, List, Callable, Tuple
 import traceback
+from datetime import datetime
 
 from src import db
 from src.dbp.annotation import Spotlight
@@ -471,6 +472,21 @@ class Fetch:
             Persistence.persist_lyrics(result.id, lyrics, url)
             _track.update({"lyrics": lyrics, "lyrics_url": url})
         return _track
+
+    @staticmethod
+    def album_release_date(uri: str, force_update: bool = False) -> Dict:
+        result = Album.query.filter_by(spot_uri=uri).first()
+        _album = result.as_dict()
+        _artists = [_artist.as_dict() for _artist in result.artists]
+        _album.update({"artists": _artists})
+        if force_update and result.dbp_uri is not None:
+            _release_date_tuple = Sparql.release_date(result.dbp_uri)
+            if _release_date_tuple and _release_date_tuple.releaseDate is not None:
+                _release_date_string = _release_date_tuple.releaseDate
+                _release_date = datetime.strptime(SpotUtils.clean_up_date(_release_date_string), '%Y-%m-%d')
+                Persistence.persist_release_date(result.id, _release_date, _release_date_tuple)
+                _album.update({"release_date": _release_date, "release_date_string": _release_date_string})
+        return _album
 
     @staticmethod
     def track_sections(uri: str) -> Dict:

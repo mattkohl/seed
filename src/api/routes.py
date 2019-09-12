@@ -43,6 +43,12 @@ def album_tracks_missing_lyrics(uri):
     return jsonify(Fetch.album_tracks_missing_lyrics(uri))
 
 
+@api.route("/albums/<album_uri>/release-date/run")
+def album_release_date(album_uri):
+    force_update = request.args.get('update', default=False)
+    return jsonify(Fetch.album_release_date(album_uri, force_update))
+
+
 @api.route("/albums/<uri>/run")
 def album_run(uri):
     return jsonify(Tasks.run_album(uri))
@@ -214,8 +220,8 @@ def track_run(uri):
 
 @api.route("/tracks/<track_uri>/lyrics")
 def track_lyrics(track_uri):
-    update = request.args.get('update', default=False)
-    return jsonify(Fetch.track_lyrics(track_uri, update))
+    force_update = request.args.get('update', default=False)
+    return jsonify(Fetch.track_lyrics(track_uri, force_update))
 
 
 @api.route("/tracks/<uri>/lyrics/annotations")
