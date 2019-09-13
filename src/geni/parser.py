@@ -28,7 +28,7 @@ class GenParser:
         except Exception as e:
             print(f"Lyric extraction error: {e}")
             if len(urls) >= 1:
-                GenParser.download(urls)
+                return GenParser.download(urls)
             else:
                 # traceback.print_tb(e.__traceback__)
                 return None, url
@@ -71,6 +71,7 @@ class GenParser:
             return list(filter(lambda x: x.name.lower() != "various artists", xs))
 
         _artists = remove_various_artists(_track.album.artists)
+
         for a in _track.primary_artists:
             if a.name.lower() != "various artists"and a not in _artists:
                 _artists.append(a)
