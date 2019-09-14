@@ -28,9 +28,14 @@
         <a id="{{track.spot_uri}}" class="run-button run-track">➢</a>
         {% endif %}
         <div style="float: right">
-            <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" class="album">
-                <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>
+            {% if track.lyrics %}
+            <a class="geni-button" href="{{track.lyrics_url}}" target="_blank">
+                <img src="{{ url_for('static', filename='img/genius-dark.svg') }}"/>
             </a>
+            {% endif %}
+<!--            <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" class="album">-->
+<!--                <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>-->
+<!--            </a>-->
         </div>
     </div>
     <div class="track-data">

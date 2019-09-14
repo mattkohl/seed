@@ -67,6 +67,14 @@ class GenParser:
     @staticmethod
     def build_urls(_track):
 
+        def adjust(_urls: List[str]) -> List[str]:
+            adjusted = []
+            for url in _urls:
+                if "joey-badass" in url.lower():
+                    adjusted.append(url.replace("badass", "bada"))
+                adjusted.append(url)
+            return adjusted
+
         def remove_various_artists(xs):
             return list(filter(lambda x: x.name.lower() != "various artists", xs))
 
@@ -83,6 +91,8 @@ class GenParser:
             url2 = utils.GenUtils.link([_artist.name for _artist in _artists[::-1]], _track.name, _track.album.name)
             url3 = utils.GenUtils.link([_artist.name for _artist in _artists[:1]], _track.name, _track.album.name)
             url4 = utils.GenUtils.link([_artist.name for _artist in _artists[1:2]], _track.name, _track.album.name)
-            return [url2, url1, url4, url3]
+            urls = adjust([url2, url1, url4, url3])
         else:
-            return [utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)]
+            urls = adjust([utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)])
+        print(urls)
+        return urls
