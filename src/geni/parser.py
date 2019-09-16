@@ -94,5 +94,4 @@ class GenParser:
             urls = adjust([url2, url1, url4, url3])
         else:
             urls = adjust([utils.GenUtils.link([_artist.name for _artist in _artists], _track.name, _track.album.name)])
-        print(urls)
         return urls

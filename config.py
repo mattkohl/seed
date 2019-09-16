@@ -13,6 +13,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_BINDS = {
+        'local': os.environ.get('LOCAL_DB_URI')
+    }
 
     @staticmethod
     def init_app(app) -> None:

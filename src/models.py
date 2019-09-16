@@ -272,3 +272,20 @@ class Section(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+# LOCAL
+
+class LocalSong(db.Model):
+    __bind_key__ = 'local'
+    __tablename__ = 'Songs'
+    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+    artist = db.Column(db.String)
+    album = db.Column(db.String)
+    releaseDate = db.Column(db.String, default=0)
+    songTitle = db.Column(db.String)
+    feat = db.Column(db.String, default=None)
+    lyrics = db.Column(db.Text)
+    discogsDate = db.Column(db.String, default=0)
+    relDateVerified = db.Column(db.String, default='no')
+    lyricsVerified = db.Column(db.String, default='no')
