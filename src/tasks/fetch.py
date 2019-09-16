@@ -475,6 +475,10 @@ class Fetch:
         if result.lyrics is None or force_update:
             urls = parser.GenParser.build_urls(result)
             lyrics, url = parser.GenParser.download(urls)
+            if lyrics is None:
+                local_lyrics = Fetch.track_lyrics_fallback(uri)
+                if local_lyrics is not None:
+                    lyrics, url = local_lyrics, None
             Persistence.persist_lyrics(result.id, lyrics, url)
             _track.update({"lyrics": lyrics, "lyrics_url": url})
         return _track
@@ -484,17 +488,13 @@ class Fetch:
         return [t.spot_uri for t in Track.query.filter_by(lyrics=None).filter(Track.lyrics_url!=None).all()]
 
     @staticmethod
-    def local_db_lyrics(track_uri: str) -> Optional[Tuple[str, str, str]]:
+    def track_lyrics_fallback(track_uri: str) -> Optional[str]:
         _track = Track.query.filter_by(spot_uri=track_uri).first()
         _metadata = "; ".join([a.name for a in _track.album.artists.all()]), _track.name, _track.album.name
-        _local_lyrics = Fetch.track_lyrics_fallback(*_metadata)
-        if _local_lyrics:
-            Persistence.persist_lyrics(_track.id, _local_lyrics, None)
-            return _metadata
-        return None
+        return Fetch.local_db_lyrics(*_metadata)
 
     @staticmethod
-    def track_lyrics_fallback(_artist_names: List[Artist], _track_name: str, _album_name: str) -> Optional[str]:
+    def local_db_lyrics(_artist_names: str, _track_name: str, _album_name: str) -> Optional[str]:
         ambiguous_titles = ["intro", "outro", "skit", "interlude"]
         base_query = LocalSong.query.filter_by(artist=f"{_artist_names}").filter_by(songTitle=GenUtils.adjust_song_title(_track_name)).filter(LocalSong.lyrics!=None)
         strict_result = base_query.filter_by(album=_album_name).first() if _track_name.lower() in ambiguous_titles else base_query.first()
