@@ -101,7 +101,7 @@ class Persistence:
             raise
 
     @staticmethod
-    def persist_lyrics(track_id: int, lyrics: Optional[str], url: str) -> None:
+    def persist_lyrics(track_id: int, lyrics: Optional[str], url: Optional[str]) -> None:
         _track = Track.query.filter_by(id=track_id).first()
         if lyrics:
             _updates = {Track.lyrics: lyrics, Track.lyrics_url: url}

@@ -8,6 +8,7 @@ from src.dbp.annotation import Spotlight
 from src.dbp.models import CandidatesTuple, AnnotationTuple
 from src.dbp.sparql import Sparql
 from src.geni import parser
+from src.geni.utils import GenUtils
 from src.mb import metadata
 from src.mb.models import MbArtistTuple, MbAlbumTuple
 from src.mb.mbutils import MbUtils
@@ -479,9 +480,25 @@ class Fetch:
         return _track
 
     @staticmethod
-    def track_lyrics_fallback(_artists: List[Artist], _track_name: str):
-        _artist_names = "; ".join([a.name for a in _artists])
-        return LocalSong.query.filter_by(artist=f"{_artist_names}").filter_by(songTitle=_track_name).filter(LocalSong.lyrics!=None).first()
+    def track_lyrics_fallback_candidates() -> [List[str]]:
+        return [t.spot_uri for t in Track.query.filter_by(lyrics=None).filter(Track.lyrics_url!=None).all()]
+
+    @staticmethod
+    def local_db_lyrics(track_uri: str) -> Optional[Tuple[str, str, str]]:
+        _track = Track.query.filter_by(spot_uri=track_uri).first()
+        _metadata = "; ".join([a.name for a in _track.album.artists.all()]), _track.name, _track.album.name
+        _local_lyrics = Fetch.track_lyrics_fallback(*_metadata)
+        if _local_lyrics:
+            Persistence.persist_lyrics(_track.id, _local_lyrics, None)
+            return _metadata
+        return None
+
+    @staticmethod
+    def track_lyrics_fallback(_artist_names: List[Artist], _track_name: str, _album_name: str) -> Optional[str]:
+        ambiguous_titles = ["intro", "outro", "skit", "interlude"]
+        base_query = LocalSong.query.filter_by(artist=f"{_artist_names}").filter_by(songTitle=GenUtils.adjust_song_title(_track_name)).filter(LocalSong.lyrics!=None)
+        strict_result = base_query.filter_by(album=_album_name).first() if _track_name.lower() in ambiguous_titles else base_query.first()
+        return strict_result.lyrics if strict_result else None
 
     @staticmethod
     def album_release_date(uri: str, force_update: bool = False) -> Dict:
@@ -495,7 +512,7 @@ class Fetch:
             if _release_date_tuple and _release_date_tuple.releaseDate is not None:
                 _release_date_string = _release_date_tuple.releaseDate
                 _release_date = datetime.strptime(SpotUtils.clean_up_date(_release_date_string), '%Y-%m-%d')
-                Persistence.persist_release_date(result.id, _release_date, _release_date_tuple)
+                Persistence.persist_release_date(result.id, _release_date, _release_date_string)
                 _album.update({"release_date": _release_date, "release_date_string": _release_date_string})
         return _album
 

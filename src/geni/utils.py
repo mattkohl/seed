@@ -88,7 +88,8 @@ class GenUtils:
         else:
             _artist = artists[0]
             artist = GenUtils.adjust_artist_name(_artist)
-        song_title = GenUtils.adjust_song_title(song_title, album_title)
+        pruned = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
+        song_title = GenUtils.adjust_song_title(pruned)
         _slug = GenUtils.slugify(artist + " " + song_title + "-lyrics")
         slug = re.sub(r"[-]+", "-", _slug)
         return f"{h}://{g}.{c}/{slug.capitalize()}"
@@ -106,9 +107,8 @@ class GenUtils:
         return _name
 
     @staticmethod
-    def adjust_song_title(song_title: str, album_title: str) -> str:
-        title = GenUtils.prune(song_title) if song_title.lower() != "intro" else GenUtils.prune(f"{song_title} ({album_title}) ")
-        title = title.replace("H-E", "Hoe")
+    def adjust_song_title(song_title: str) -> str:
+        title = song_title.replace("H-E", "Hoe")
         title = title.replace("H*es", "Hoes")
         title = title.replace("N____", "Nigga")
         title = title.replace("N****", "Nigga")

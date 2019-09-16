@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 from src.models import Track, Artist, Album
 from src.tasks.fetch import Fetch
@@ -17,7 +17,8 @@ class Tasks:
 
     @staticmethod
     def run_random_track() -> Dict:
-        _track = Track.query\
+        _track = Track.query \
+            .filter_by(lyrics=None)\
             .filter_by(lyrics_url=None).order_by(func.random())\
             .first()
         return Tasks.run_track(_track.spot_uri) if _track and _track.spot_uri is not None else {"error": "No tracks found"}
@@ -41,7 +42,7 @@ class Tasks:
         return Tasks.run_artist(_artist.spot_uri) if _artist and _artist.spot_uri is not None else {"error": "No albums found"}
 
     @staticmethod
-    def run_track(track_uri) -> Dict:
+    def run_track(track_uri: str) -> Dict:
         _track = Fetch.track(track_uri)
         _ = Fetch.track_lyrics(track_uri, force_update=True)
         _ = Fetch.track_lyrics_annotate(track_uri)
@@ -50,14 +51,14 @@ class Tasks:
         return Fetch.track(track_uri)
 
     @staticmethod
-    def run_track_sections(track_uri) -> Dict:
+    def run_track_sections(track_uri: str) -> Dict:
         _track = Fetch.track(track_uri)
         _ = Fetch.track_sections(track_uri)
         Persist.update(Track, _track['id'], {})
         return Fetch.track(track_uri)
 
     @staticmethod
-    def run_artist(artist_uri) -> Dict:
+    def run_artist(artist_uri: str) -> Dict:
         album_tuples = Fetch.artist_albums(artist_uri)
         print(f"Downloaded {len(album_tuples)} albums for {artist_uri}")
         [Persistence.persist_album(a) for a in album_tuples]
@@ -71,7 +72,7 @@ class Tasks:
         return Fetch.artist(artist_uri)
 
     @staticmethod
-    def run_album(album_uri) -> Dict:
+    def run_album(album_uri: str) -> Dict:
         track_tuples = Fetch.album_tracks(album_uri)
         [Persistence.persist_track(t) for t in track_tuples]
         _album = Fetch.album_dbp_uri(album_uri)
