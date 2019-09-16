@@ -275,7 +275,6 @@ class Section(db.Model):
 
 
 # LOCAL
-
 class LocalSong(db.Model):
     __bind_key__ = 'local'
     __tablename__ = 'Songs'
@@ -289,3 +288,6 @@ class LocalSong(db.Model):
     discogsDate = db.Column(db.String, default=0)
     relDateVerified = db.Column(db.String, default='no')
     lyricsVerified = db.Column(db.String, default='no')
+
+    def __repr__(self):
+        return f"<LocalSong {self.artist} - '{self.songTitle}'>"

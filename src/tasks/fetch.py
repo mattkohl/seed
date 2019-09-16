@@ -11,7 +11,7 @@ from src.geni import parser
 from src.mb import metadata
 from src.mb.models import MbArtistTuple, MbAlbumTuple
 from src.mb.mbutils import MbUtils
-from src.models import Artist, Track, Album, Location, Genre, Section
+from src.models import Artist, Track, Album, Location, Genre, Section, LocalSong
 from src.spot.albums import SpotAlbum
 from src.spot.artists import SpotArtist
 from src.spot.models import TrackTuple, AlbumTuple
@@ -477,6 +477,11 @@ class Fetch:
             Persistence.persist_lyrics(result.id, lyrics, url)
             _track.update({"lyrics": lyrics, "lyrics_url": url})
         return _track
+
+    @staticmethod
+    def track_lyrics_fallback(_artists: List[Artist], _track_name: str):
+        _artist_names = "; ".join([a.name for a in _artists])
+        return LocalSong.query.filter_by(artist=f"{_artist_names}").filter_by(songTitle=_track_name).filter(LocalSong.lyrics!=None).first()
 
     @staticmethod
     def album_release_date(uri: str, force_update: bool = False) -> Dict:
