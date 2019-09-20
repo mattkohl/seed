@@ -42,8 +42,8 @@
 
 {% block scripts %}
     <script>
-  function runReleaseDate(cls, uri) {
-      let endpoint = `/api/v1/${cls}s/${uri}/release-date/run?update=True`;
+  function runReleaseDate(uri) {
+      let endpoint = `/api/v1/albums/${uri}/release-date/run?update=True`;
         $.get(endpoint)
        .done(function() {
           console.log(`Successfully run ${uri}`);
@@ -55,7 +55,7 @@
      .click(function(){
       $(this).html($('<img>',{height: 15, width: 15, src:'{{ url_for('static', filename='img/working.gif') }}'}))
        let _id = $(this).closest("header").attr('id');
-       runReleaseDate("album", _id)
+       runReleaseDate(_id)
      });
      </script>
 {% endblock %}

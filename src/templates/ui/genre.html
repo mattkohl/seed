@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="container">
+    <header class="header-with-img">
+        <img class="header-img" src="{% if result.artists[0].img is not none %} {{ result.artists[0].img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
+        <div class="h1 header-title">
+            {{ result.name }}
+        </div>
+        <a class="api-button" href="/api/v1/genres/{{ result.id }}" target="_blank">
+            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+        </a>
+    </header>
+    <ul class="list-group">
+        {% for artist in result.artists %}
+          <li class="list-group-item">
+            {% include "ui/_artist.html" %}
+          </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

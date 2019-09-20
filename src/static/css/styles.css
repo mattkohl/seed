@@ -244,3 +244,7 @@ header .metadata-button {
 .list-group {
     overflow: hidden !important;
 }
+
+.genres {
+    float: left;
+}

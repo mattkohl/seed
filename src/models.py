@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List
+import hashlib
 
 from src.spot.models import AlbumTuple, ArtistTuple, GenreTuple
 from src.utils import Utils
@@ -188,6 +189,12 @@ class Album(db.Model):
     def artist_and_album_name(self):
         return f"{', '.join([a.name for a in self.artists])} - {self.name}"
 
+    def lyrics_status(self):
+        num_tracks = self.tracks.count()
+        num_lyrics = self.lyrics_count()
+        num_lyrics_missed = self.lyrics_missed_count()
+        return f"{num_tracks} Tracks" if num_tracks == 0 else f"{num_tracks} Tracks · {num_lyrics} lyrics / {num_lyrics_missed} missed"
+
 
 class Genre(db.Model):
     __tablename__ = "genres"
@@ -249,6 +256,10 @@ class Track(db.Model):
 
     def artist_and_track_name(self):
         return f"{', '.join([a.name for a in self.album.artists])} - {self.name}"
+
+    def create_example_id(self, chunks: List[str]) -> str:
+        chunk = "".join(chunks)
+        return hashlib.md5(f"{chunk}{self.id}".encode('utf-8')).hexdigest()
 
 
 class Section(db.Model):

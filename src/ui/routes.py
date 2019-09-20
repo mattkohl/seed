@@ -6,7 +6,7 @@ from src import db
 from src.tasks.fetch import Fetch
 from src.forms import SearchForm, UriForm
 from src.ui import ui
-from src.models import Track, Album, Artist, Location
+from src.models import Track, Album, Artist, Location, Genre
 
 
 @ui.route("/")
@@ -52,9 +52,14 @@ def get_artist(artist_id: int):
     return render_instance(Artist, artist_id, 'ui/artist.html')
 
 
-@ui.route("/edit_track")
-def edit_track():
-    return "bar"
+@ui.route("/genres/<genre_id>")
+def get_genre(genre_id: int):
+    return render_instance(Genre, genre_id, 'ui/genre.html')
+
+
+@ui.route("/tracks/<track_id>/edit")
+def edit_track(track_id: int):
+    return render_template('base.html')
 
 
 @ui.route('/search', methods=['GET', 'POST'])
@@ -66,8 +71,11 @@ def search():
 
 @ui.route('/search-results/<query>')
 def search_results(query, in_xml=True):
-    result = Track.query.filter(or_(Track.lyrics.ilike(f"% {query}%"), Track.lyrics.ilike(f"{query}%"), Track.lyrics.ilike(f"%\n{query}%"))).join(Album).order_by(Album.release_date)
-    print(result.count())
+    result = Track.query.filter(or_(
+        Track.lyrics.ilike(f"% {query}%"),
+        Track.lyrics.ilike(f"{query}%"),
+        Track.lyrics.ilike(f"%\n{query}%")
+    )).join(Album).order_by(Album.release_date)
     template = 'ui/xml_search_results.html' if in_xml else 'ui/search_results.html'
     return render_template(template, query=query, results=result.all(), number=result.count())
 
