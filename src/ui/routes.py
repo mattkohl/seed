@@ -1,10 +1,13 @@
+import traceback
+
 from flask import render_template, request, url_for, g
 from werkzeug.utils import redirect
 from sqlalchemy import or_
 
+from src.spot.utils import SpotUtils
 from src import db
 from src.tasks.fetch import Fetch
-from src.forms import SearchForm, UriForm
+from src.forms import SearchForm, UriForm, TrackForm, AlbumForm, ArtistForm
 from src.ui import ui
 from src.models import Track, Album, Artist, Location, Genre
 
@@ -57,9 +60,75 @@ def get_genre(genre_id: int):
     return render_instance(Genre, genre_id, 'ui/genre.html')
 
 
+@ui.route("/tracks/<track_id>/update", methods=["POST"])
+def update_track(track_id: int):
+    form = TrackForm(request.form)
+    if form.validate_on_submit():
+        _track = Track.query.filter_by(id=track_id).first()
+        _track.lyrics = form.lyrics.data
+        db.session.add(_track)
+        db.session.commit()
+        try:
+            _ = Fetch.track_lyrics_annotate(_track.spot_uri)
+        except Exception as e:
+            print(f"Unable to annotate {_track.name}")
+            traceback.print_tb(e.__traceback__)
+    else:
+        print(f"INVALID: {form.errors}")
+    return redirect(url_for('ui.get_track', track_id=track_id))
+
+
 @ui.route("/tracks/<track_id>/edit")
 def edit_track(track_id: int):
-    return render_template('base.html')
+    result = Track.query.filter_by(id=track_id).first()
+    form = TrackForm(obj=result)
+    return render_template('ui/track_edit.html', result=result, form=form)
+
+
+@ui.route("/albums/<album_id>/update", methods=["POST"])
+def update_album(album_id: int):
+    form = AlbumForm(request.form)
+    if form.validate_on_submit():
+        _album = Album.query.filter_by(id=album_id).first()
+        _album.name = form.name.data
+        _album.release_date_string = form.release_date_string.data
+        _album.release_date = SpotUtils.clean_up_date(_album.release_date_string)
+        _album.dbp_uri = form.dbp_uri.data
+        _album.wikipedia_uri = form.wikipedia_uri.data
+        db.session.add(_album)
+        db.session.commit()
+    else:
+        print(f"INVALID: {form.errors}")
+    return redirect(url_for('ui.get_album', album_id=album_id))
+
+
+@ui.route("/albums/<album_id>/edit")
+def edit_album(album_id: int):
+    result = Album.query.filter_by(id=album_id).first()
+    form = AlbumForm(obj=result)
+    return render_template('ui/album_edit.html', result=result, form=form)
+
+
+@ui.route("/artists/<artist_id>/update", methods=["POST"])
+def update_artist(artist_id: int):
+    form = ArtistForm(request.form)
+    if form.validate_on_submit():
+        _artist = Artist.query.filter_by(id=artist_id).first()
+        _artist.name = form.name.data
+        _artist.dbp_uri = form.dbp_uri.data
+        _artist.wikipedia_uri = form.wikipedia_uri.data
+        db.session.add(_artist)
+        db.session.commit()
+    else:
+        print(f"INVALID: {form.errors}")
+    return redirect(url_for('ui.get_artist', artist_id=artist_id))
+
+
+@ui.route("/artists/<artist_id>/edit")
+def edit_artist(artist_id: int):
+    result = Artist.query.filter_by(id=artist_id).first()
+    form = ArtistForm(obj=result)
+    return render_template('ui/artist_edit.html', result=result, form=form)
 
 
 @ui.route('/search', methods=['GET', 'POST'])

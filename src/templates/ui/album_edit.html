@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ result.artist_and_album_name() }} ⋅ {% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <header id="{{result.spot_uri}}"  class="header-with-img">
+        <img class="header-img" src="{% if result.img is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
+        <div class="h1 header-title">
+            {{ result.artist_and_album_name() }}
+        </div>
+        <a class="api-button" href="/api/v1/albums/{{ result.spot_uri }}" target="_blank">
+            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+        </a>
+    </header>
+
+    <div>
+        <form method="POST" action="{{ url_for('ui.update_album', album_id=result.id) }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>Name</label>
+                {{ form.name() }}
+            </div>
+            <div class="form-group">
+                <label>Release Date String</label>
+                {{ form.release_date_string() }}
+            </div>
+            <div class="form-group">
+                <label>DBPedia URI</label>
+                {{ form.dbp_uri() }}
+            </div>
+            <div class="form-group">
+                <label>Wikipedia URI</label>
+                {{ form.wikipedia_uri() }}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+    $(document).ready(function () {
+        $('input').addClass('form-control');
+        console.log("DONE!");
+    });
+    </script>
+{% endblock %}

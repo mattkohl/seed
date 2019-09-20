@@ -32,6 +32,7 @@
                 <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
             {% endif %}
         </div>
+        <a class="edit-button" href="{{ url_for('ui.edit_artist', artist_id=result.id) }}">✏️</a>
     </header>
     {% if result.albums|length > 0 %}
         <div>

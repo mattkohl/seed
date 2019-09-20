@@ -10,3 +10,22 @@ class SearchForm(FlaskForm):
 
 class UriForm(FlaskForm):
     uri = StringField('uri', validators=[DataRequired()])
+
+
+class TrackForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    lyrics = StringField('Lyrics')
+
+
+class AlbumForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    release_date_string = StringField('Release Date String', validators=[DataRequired()])
+    dbp_uri = StringField('DBPedia URI')
+    wikipedia_uri = StringField('Wikipedia URI')
+
+
+class ArtistForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    dbp_uri = StringField('DBPedia URI')
+    wikipedia_uri = StringField('Wikipedia URI')
+

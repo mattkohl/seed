@@ -123,8 +123,8 @@ a.album:hover {
 
 .locations {
     position: absolute;
-    bottom: 0px;
-    left: 0px;
+    bottom: 6px;
+    left: 26px;
     color: yellow !important;
 }
 
@@ -179,7 +179,12 @@ header .metadata-button {
     right: 8px;
 }
 
-.geni-button, .metadata-button {
+.edit-button {
+    position: absolute;
+    left: 8px
+}
+
+.geni-button, .metadata-button, .edit-button {
     bottom: 8px;
 }
 

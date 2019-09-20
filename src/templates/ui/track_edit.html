@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ result.artist_and_track_name() }} ⋅ {% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <header id="{{result.spot_uri}}" class="header-with-img">
+        <img class="header-img" src="{% if result.album.img is not none %} {{ result.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
+        <div class="h1 header-title">
+            {{ result.artist_and_track_name() }}
+        </div>
+        <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
+        {% if result.lyrics_url is not none %}
+        <a class="geni-button" href="{{result.lyrics_url}}" target="_blank">
+            <img src="{{ url_for('static', filename='img/genius.svg') }}"/>
+        </a>
+        {% endif %}
+    </header>
+
+    <div>
+        <form method="POST" action="{{ url_for('ui.update_track', track_id=result.id) }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="name" class="sr-only">Name</label>
+                <input name="name" type="text" class="form-control" id="name" value="{{ form.name.data }}"/>
+            </div>
+            <div class="form-group">
+                <textarea name="lyrics" class="form-control" id="lyrics" rows="20">{{ form.lyrics.data }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
