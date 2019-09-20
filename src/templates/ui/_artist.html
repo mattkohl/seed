@@ -17,3 +17,9 @@
         <span class="count">{{ artist.featured_tracks|length }} feat</span>
     </div>
 </div>
+<div class="artist-progress">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ artist.lyrics_percentage() }}%" aria-valuenow="{{ artist.lyrics_percentage() }}" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ artist.lyrics_missed_percentage() }}%" aria-valuenow="{{ artist.lyrics_missed_percentage() }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>
