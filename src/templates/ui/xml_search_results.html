@@ -8,7 +8,7 @@
         <div class="example">
             <div class="tag">&lt;example <span class="attribute-key">id="<span class="attribute-value"><a href="{{ url_for('ui.get_track', track_id=result.id) }}?q={{ query }}" target="_blank">{{result.create_example_id(result.filter_lyrics(query))}}</a></span>"</span>&gt;</div>
             <div class="indentTag">
-                <span class="tag">&lt;date&gt;</span>{{ result.album.release_date.strftime('%Y-%m-%d') }}<span class="tag">&lt;/date&gt;</span>
+                <span class="tag">&lt;date&gt;</span>{{ result.album.release_date_string }}<span class="tag">&lt;/date&gt;</span>
             </div>
             <div class="indentTag">
                 {% for artist in result.primary_artists %}

@@ -1,7 +1,7 @@
 <div id="album_{{album.id}}" class="album">
     <div>
       <a href="{{ url_for('ui.get_album', album_id=album.id) }}">
-          <span class="track-release-date">{{ album.release_date.strftime('%Y-%m-%d') }}</span>
+          <span class="track-release-date">{{ album.release_date_string }}</span>
           {% for artist in album.artists %}
           <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
               <span class="track-artist">{{ artist.name }}</span>

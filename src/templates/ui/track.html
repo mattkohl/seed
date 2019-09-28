@@ -22,7 +22,7 @@
     <div class="example">
       <div class="tag">&lt;example <span class="attribute">id="s{{result.id}}"</span>&gt;</div>
         <div class="indentTag">
-            <span class="tag">&lt;date&gt;</span>{{ result.album.release_date.strftime('%Y-%m-%d') }}<span class="tag">&lt;/date&gt;</span>
+            <span class="tag">&lt;date&gt;</span>{{ result.album.release_date_string }}<span class="tag">&lt;/date&gt;</span>
         </div>
         <div class="indentTag">
             {% for artist in result.primary_artists %}

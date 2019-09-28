@@ -6,7 +6,7 @@
     <div class="h5"> ({{ results|length }} results)</div>
         {% for result in results %}
             <div class="h5">
-                <span class="release-date">{{ result.album.release_date.strftime('%Y-%m-%d') }}</span>
+                <span class="release-date">{{ result.album.release_date_string }}</span>
                 {% for artist in result.primary_artists %}
                     <span class="artist">{{ artist.name }}</span>
                 {% endfor %}

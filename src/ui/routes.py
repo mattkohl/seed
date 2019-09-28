@@ -60,6 +60,11 @@ def get_genre(genre_id: int):
     return render_instance(Genre, genre_id, 'ui/genre.html')
 
 
+@ui.route("/locations/<location_id>")
+def get_location(location_id: int):
+    return render_instance(Location, location_id, 'ui/location.html')
+
+
 @ui.route("/tracks/<track_id>/update", methods=["POST"])
 def update_track(track_id: int):
     form = TrackForm(request.form)
