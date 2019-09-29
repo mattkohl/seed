@@ -12,6 +12,8 @@
                 <a class="geni-button" href="{{result.lyrics_url}}" target="_blank">
                     <img src="{{ url_for('static', filename='img/genius.svg') }}"/>
                 </a>
+            {% elif result.lyrics is none and result.lyrics_url is not none %}
+                <a class="run-button run-track">↻</span>
             {% else %}
                 <a class="run-button run-track">➢</a>
             {% endif %}

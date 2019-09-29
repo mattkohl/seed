@@ -39,6 +39,14 @@
     </ul>
 
 </div>
+<div>
+    {% if result.preceding() %}
+        <a class="navigation navigation-preceding" href="{{ url_for('ui.get_album', album_id=result.preceding().id) }}">⮂</a>
+    {% endif %}
+    {% if result.following() %}
+        <a class="navigation navigation-following" href="{{ url_for('ui.get_album', album_id=result.following().id) }}">⮀</a>
+    {% endif %}
+</div>
 {% endblock %}
 
 {% block scripts %}

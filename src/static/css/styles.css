@@ -267,3 +267,16 @@ a.geni-button>img {
 .genres {
     float: left;
 }
+
+.navigation {
+    position: fixed;
+    bottom: 10px;
+}
+
+.navigation-preceding {
+    left: 20px;
+}
+
+.navigation-following {
+    right: 20px;
+}

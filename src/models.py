@@ -195,6 +195,29 @@ class Album(db.Model):
         num_lyrics_missed = self.lyrics_missed_count()
         return f"{num_tracks} Tracks" if num_tracks == 0 else f"{num_tracks} Tracks · {num_lyrics} lyrics / {num_lyrics_missed} missed"
 
+    def siblings(self):
+        def _siblings():
+            for _artist in self.artists:
+                for _album in _artist.albums:
+                    yield _album
+        return sorted(_siblings(), key=lambda _a: _a.release_date)
+
+    def preceding(self):
+        _all = self.siblings()
+        i = _all.index(self)
+        try:
+            return _all[i-1]
+        except Exception as e:
+            return None
+
+    def following(self):
+        _all = self.siblings()
+        i = _all.index(self)
+        try:
+            return _all[i-1]
+        except Exception as e:
+            return None
+
 
 class Genre(db.Model):
     __tablename__ = "genres"

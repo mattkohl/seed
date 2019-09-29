@@ -52,7 +52,7 @@ class Fetch:
     def album_dbp_uri(uri: str, force_update: bool = False) -> Dict:
         result = Album.query.filter_by(spot_uri=uri).first()
         _album = result.as_dict()
-        if result.dbp_uri is None or force_update:
+        if not result.dbp_uri or force_update:
             dbp_uri = Fetch.dbp_uri(instance_id=result.id, instance_name=result.name, model=Album, uri=uri, wikipedia_uri=result.wikipedia_uri,
                                     fetch_candidates=Fetch.album_and_artist_annotations)
             _album.update({"dbp_uri": dbp_uri})
@@ -323,11 +323,13 @@ class Fetch:
             fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
             dbp_uri = first["@URI"] if ((offset_is_zero and fuzzy_match_score > 85) or fuzzy_match_score == 100) else None
             if wikipedia_uri and not dbp_uri:
+                print(f"Attempting to manufacture DBP URI using Wikipedia")
                 local_name = wikipedia_uri.split("/")[-1]
                 candidate = f"http://dbpedia.org/resource/{local_name}"
                 import requests
                 response = requests.get(candidate)
                 if response.status_code == 200:
+                    print(f"Success! <{candidate}>")
                     dbp_uri = candidate
 
             if dbp_uri is not None:
@@ -505,7 +507,6 @@ class Fetch:
         _album.update({"artists": _artists})
         if force_update and result.dbp_uri is not None:
             _release_date_tuple = Sparql.release_date(result.dbp_uri)
-            print(_release_date_tuple)
             if _release_date_tuple and _release_date_tuple.releaseDate is not None:
                 _release_date_string = _release_date_tuple.releaseDate
                 _release_date = datetime.strptime(SpotUtils.clean_up_date(_release_date_string), '%Y-%m-%d')
