@@ -3,17 +3,11 @@
 {% block content %}
     <table class="table table-dark">
         <thead>
-            <tr>
-                <th scope="col">Type</th>
-                <th scope="col">Count</th>
-            </tr>
+            <tr><th scope="col">Type</th><th scope="col">Count</th></tr>
         </thead>
         <tbody>
             {% for row in stats %}
-                <tr>
-                    <td>{{ row.type }}</td>
-                    <td>{{ row.count }}</td>
-                </tr>
+                <tr><td>{{ row.type }}</td><td>{{ row.count }}</td></tr>
             {% endfor %}
         </tbody>
     </table>

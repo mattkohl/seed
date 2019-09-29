@@ -3,24 +3,24 @@
 
 {% block content %}
 <div class="container search_results">
-    <div class="h1">{{ results|length }} results found for "{{ query }}"</div>
+    <div class="h1">{{ results|length }} results found for <span class="query">{{ query }}</span></div>
     {% for result in results %}
         <div class="example">
-            <div class="tag">&lt;example <span class="attribute-key">id="<span class="attribute-value"><a href="{{ url_for('ui.get_track', track_id=result.id) }}?q={{ query }}" target="_blank">{{result.create_example_id(result.filter_lyrics(query))}}</a></span>"</span>&gt;</div>
+            <div class="tag">&lt;example <span class="attribute-key">id="<span class="attribute-value">{{result.create_example_id(result.filter_lyrics(query))}}</span>"</span>&gt;</div>
             <div class="indentTag">
                 <span class="tag">&lt;date&gt;</span>{{ result.album.release_date_string }}<span class="tag">&lt;/date&gt;</span>
             </div>
             <div class="indentTag">
                 {% for artist in result.primary_artists %}
-                <span class="tag">&lt;artist&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}"><span class="track-artist">{{ artist.name.replace('&', '&amp;') }}</span></a><span class="tag">&lt;/artist&gt;</span>
+                <span class="tag">&lt;artist&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}" class="track-artist">{{ artist.name.replace('&', '&amp;') }}</a><span class="tag">&lt;/artist&gt;</span>
                 {% endfor %}
             </div>
             <div class="indentTag">
-                <span class="tag">&lt;songTitle&gt;</span>{{ result.name.replace('&', '&amp;') }}<span class="tag">&lt;/songTitle&gt;</span>
+                <span class="tag">&lt;songTitle&gt;</span><a href="{{ url_for('ui.get_track', track_id=result.id) }}?q={{ query }}" class="song-title" target="_blank">{{ result.name.replace('&', '&amp;') }}</a><span class="tag">&lt;/songTitle&gt;</span>
             </div>
             {% for f in result.featured_artists %}
                 <div class="indentTag">
-                    <span class="tag">&lt;feat&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=f.id) }}">{{ f.name }}</a><span class="tag">&lt;/feat&gt;</span>
+                    <span class="tag">&lt;feat&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=f.id) }}" class="track-artist">{{ f.name }}</a><span class="tag">&lt;/feat&gt;</span>
                 </div>
             {% endfor %}
             <div class="indentTag">

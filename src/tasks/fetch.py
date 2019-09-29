@@ -414,10 +414,7 @@ class Fetch:
             {"type": "artists", "count": Artist.query.count()},
             {"type": "albums", "count": Album.query.count()},
             {"type": "tracks", "count": Track.query.count()},
-            {"type": "genres", "count": Genre.query.count()},
-            {"type": "locations", "count": Location.query.count()},
             {"type": "lyrics", "count": Track.query.filter(Track.lyrics != None).count()},
-            {"type": "sections", "count": Section.query.count()}
         ]
 
     @staticmethod

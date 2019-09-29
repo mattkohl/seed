@@ -3,7 +3,7 @@
         <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
             <span class="track-release-date">{{ track.album.release_date_string }}</span>
         </a>
-        {% for artist in track.primary_artists %}
+        {% for artist in track.album.artists %}
             {% if artist.name != "Various Artists" %}
                 <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
                     <span class="track-artist">{{ artist.name }}</span>
@@ -13,31 +13,29 @@
         <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
             <span class="track-title">"{{ track.name }}"</span>
         </a>
-        {% if track.featured_artists %}
-        <span class="track-feat">feat. </span>
-        {% for artist in track.featured_artists %}
-        <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
-            <span class="track-artist">{{ artist.name }}</span>
-        </a>
-        {% endfor %}
-        {% endif %}
-<!--        <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}">[{{ track.album.name}}]</a>-->
-        {% if track.lyrics is not none %}
-        <span style="color: darkgray;">✓</span>
-        {% elif track.lyrics is none and track.lyrics_url is not none %}
-        <a id="{{track.spot_uri}}" class="run-button run-track">↻</span>
-        {% else %}
-        <a id="{{track.spot_uri}}" class="run-button run-track">➢</a>
-        {% endif %}
-        <div style="float: right">
-            {% if track.lyrics %}
-            <a class="geni-button" href="{{track.lyrics_url}}" target="_blank">
-                <img src="{{ url_for('static', filename='img/genius-dark.svg') }}"/>
+        {% if track.adjusted_featured_artists() %}
+            <span class="track-feat">feat. </span>
+            {% for artist in track.adjusted_featured_artists() %}
+            <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
+                <span class="track-artist">{{ artist.name }}</span>
             </a>
+            {% endfor %}
+        {% endif %}
+
+        {% if track.lyrics is not none %}
+            <a class="geni-button" href="{{track.lyrics_url}}" target="_blank">
+                <img src="{{ url_for('static', filename='img/genius-dark-sm.svg') }}"/>
+            </a>
+        {% elif track.lyrics is none and track.lyrics_url is not none %}
+            <a id="{{track.spot_uri}}" class="run-button run-track">↻</span>
+        {% else %}
+            <a id="{{track.spot_uri}}" class="run-button run-track">➢</a>
+        {% endif %}
+
+        <div style="float: right">
+            {% if track.song_link() %}
+                <a class="play-button" href="{{ track.song_link() }}" target="_blank">▶️</a>
             {% endif %}
-<!--            <a href="{{ url_for('ui.get_album', album_id=track.album.id) }}" class="album">-->
-<!--                <img src="{% if track.album.img is not none %} {{ track.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}" height="50" width="50"/>-->
-<!--            </a>-->
         </div>
     </div>
     <div class="track-data">

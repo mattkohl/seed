@@ -48,6 +48,7 @@ class GenUtils:
     def prune(song_title: str) -> str:
         st = re.sub(r" \(Vocal\)", "", song_title, re.IGNORECASE)
         st = re.sub(r" \(screwed\)", "", st, re.IGNORECASE)
+        st = re.sub(r" \(Screwed Version\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(with.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(feat.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(Sky High\)", "", st, re.IGNORECASE)
@@ -60,6 +61,8 @@ class GenUtils:
         st = re.sub(r" - Edit$", "", st, re.IGNORECASE)
         st = re.sub(r" - LP Mix$", "", st, re.IGNORECASE)
         st = re.sub(r" - Explici?t$", "", st, re.IGNORECASE)
+        st = re.sub(r"; Explicit version$", "", st, re.IGNORECASE)
+        st = re.sub(r"; Explicit$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Version$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Slowed$", "", st, re.IGNORECASE)

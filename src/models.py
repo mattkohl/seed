@@ -257,9 +257,18 @@ class Track(db.Model):
     def artist_and_track_name(self):
         return f"{', '.join([a.name for a in self.album.artists])} - {self.name}"
 
+    def adjusted_featured_artists(self):
+        _album_artists = {a for a in self.album.artists}
+        _primary = {a for a in self.primary_artists if a not in _album_artists}
+        _feat = {a for a in self.featured_artists if a not in _album_artists and a not in _primary}
+        return _primary.union(_feat)
+
     def create_example_id(self, chunks: List[str]) -> str:
         chunk = "".join(chunks)
         return hashlib.md5(f"{chunk}{self.id}".encode('utf-8')).hexdigest()
+
+    def song_link(self):
+        return f"https://open.spotify.com/track/{self.spot_uri.split(':')[-1]}" if self.spot_uri else None
 
 
 class Section(db.Model):
