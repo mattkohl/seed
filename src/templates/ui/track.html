@@ -60,7 +60,7 @@
                 {% if q %}
                     <div class="h5">{{ lyric|replace(q, "<span class='query'>" + q + "</span>")|safe }}</div>
                 {% else %}
-                    <div class="h5">{{ lyric|safe }}</div>
+                    <div class="h5">{{ lyric | safe }}</div>
                 {% endif %}
             {% endfor %}
         {% endif %}

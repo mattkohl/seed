@@ -71,13 +71,15 @@ def update_track(track_id: int):
     if form.validate_on_submit():
         _track = Track.query.filter_by(id=track_id).first()
         _track.lyrics = form.lyrics.data
+        _track.lyrics_annotated = form.lyrics_annotated.data
         db.session.add(_track)
         db.session.commit()
-        try:
-            _ = Fetch.track_lyrics_annotate(_track.spot_uri)
-        except Exception as e:
-            print(f"Unable to annotate {_track.name}")
-            traceback.print_tb(e.__traceback__)
+        if not _track.lyrics_annotated:
+            try:
+                _ = Fetch.track_lyrics_annotate(_track.spot_uri)
+            except Exception as e:
+                print(f"Unable to annotate {_track.name}")
+                traceback.print_tb(e.__traceback__)
     else:
         print(f"INVALID: {form.errors}")
     return redirect(url_for('ui.get_track', track_id=track_id))

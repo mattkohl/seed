@@ -280,3 +280,7 @@ a.geni-button>img {
 .navigation-following {
     right: 20px;
 }
+
+.h5>a {
+    color: #3399FF
+}

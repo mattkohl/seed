@@ -14,11 +14,6 @@
           </a>
         </li>
       {% endif %}
-<!--      {% for n in range(start_page+1, end_page) %}-->
-<!--        {% if (offset + n*100) < count-100 %}-->
-<!--            <li class="page-item"><a class="page-link" href="{{ url_for('ui.albums') }}?offset={{n*100}}">{{n}}</a></li>-->
-<!--        {% endif %}-->
-<!--      {% endfor %}-->
       {% if (count - offset) > 100 %}
         <li class="page-item">
           <a class="page-link" href="{{ url_for(endpoint) }}?offset={{offset + 100}}&q={{q}}" aria-label="Next">

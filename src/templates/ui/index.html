@@ -1,7 +1,22 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <style>
+      html {
+        background-image: url({{ url_for('static', filename='img/cold-crush-dim.jpg') }});
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      body, nav#navbar-ftw {
+        background-color: transparent !important;
+      }
+
+    </style>
+{% endblock %}
+
 {% block content %}
-    <table class="table table-dark">
+    <table class="table table-dark" style="background-color: transparent;">
         <thead>
             <tr><th scope="col">Type</th><th scope="col">Count</th></tr>
         </thead>
@@ -12,5 +27,5 @@
         </tbody>
     </table>
 
-    <div>{{ counts }}</div>
+<!--    <div>{{ counts }}</div>-->
 {% endblock %}
