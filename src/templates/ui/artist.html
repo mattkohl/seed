@@ -34,16 +34,16 @@
         </div>
         <a class="edit-button" href="{{ url_for('ui.edit_artist', artist_id=result.id) }}">✏️</a>
     </header>
-    {% if result.albums|length > 0 %}
+    {% if albums_count > 0 %}
         <div>
-            <h4 class="albums-label">{{ result.albums|length }} Albums ⋅ {{ result.primary_tracks|length }} Tracks</h4>
+            <h4 class="albums-label">{{ albums_count }} Albums ⋅ {{ primary_tracks_count }} Tracks</h4>
         </div>
     {% endif %}
     <div class="progress">
         <div class="progress-bar" role="progressbar" style="width: {{ result.lyrics_percentage() }}%" aria-valuenow="{{ result.lyrics_percentage() }}" aria-valuemin="0" aria-valuemax="100">{{ result.lyrics_percentage() }}% DONE</div>
         <div class="progress-bar bg-danger" role="progressbar" style="width: {{ result.lyrics_missed_percentage() }}%" aria-valuenow="{{ result.lyrics_missed_percentage() }}" aria-valuemin="0" aria-valuemax="100">{{ result.lyrics_missed_percentage() }}% MISSED</div>
     </div>
-    {% if result.albums|length > 0 %}
+    {% if albums_count > 0 %}
         <ul class="list-group">
             {% for album in result.albums|sort(attribute='release_date') %}
                 <li class="list-group-item">
@@ -52,8 +52,8 @@
             {% endfor %}
         </ul>
     {% else %}
-        {% if result.primary_tracks|length > 0 %}
-            <h4 class="tracks-label">{{ result.primary_tracks|length }} Primary Tracks </h4>
+        {% if primary_tracks_count > 0 %}
+            <h4 class="tracks-label">{{ primary_tracks_count }} Primary Tracks </h4>
             <ul class="list-group">
                 {% for track in result.primary_tracks|sort(attribute='album.release_date') %}
                     <li class="list-group-item">
@@ -62,8 +62,8 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        {% if result.featured_tracks|length > 0 %}
-            <h4 class="tracks-label">{{ result.featured_tracks|length }} Featured Tracks</h4>
+        {% if featured_tracks_count > 0 %}
+            <h4 class="tracks-label">{{ featured_tracks_count }} Featured Tracks</h4>
             <ul class="list-group">
                 {% for track in result.featured_tracks|sort(attribute='album.release_date') %}
                     <li class="list-group-item">
@@ -73,12 +73,10 @@
             </ul>
         {% endif %}
     {% endif %}
-    {% if result.genres %}
         <div class="genres">
             {% for genre in result.genres %}
                 <a href="{{ url_for('ui.get_genre', genre_id=genre.id) }}" class="genre btn btn-primary btn-sm active">{{ genre.name }}</a>
             {% endfor %}
         </div>
-    {% endif %}
 </div>
 {% endblock %}

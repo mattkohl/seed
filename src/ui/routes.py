@@ -52,7 +52,22 @@ def get_album(album_id: int):
 
 @ui.route("/artists/<artist_id>")
 def get_artist(artist_id: int):
-    return render_instance(Artist, artist_id, 'ui/artist.html')
+    # id, name, spot_uri, thumb, img, birthplace, hometown, wikipedia_uri, dbp_uri, lyrics_percentage,
+    # lyrics_missed_percentage, albums, primary_tracks, featured_tracks, genres
+
+    q = request.args.get('q') if request.args.get('q') else ""
+    instance = Artist.query.get(artist_id)
+    if instance:
+        albums_count = len(instance.albums)
+        primary_tracks_count = len(instance.primary_tracks)
+        featured_tracks_count = len(instance.featured_tracks)
+        return render_template('ui/artist.html',
+                               result=instance,
+                               q=q,
+                               albums_count=albums_count,
+                               primary_tracks_count=primary_tracks_count,
+                               featured_tracks_count=featured_tracks_count)
+    return redirect(url_for('.index'))
 
 
 @ui.route("/genres/<genre_id>")
@@ -181,7 +196,7 @@ def render_class(model: db.Model, template: str, endpoint: str):
 
 def render_instance(model: db.Model, _id: int, template: str):
     q = request.args.get('q') if request.args.get('q') else ""
-    instance = model.query.filter_by(id=_id).first()
+    instance = model.query.get(_id)
     if instance:
         return render_template(template, result=instance, q=q)
     return redirect(url_for('.index'))
