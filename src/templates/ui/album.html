@@ -1,30 +1,50 @@
 {% extends "base.html" %}
 {% block title %}{{ result.artist_and_album_name() }} ⋅ {% endblock %}
 
+{% block head %}
+    <style>
+      header {
+        background-image: url({% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %});
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      </style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
     <header id="{{result.spot_uri}}"  class="header-with-img">
-        <img class="header-img" src="{% if result.img is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
-        <div class="h1 header-title">
-            {{ result.artist_and_album_name() }}
-            <a id="{{result.spot_uri}}" class="run-button run-album">➢</a>
+        <div class="header-rows">
+            <div class="header-row-start">
+                <div class="title-row">
+                    <div class="h1 header-title">
+                        {{ result.artist_and_album_name() }}
+                        <a id="{{result.spot_uri}}" class="run-button run-album">➢</a>
+                    </div>
+                    <a class="api-button" href="/api/v1/albums/{{ result.spot_uri }}" target="_blank">
+                        <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+                    </a>
+                </div>
+            </div>
+            <div class="header-row-end">
+                <div class="buttons-row">
+                    <div class="buttons-row-start">
+                        <a class="edit-button" href="{{ url_for('ui.edit_album', album_id=result.id) }}">✏️</a>
+                        {% if result.wikipedia_uri %}
+                        <span><a href="{{result.wikipedia_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/wikipedia.png') }}"></a></span>
+                        {% endif %}
+                        {% if result.dbp_uri %}
+                        <span><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
+                        <a class="run-button run-album-release-date">📅</a>
+                        {% endif %}
+                    </div>
+                    <div class="buttons-row-end">
+                        <a class="metadata-button run-album-metadata">
+                            <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <a class="api-button" href="/api/v1/albums/{{ result.spot_uri }}" target="_blank">
-            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
-        </a>
-        <a class="metadata-button run-album-metadata">
-            <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
-        </a>
-        <div class="locations">
-            {% if result.wikipedia_uri %}
-            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/wikipedia.png') }}"></a></span>
-            {% endif %}
-            {% if result.dbp_uri %}
-            <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
-            <a class="dbp run-button run-album-release-date">📅</a>
-            {% endif %}
-        </div>
-        <a class="edit-button" href="{{ url_for('ui.edit_album', album_id=result.id) }}">✏️</a>
     </header>
     <div class="progress">
         <div class="progress-bar" role="progressbar" style="width: {{ result.lyrics_percentage() }}%" aria-valuenow="{{ result.lyrics_percentage() }}" aria-valuemin="0" aria-valuemax="100">{{ result.lyrics_percentage() }}% DONE</div>
@@ -38,15 +58,6 @@
         {% endfor %}
     </ul>
 
-</div>
-<div>
-    {% if result.preceding() %}
-        <a class="navigation navigation-preceding" href="{{ url_for('ui.get_album', album_id=result.preceding().id) }}">⮂</a>
-    {% endif %}
-    {% if result.following() %}
-        <a class="navigation navigation-following" href="{{ url_for('ui.get_album', album_id=result.following().id) }}">⮀</a>
-    {% endif %}
-</div>
 {% endblock %}
 
 {% block scripts %}

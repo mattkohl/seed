@@ -1,44 +1,63 @@
 {% extends "base.html" %}
 {% block title %}{{ result.name }} ⋅ {% endblock %}
 
+{% block head %}
+    <style>
+      header {
+        background-image: url({% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %});
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      </style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
     <header id="{{result.spot_uri}}"  class="header-with-img">
-        <img class="header-img" src="{% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
-        <div class="h1 header-title">
-            {{ result.name }}
-            <a class="run-button run-artist">➢</a>
+        <div class="header-rows">
+            <div class="header-row-start">
+                <div class="title-row">
+                    <div class="h1 header-title">
+                        {{ result.name }}
+                        <a class="run-button run-artist">➢</a>
+                    </div>
+                    <a class="api-button" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank">
+                        <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+                    </a>
+                </div>
+            </div>
+            <div class="header-row-end">
+                <div class="locations-row">
+                    {% if result.birthplace %}
+                        <span class="location-label">Birthplace: </span>
+                        <span class="location">{{ result.birthplace.name }}</span>
+                    {% endif %}
+                    {% if result.hometown %}
+                        <span class="location-label">Hometown: </span>
+                        <span class="location">{{ result.hometown.name }}</span>
+                    {% endif %}
+                </div>
+                <div class="buttons-row">
+                    <div class="buttons-row-start">
+                        <a class="edit-button" href="{{ url_for('ui.edit_artist', artist_id=result.id) }}">✏️</a>
+                        {% if result.wikipedia_uri %}
+                        <span><a href="{{result.wikipedia_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/wikipedia.png') }}"></a></span>
+                        {% endif %}
+                        {% if result.dbp_uri %}
+                            <span><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
+                        {% endif %}
+                    </div>
+                    {% if albums_count > 0 %}
+                        <div class="counts">
+                            <h4>{{ albums_count }} Albums ⋅ {{ primary_tracks_count }} Tracks</h4>
+                        </div>
+                    {% endif %}
+                    <a class="metadata-button run-artist-metadata">
+                        <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
+                    </a>
+                </div>
+            </div>
         </div>
-        <a class="api-button" href="/api/v1/artists/{{ result.spot_uri }}" target="_blank">
-            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
-        </a>
-<!--        <a class="delete-button" onclick="deleteInstanceAndRedirect('artist', {{result.id}})">x</a>-->
-        <a class="metadata-button run-artist-metadata">
-            <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
-        </a>
-        <div class="locations">
-            {% if result.birthplace %}
-                <span class="location-label">Birthplace: </span>
-                <span class="location">{{ result.birthplace.name }}</span>
-            {% endif %}
-            {% if result.hometown %}
-                <span class="location-label">Hometown: </span>
-                <span class="location">{{ result.hometown.name }}</span>
-            {% endif %}
-            {% if result.wikipedia_uri %}
-            <span class="dbp"><a href="{{result.wikipedia_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/wikipedia.png') }}"></a></span>
-            {% endif %}
-            {% if result.dbp_uri %}
-                <span class="dbp"><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
-            {% endif %}
-        </div>
-        <a class="edit-button" href="{{ url_for('ui.edit_artist', artist_id=result.id) }}">✏️</a>
     </header>
-    {% if albums_count > 0 %}
-        <div>
-            <h4 class="albums-label">{{ albums_count }} Albums ⋅ {{ primary_tracks_count }} Tracks</h4>
-        </div>
-    {% endif %}
     <div class="progress">
         <div class="progress-bar" role="progressbar" style="width: {{ result.lyrics_percentage() }}%" aria-valuenow="{{ result.lyrics_percentage() }}" aria-valuemin="0" aria-valuemax="100">{{ result.lyrics_percentage() }}% DONE</div>
         <div class="progress-bar bg-danger" role="progressbar" style="width: {{ result.lyrics_missed_percentage() }}%" aria-valuenow="{{ result.lyrics_missed_percentage() }}" aria-valuemin="0" aria-valuemax="100">{{ result.lyrics_missed_percentage() }}% MISSED</div>
@@ -73,10 +92,9 @@
             </ul>
         {% endif %}
     {% endif %}
-        <div class="genres">
-            {% for genre in result.genres %}
-                <a href="{{ url_for('ui.get_genre', genre_id=genre.id) }}" class="genre btn btn-primary btn-sm active">{{ genre.name }}</a>
-            {% endfor %}
-        </div>
-</div>
+    <div class="genres">
+        {% for genre in result.genres %}
+            <a href="{{ url_for('ui.get_genre', genre_id=genre.id) }}" class="genre btn btn-primary btn-sm active">{{ genre.name }}</a>
+        {% endfor %}
+    </div>
 {% endblock %}

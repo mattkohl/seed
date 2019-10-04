@@ -131,7 +131,9 @@ class GenUtils:
         title = title.replace("F#ck", "Fuck")
         title = title.replace("F**k", "Fuck")
         title = title.replace("F***", "Fuck")
+        title = title.replace("F------", "Fucking")
         title = title.replace("F--k", "Fuck")
+        title = title.replace("F---", "Fuck")
         title = title.replace("D**k", "Dick")
         title = title.replace("A*s", "Ass")
         title = title.replace("A**", "Ass")
@@ -159,6 +161,7 @@ class GenUtils:
         title = title.replace("S***", "Shit")
         title = title.replace("Sh**", "Shit")
         title = title.replace("Muthaf*cka", "Muthafucka")
+        title = title.replace("Mutherf-----", "Mutherfucker")
         title = title.replace("#!*@", "Fuck")
         title = title.replace("****", "Fuck")
 

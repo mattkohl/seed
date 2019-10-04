@@ -1,6 +1,17 @@
+html {
+    background-color: black;
+}
+
+body, nav#navbar-ftw {
+    background-color: transparent !important;
+}
+
+li.list-group-item {
+    background: transparent !important;
+}
+
 body {
     padding-top: 5rem;
-    background-color: #343a40 !important;
     color: slategray;
 }
 
@@ -126,9 +137,6 @@ a.play-button:hover {
 }
 
 .locations {
-    position: absolute;
-    bottom: 6px;
-    left: 26px;
     color: yellow !important;
 }
 
@@ -140,9 +148,6 @@ header .delete-button {
 }
 
 header .metadata-button {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
     color: yellow !important;
 }
 
@@ -170,17 +175,12 @@ header .metadata-button {
     position: relative;
 }
 
-.header-title {
-    padding-left: 8px;
-}
-
 .api-button {
-    top: 2px;
+
 }
 
 .api-button, .metadata-button {
-    position: absolute;
-    right: 8px;
+
 }
 
 a.play-button {
@@ -194,12 +194,11 @@ a.geni-button>img {
 }
 
 .edit-button {
-    position: absolute;
-    left: 8px
+
 }
 
 .metadata-button, .edit-button {
-    bottom: 8px;
+
 }
 
 .list-group-item {
@@ -209,6 +208,34 @@ a.geni-button>img {
 .list-group-item:first-child {
     border-top-left-radius: 0rem !important;
     border-top-right-radius: 0rem !important;
+}
+
+.header-rows {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.header-row-start, .header-row-end {
+    padding: 0 4px;
+}
+
+.title-row {
+	display: flex;
+	justify-content: space-between;
+
+}
+
+.locations-row {
+	display: flex;
+	justify-content: center;
+}
+
+.buttons-row {
+	display: flex;
+	justify-content: space-between;
+	align-content: end;
 }
 
 .header-img {
@@ -229,14 +256,14 @@ a.geni-button>img {
     padding-left: 8px;
 }
 
-.dbp a {
-    float: right;
-    padding-left: 8px;
+.dbp-button a {
     color: white !important;
 }
 
 .progress {
     border-radius: 0 !important;
+    background-color: darkslategray;
+    opacity: 0.8;
 }
 
 .progress-bar {
@@ -245,14 +272,25 @@ a.geni-button>img {
 
 .album-progress, .artist-progress {
     position: absolute;
-    bottom: -14px;
     width: 100%;
     left: 0px;
     opacity: 0.5;
+    bottom: -1px !important;
+    height: 2px !important;
+    overflow: hidden;
 }
 
-.albums-label, .tracks-label {
-    background-color: darkslategrey;
+.counts {
+    background-color: transparent;
+    margin-bottom: 0;
+}
+
+.counts>h4 {
+    margin-bottom: 0;
+}
+
+.counts, .albums-label, .tracks-label {
+    background-color: transparent;
     color: whitesmoke;
     text-align: center;
     margin-bottom: 0;
@@ -265,7 +303,13 @@ a.geni-button>img {
 }
 
 .genres {
-    float: left;
+    display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.genre {
+    margin: 6px 4px;
 }
 
 .navigation {
