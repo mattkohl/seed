@@ -198,7 +198,8 @@ def render_instance(model: db.Model, _id: int, template: str):
     q = request.args.get('q') if request.args.get('q') else ""
     instance = model.query.get(_id)
     if instance:
-        return render_template(template, result=instance, q=q)
+        img = instance.get_img()
+        return render_template(template, result=instance, q=q, img=img if img else url_for('static', filename='img/__none.png'))
     return redirect(url_for('.index'))
 
 

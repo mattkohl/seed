@@ -1,8 +1,8 @@
-html {
-    background-color: black;
+html, nav#navbar-ftw {
+    background-color: black !important;
 }
 
-body, nav#navbar-ftw {
+body {
     background-color: transparent !important;
 }
 

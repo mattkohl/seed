@@ -4,7 +4,7 @@
 {% block head %}
     <style>
       header {
-        background-image: url({% if result.thumb is not none %} {{ result.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %});
+        background-image: url({{ img }});
         background-repeat: no-repeat;
         background-size: cover;
       }

@@ -108,6 +108,9 @@ class Artist(db.Model):
         _tracks_count = len(self.primary_tracks) if len(self.primary_tracks) != 0 else 0.1
         return round(float(self.lyrics_count()) / float(_tracks_count) * 100, 2)
 
+    def get_img(self):
+        return self.img
+
 
 class Location(db.Model):
     __tablename__ = "locations"
@@ -218,6 +221,9 @@ class Album(db.Model):
         except Exception as e:
             return None
 
+    def get_img(self):
+        return self.img
+
 
 class Genre(db.Model):
     __tablename__ = "genres"
@@ -244,6 +250,9 @@ class Genre(db.Model):
 
     def as_genre_tuple(self):
         return GenreTuple(id=self.id, name=self.name)
+
+    def get_img(self):
+        return self.artists[0].get_img() if self.artists else None
 
 
 class Track(db.Model):
@@ -292,6 +301,9 @@ class Track(db.Model):
 
     def song_link(self):
         return f"https://open.spotify.com/track/{self.spot_uri.split(':')[-1]}" if self.spot_uri else None
+
+    def get_img(self):
+        return self.album.img
 
 
 class Section(db.Model):
