@@ -1,20 +1,51 @@
 {% extends "base.html" %}
 {% block title %}{{ result.artist_and_track_name() }} ⋅ {% endblock %}
 
+{% block head %}
+    <style>
+      header {
+        background-image: url({{ img }});
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      </style>
+{% endblock %}
 
 {% block content %}
-<div class="container">
     <header id="{{result.spot_uri}}" class="header-with-img">
-        <img class="header-img" src="{% if result.album.img is not none %} {{ result.album.img }} {% else %} {{ url_for('static', filename='img/__none.png') }} {% endif %}"/>
-        <div class="h1 header-title">
-            {{ result.artist_and_track_name() }}
+        <div class="header-rows">
+            <div class="header-row-start">
+                <div class="title-row">
+                    <div class="h1 header-title">
+                        {{ result.artist_and_track_name() }}
+                        {% if result.lyrics is not none %}
+                            <a class="geni-button" href="{{result.lyrics_url}}" target="_blank">
+                                <img src="{{ url_for('static', filename='img/genius.svg') }}"/>
+                            </a>
+                        {% elif result.lyrics is none and result.lyrics_url is not none %}
+                            <a class="run-button run-track">↻</a>
+                        {% else %}
+                            <a class="run-button run-track">➢</a>
+                        {% endif %}
+                    </div>
+                    <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank">
+                        <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+                    </a>
+                </div>
+            </div>
+            <div class="header-row-end">
+                <div class="buttons-row">
+                    <div class="buttons-row-start">
+                        <a class="edit-button" href="{{ url_for('ui.edit_track', track_id=result.id) }}">✏️</a>
+                    </div>
+                    <div class="buttons-row-end">
+                        {% if result.song_link() %}
+                            <a class="play-button" href="{{ result.song_link() }}" target="_blank" style="color: whitesmoke;">▶️</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank"><img src="{{ url_for('static', filename='img/cloud.svg') }}"/></a>
-        {% if result.lyrics_url is not none %}
-        <a class="geni-button" href="{{result.lyrics_url}}" target="_blank">
-            <img src="{{ url_for('static', filename='img/genius.svg') }}"/>
-        </a>
-        {% endif %}
     </header>
 
     <div>
@@ -33,5 +64,5 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
-</div>
+
 {% endblock %}
