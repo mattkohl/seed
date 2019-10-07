@@ -3,10 +3,20 @@
 
 {% block head %}
     <style>
-      header {
+      header:before {
         background-image: url({{ img }});
         background-repeat: no-repeat;
         background-size: cover;
+        background-position: 50% 20%;
+        opacity: 0.15;
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
       }
       </style>
 {% endblock %}
@@ -18,15 +28,6 @@
                 <div class="title-row">
                     <div class="h1 header-title">
                         {{ result.artist_and_track_name() }}
-                        {% if result.lyrics is not none %}
-                            <a class="geni-button" href="{{result.lyrics_url}}" target="_blank">
-                                <img src="{{ url_for('static', filename='img/genius.svg') }}"/>
-                            </a>
-                        {% elif result.lyrics is none and result.lyrics_url is not none %}
-                            <a class="run-button run-track">↻</a>
-                        {% else %}
-                            <a class="run-button run-track">➢</a>
-                        {% endif %}
                     </div>
                     <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank">
                         <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
@@ -34,16 +35,7 @@
                 </div>
             </div>
             <div class="header-row-end">
-                <div class="buttons-row">
-                    <div class="buttons-row-start">
-                        <a class="edit-button" href="{{ url_for('ui.edit_track', track_id=result.id) }}">✏️</a>
-                    </div>
-                    <div class="buttons-row-end">
-                        {% if result.song_link() %}
-                            <a class="play-button" href="{{ result.song_link() }}" target="_blank" style="color: whitesmoke;">▶️</a>
-                        {% endif %}
-                    </div>
-                </div>
+
             </div>
         </div>
     </header>

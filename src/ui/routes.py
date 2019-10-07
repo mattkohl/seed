@@ -56,9 +56,9 @@ def get_artist(artist_id: int):
     instance = Artist.query.get(artist_id)
     if instance:
         img = instance.get_img()
-        albums_count = len(instance.albums)
-        primary_tracks_count = len(instance.primary_tracks)
-        featured_tracks_count = len(instance.featured_tracks)
+        albums_count = len(instance.albums) if instance.albums else 0
+        primary_tracks_count = len(instance.primary_tracks) if instance.primary_tracks else 0
+        featured_tracks_count = len(instance.featured_tracks) if instance.featured_tracks else 0
         return render_template('ui/artist.html',
                                result=instance,
                                q=q,

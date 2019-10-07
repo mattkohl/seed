@@ -147,10 +147,6 @@ header .delete-button {
     color: yellow !important;
 }
 
-header .metadata-button {
-    color: yellow !important;
-}
-
 .delete-button {
     cursor: pointer;
     color: red !important;
@@ -173,14 +169,6 @@ header .metadata-button {
     filter: grayscale(100%);
     overflow: hidden;
     position: relative;
-}
-
-.api-button {
-
-}
-
-.api-button, .metadata-button {
-
 }
 
 a.play-button {
@@ -215,6 +203,7 @@ a.geni-button>img {
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
+    z-index: 2;
 }
 
 .header-row-start, .header-row-end {
@@ -252,7 +241,7 @@ a.geni-button>img {
     color: whitesmoke;
 }
 
-.location-label {
+.location, .location-label {
     padding-left: 8px;
 }
 

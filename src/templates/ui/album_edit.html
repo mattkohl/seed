@@ -4,10 +4,20 @@
 
 {% block head %}
     <style>
-      header {
+      header:before {
         background-image: url({{ img }});
         background-repeat: no-repeat;
         background-size: cover;
+        background-position: 50% 20%;
+        opacity: 0.15;
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
       }
       </style>
 {% endblock %}
@@ -37,11 +47,6 @@
                         <span><a href="{{result.dbp_uri}}" target="_blank"><img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/dbpedia.png') }}"></a></span>
                         <a class="run-button run-album-release-date">📅</a>
                         {% endif %}
-                    </div>
-                    <div class="buttons-row-end">
-                        <a class="metadata-button run-album-metadata">
-                            <img class="metadata-img" height="25" width="25" src="{{ url_for('static', filename='img/location.svg') }}">
-                        </a>
                     </div>
                 </div>
             </div>
