@@ -52,12 +52,10 @@ def get_album(album_id: int):
 
 @ui.route("/artists/<artist_id>")
 def get_artist(artist_id: int):
-    # id, name, spot_uri, thumb, img, birthplace, hometown, wikipedia_uri, dbp_uri, lyrics_percentage,
-    # lyrics_missed_percentage, albums, primary_tracks, featured_tracks, genres
-
     q = request.args.get('q') if request.args.get('q') else ""
     instance = Artist.query.get(artist_id)
     if instance:
+        img = instance.get_img()
         albums_count = len(instance.albums)
         primary_tracks_count = len(instance.primary_tracks)
         featured_tracks_count = len(instance.featured_tracks)
@@ -66,7 +64,8 @@ def get_artist(artist_id: int):
                                q=q,
                                albums_count=albums_count,
                                primary_tracks_count=primary_tracks_count,
-                               featured_tracks_count=featured_tracks_count)
+                               featured_tracks_count=featured_tracks_count,
+                               img=img if img else url_for('static', filename='img/__none.png'))
     return redirect(url_for('.index'))
 
 
