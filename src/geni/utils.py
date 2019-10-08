@@ -53,6 +53,7 @@ class GenUtils:
         st = re.sub(r" \(feat.*?\)", "", st, re.IGNORECASE)
         st = re.sub(r" \(Sky High\)", "", st, re.IGNORECASE)
         st = re.sub(r" \[feat.*?\]", "", st, re.IGNORECASE)
+        st = re.sub(r" \[Prod\.? By.*?\]", "", st, re.IGNORECASE)
         st = re.sub(r" \[Bonus Track\]", "", st, re.IGNORECASE)
         st = re.sub(r" - feat.*?$", "", st, re.IGNORECASE)
         st = re.sub(r" - Vocal$", "", st, re.IGNORECASE)
