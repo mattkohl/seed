@@ -154,6 +154,10 @@ header .delete-button {
     margin-right: 0.5rem;
 }
 
+a.run-first {
+    color: yellow !important;
+}
+
 .run-button, .metadata-button {
     cursor: pointer;
 }

@@ -36,7 +36,7 @@
                         {% elif result.lyrics is none and result.lyrics_url is not none %}
                             <a class="run-button run-track">↻</a>
                         {% else %}
-                            <a class="run-button run-track">➢</a>
+                            <a class="run-button run-track run-first">➢</a>
                         {% endif %}
                     </div>
                     <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank">

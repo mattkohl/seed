@@ -29,7 +29,7 @@
         {% elif track.lyrics is none and track.lyrics_url is not none %}
             <a id="{{track.spot_uri}}" class="run-button run-track">↻</span>
         {% else %}
-            <a id="{{track.spot_uri}}" class="run-button run-track">➢</a>
+            <a id="{{track.spot_uri}}" class="run-button run-track run-first">➢</a>
         {% endif %}
 
         <div style="float: right">
