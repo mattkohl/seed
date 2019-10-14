@@ -29,19 +29,21 @@
                 <div class="title-row">
                     <div class="h1 header-title">
                         {{ result.artist_and_track_name() }}
-                        {% if result.lyrics is not none %}
-                            <a class="geni-button" href="{{result.lyrics_url}}" target="_blank">
+                    </div>
+                    <div>
+                        {% if result.lyrics_url %}
+                            <a class="h1 run-button run-track">↻</a>
+                            <a class="geni-button" href="{{result.lyrics_url}}" target="_blank" style="padding: 0 0.75em;">
                                 <img src="{{ url_for('static', filename='img/genius.svg') }}"/>
                             </a>
-                        {% elif result.lyrics is none and result.lyrics_url is not none %}
-                            <a class="run-button run-track">↻</a>
                         {% else %}
                             <a class="run-button run-track run-first">➢</a>
                         {% endif %}
+
+                        <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank">
+                            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+                        </a>
                     </div>
-                    <a class="api-button" href="/api/v1/tracks/{{ result.spot_uri }}" target="_blank">
-                        <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
-                    </a>
                 </div>
             </div>
             <div class="header-row-end">
@@ -95,6 +97,9 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+    </div>
+    <div>
+        {{ result.id }}
     </div>
 
 {% endblock %}

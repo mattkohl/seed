@@ -16,6 +16,7 @@ class TrackForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     lyrics = StringField('Lyrics')
     lyrics_annotated = StringField('Lyrics Annotated')
+    lyrics_url = StringField('Lyrics Url')
 
 
 class AlbumForm(FlaskForm):

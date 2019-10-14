@@ -84,8 +84,10 @@ def update_track(track_id: int):
     form = TrackForm(request.form)
     if form.validate_on_submit():
         _track = Track.query.filter_by(id=track_id).first()
-        _track.lyrics = form.lyrics.data
-        _track.lyrics_annotated = form.lyrics_annotated.data
+        _track.name = form.name.data
+        _track.lyrics = form.lyrics.data if form.lyrics.data else None
+        _track.lyrics_url = form.lyrics_url.data if form.lyrics_url.data else None
+        _track.lyrics_annotated = form.lyrics_annotated.data if form.lyrics_annotated.data else None
         db.session.add(_track)
         db.session.commit()
         if not _track.lyrics_annotated:

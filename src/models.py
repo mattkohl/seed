@@ -172,8 +172,7 @@ class Album(db.Model):
             release_date=f"{self.release_date:%Y-%m-%d}",
             release_date_string=self.release_date_string,
             name=self.name,
-            artists=[_a.as_artist_tuple()._asdict() for _a in artists]
-        )
+            artists=[_a.as_artist_tuple()._asdict() for _a in artists])
 
     def lyrics_count(self):
         return len([_track for _track in self.tracks if _track.lyrics is not None])
@@ -223,6 +222,9 @@ class Album(db.Model):
 
     def get_img(self):
         return self.img
+
+    def potential_duplicates(self):
+        pass
 
 
 class Genre(db.Model):

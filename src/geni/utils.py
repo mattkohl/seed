@@ -65,6 +65,7 @@ class GenUtils:
         st = re.sub(r"; Explicit version$", "", st, re.IGNORECASE)
         st = re.sub(r"; Explicit$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Version$", "", st, re.IGNORECASE)
+        st = re.sub(r" - UNRATED$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Chopped$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Slowed$", "", st, re.IGNORECASE)
         st = re.sub(r" - .*?Screwed$", "", st, re.IGNORECASE)
@@ -117,6 +118,7 @@ class GenUtils:
     def adjust_song_title(song_title: str) -> str:
         title = song_title.replace("H-E", "Hoe")
         title = title.replace("H*es", "Hoes")
+        title = title.replace("Mother ******", "Mother Fucker")
         title = title.replace("N____", "Nigga")
         title = title.replace("N****", "Nigga")
         title = title.replace("N***a", "Nigga")

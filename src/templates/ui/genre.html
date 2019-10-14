@@ -1,15 +1,40 @@
 {% extends "base.html" %}
 
+{% block title %}{{ result.name }} ⋅ {% endblock %}
+
+{% block head %}
+    <style>
+      header:before {
+        background-image: url({{ img }});
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 50% 20%;
+        opacity: 0.15;
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+      </style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
+
     <header class="header-with-img">
-        <img class="header-img" src="{{ img }}"/>
-        <div class="h1 header-title">
-            {{ result.name }}
+        <div class="header-rows">
+            <div class="header-row-start">
+                <div class="title-row">
+                    <div class="h1 header-title">{{ result.name }}</div>
+                    <a class="api-button" href="/api/v1/genres/{{ result.id }}" target="_blank">
+                        <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
+                    </a>
+                </div>
+            </div>
         </div>
-        <a class="api-button" href="/api/v1/genres/{{ result.id }}" target="_blank">
-            <img src="{{ url_for('static', filename='img/cloud.svg') }}"/>
-        </a>
     </header>
     <ul class="list-group">
         {% for artist in result.artists %}
@@ -19,5 +44,4 @@
         {% endfor %}
     </ul>
 
-</div>
 {% endblock %}
