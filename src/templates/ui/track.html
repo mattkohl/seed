@@ -87,6 +87,9 @@
         </div>
         <span class="tag">&lt;/example&gt;</span>
     </div>
+    <div>
+        {{ result.id }}
+    </div>
     <div class="h5 container lyrics">
         {% if result.lyrics_annotated %}
             {% for lyric in result.lyrics_annotated.split("\n") %}
@@ -96,10 +99,16 @@
                     <div class="h5">{{ lyric | safe }}</div>
                 {% endif %}
             {% endfor %}
+        {% elif result.lyrics %}
+            {% for lyric in result.lyrics.split("\n") %}
+                {% if q %}
+                    <div class="h5">{{ lyric|replace(q, "<span class='query'>" + q + "</span>")|safe }}</div>
+                {% else %}
+                    <div class="h5">{{ lyric | safe }}</div>
+                {% endif %}
+            {% endfor %}
         {% endif %}
     </div>
-    <div>
-        {{ result.id }}
-    </div>
+
 
 {% endblock %}
