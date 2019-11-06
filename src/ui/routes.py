@@ -69,6 +69,11 @@ def get_artist(artist_id: int):
     return redirect(url_for('.index'))
 
 
+@ui.route("/genres")
+def genres():
+    return render_class(Genre, 'ui/genres.html', 'ui.genres')
+
+
 @ui.route("/genres/<genre_id>")
 def get_genre(genre_id: int):
     return render_instance(Genre, genre_id, 'ui/genre.html')

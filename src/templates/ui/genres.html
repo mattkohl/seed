@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+    <ul class="list-group">
+        {% for genre in instances %}
+          <li class="list-group-item">
+            {% include "ui/_genre.html" %}
+          </li>
+        {% endfor %}
+    </ul>
+
+    {% include 'ui/_pagination.html' %}
+
+</div>
+{% endblock %}

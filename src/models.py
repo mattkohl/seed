@@ -256,6 +256,9 @@ class Genre(db.Model):
     def get_img(self):
         return self.artists[0].get_img() if self.artists else None
 
+    def artist_count(self):
+        return len(self.artists)
+
 
 class Track(db.Model):
     __tablename__ = "tracks"
