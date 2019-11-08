@@ -129,6 +129,7 @@ class GenUtils:
         title = title.replace("N**ga", "Nigga")
         title = title.replace("N**gas", "Niggas")
         title = title.replace("N*ggas", "Niggas")
+        title = title.replace("Ni---z", "Niggaz")
         title = title.replace("N**gaz", "Niggaz")
         title = title.replace("N***az", "Niggaz")
         title = title.replace("N*****", "Niggas")

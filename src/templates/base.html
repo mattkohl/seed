@@ -29,6 +29,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('ui.tracks') }}">Tracks</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('ui.genres') }}">Genres</a>
+          </li>
         </ul>
         <form id="header-search-form" class="form-inline my-2 my-lg-0" action="{{ url_for('ui.search') }}" method="post" name="search">
           {{ g.search_form.hidden_tag() }}
