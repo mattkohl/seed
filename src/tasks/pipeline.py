@@ -63,11 +63,17 @@ class Tasks:
         print(f"Downloaded {len(album_tuples)} albums for {artist_uri}")
         [Persistence.persist_album(a) for a in album_tuples]
         _artist = Fetch.artist_mb_metadata(artist_uri)
+        print(_artist)
         _ = Fetch.artist_dbp_uri(artist_uri, True)
+        print("dbp fetched")
         _ = Fetch.artist_wikipedia_uri(artist_uri, True)
+        print("wiki fetched")
         _ = Fetch.artist_hometown(artist_uri)
+        print("hometown fetched")
         _ = Fetch.artist_birthplace(artist_uri)
+        print("birthplace fetched")
         _ = Fetch.artist_spot_metadata(artist_uri)
+        print("spot md fetched")
         Persist.update(Artist, _artist['id'], {})
         return Fetch.artist(artist_uri)
 
