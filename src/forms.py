@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField
+from wtforms import StringField, BooleanField, IntegerField
 from wtforms.validators import DataRequired
 
 
@@ -30,4 +30,3 @@ class ArtistForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     dbp_uri = StringField('DBPedia URI')
     wikipedia_uri = StringField('Wikipedia URI')
-

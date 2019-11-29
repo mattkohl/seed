@@ -107,4 +107,13 @@
             <a href="{{ url_for('ui.get_genre', genre_id=genre.id) }}" class="genre btn btn-primary btn-sm active">{{ genre.name }}</a>
         {% endfor %}
     </div>
+    <div class="dupes">
+        <ul class="list-group">
+            {% for artist in dupes %}
+              <li class="list-group-item">
+                {% include "ui/_merge_artist.html" %}
+              </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

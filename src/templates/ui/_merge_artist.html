@@ -1,0 +1,19 @@
+<div class="artist merge-artist" id="dupe_{{artist.id}}">
+    <a class="merge-button" href="#" onclick="mergeInstance({{result.id}}, {{artist.id}})">
+        <img src="{{ url_for('static', filename='img/pr.svg') }}"/>
+    </a>
+    <a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}">
+        <span class="track-artist">{{ artist.name }}</span>
+    </a>
+    <span class="count">{{ artist.albums|length }} albums</span>
+    <span> | </span>
+    <span class="count">{{ artist.primary_tracks|length }} primary</span>
+    <span> | </span>
+    <span class="count">{{ artist.featured_tracks|length }} feat</span>
+    <div class="artist-progress">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{ artist.lyrics_percentage() }}%" aria-valuenow="{{ artist.lyrics_percentage() }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ artist.lyrics_missed_percentage() }}%" aria-valuenow="{{ artist.lyrics_missed_percentage() }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+</div>

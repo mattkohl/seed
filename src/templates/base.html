@@ -65,6 +65,15 @@
       }).fail(function() { console.log(`Failed to delete ${_id}`); });
   }
 
+  function mergeInstance(_idMaster, _idDupe) {
+    let endpoint = `/artists/${_idMaster}/merge/${_idDupe}`;
+     $.get(endpoint)
+     .done(function() {
+        $(`#dupe_${_idDupe}`).hide();
+        console.log(`Successfully merged ${_idDupe}`);
+    }).fail(function() { console.log(`Failed to merge ${_idDupe}`); });
+  }
+
   function deleteInstanceAndRedirect(cls, _id) {
     let endpoint = `/api/v1/${cls}s/${_id}/delete`;
       $.post(endpoint)

@@ -2,7 +2,7 @@ import traceback
 
 from flask import render_template, request, url_for, g
 from werkzeug.utils import redirect
-from sqlalchemy import or_
+from sqlalchemy import or_, not_
 
 from src.spot.utils import SpotUtils
 from src import db
@@ -56,6 +56,7 @@ def get_artist(artist_id: int):
     instance = Artist.query.get(artist_id)
     if instance:
         img = instance.get_img()
+        dupes = Artist.query.filter(Artist.name.ilike(f"%{instance.name}%")).filter(not_(Artist.id == instance.id)).all()
         albums_count = len(instance.albums) if instance.albums else 0
         primary_tracks_count = len(instance.primary_tracks) if instance.primary_tracks else 0
         featured_tracks_count = len(instance.featured_tracks) if instance.featured_tracks else 0
@@ -65,7 +66,8 @@ def get_artist(artist_id: int):
                                albums_count=albums_count,
                                primary_tracks_count=primary_tracks_count,
                                featured_tracks_count=featured_tracks_count,
-                               img=img if img else url_for('static', filename='img/__none.png'))
+                               img=img if img else url_for('static', filename='img/__none.png'),
+                               dupes=dupes)
     return redirect(url_for('.index'))
 
 
@@ -152,6 +154,30 @@ def update_artist(artist_id: int):
     return redirect(url_for('ui.get_artist', artist_id=artist_id))
 
 
+@ui.route("/artists/<artist_id>/merge/<dupe_id>")
+def merge_artist(artist_id: int, dupe_id: int):
+    _master = Artist.query.filter_by(id=artist_id).first()
+    _dupe = Artist.query.filter_by(id=dupe_id).first()
+
+    if _master and _dupe:
+        print(_master)
+        print(_dupe)
+        for _track in _dupe.primary_tracks:
+            print(_track)
+        for _track in _dupe.featured_tracks:
+            print(_track)
+        for _section in _dupe.sections:
+            print(_section)
+        for _album in _dupe.albums:
+            print(_album)
+
+        db.session.add(_master)
+        db.session.commit()
+    else:
+        print(f"Unable to merge {artist_id} and {dupe_id}")
+    return {"job": "done"}
+
+
 @ui.route("/artists/<artist_id>/edit")
 def edit_artist(artist_id: int):
     result = Artist.query.filter_by(id=artist_id).first()
@@ -204,8 +230,9 @@ def render_instance(model: db.Model, _id: int, template: str):
     q = request.args.get('q') if request.args.get('q') else ""
     instance = model.query.get(_id)
     if instance:
+        dupes = model.query.filter(model.name.ilike(f"%{instance.name}%")).filter(not_(model.id == instance.id))
         img = instance.get_img()
-        return render_template(template, result=instance, q=q, img=img if img else url_for('static', filename='img/__none.png'))
+        return render_template(template, result=instance, q=q, img=img if img else url_for('static', filename='img/__none.png'), dupes=dupes)
     return redirect(url_for('.index'))
 
 
