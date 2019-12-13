@@ -221,7 +221,12 @@ def render_class(model: db.Model, template: str, endpoint: str):
     q = request.args.get('q') or ""
     date = request.args.get('date') or ""
     offset, start_page, end_page = pagination(request)
-    instances = model.query.filter(model.name.ilike(f"%{q}%")).order_by(model.id).limit(100).offset(offset)
+    if date and model == Album:
+        date_cleaned = SpotUtils.clean_up_date(date)
+        print(date_cleaned)
+        instances = model.query.filter(model.name.ilike(f"%{q}%")).filter(model.release_date == date_cleaned).order_by(model.id).limit(100).offset(offset)
+    else:
+        instances = model.query.filter(model.name.ilike(f"%{q}%")).order_by(model.id).limit(100).offset(offset)
     count = model.query.count()
     return render_template(template, endpoint=endpoint, instances=instances, offset=offset, count=count, start_page=start_page, end_page=end_page, q=q)
 

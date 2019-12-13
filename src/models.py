@@ -138,7 +138,7 @@ class Album(db.Model):
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     release_date_string = db.Column(db.Text)
-    release_date = db.Column(db.DateTime)
+    release_date = db.Column(db.DateTime, index=True)
     spot_uri = db.Column(db.Text)
     dbp_uri = db.Column(db.Text)
     wikipedia_uri = db.Column(db.Text)

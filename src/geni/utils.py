@@ -108,6 +108,7 @@ class GenUtils:
     def adjust_artist_name(name: str) -> str:
         _name = "Yasiin Bey" if name.lower() == "mos def" else name
         _name = "Rob Base and DJ E-Z Rock" if name == "Rob Base & DJ EZ Rock" else _name
+        _name = "Just-Ice Rap" if name == "Just-Ice" else _name
         _name = "Treacherous Three" if name == "The Treacherous Three" else _name
         _name = "Sugarhill Gang" if name == "The Sugarhill Gang" else _name
         _name = "Masta Ace" if name.lower() == "masta ace incorporated" else _name
