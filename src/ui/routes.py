@@ -92,9 +92,9 @@ def update_track(track_id: int):
     if form.validate_on_submit():
         _track = Track.query.filter_by(id=track_id).first()
         _track.name = form.name.data
-        _track.lyrics = form.lyrics.data if form.lyrics.data else None
-        _track.lyrics_url = form.lyrics_url.data if form.lyrics_url.data else None
-        _track.lyrics_annotated = form.lyrics_annotated.data if form.lyrics_annotated.data else None
+        _track.lyrics = form.lyrics.data if form.lyrics.data and form.lyrics.data != "None" else None
+        _track.lyrics_url = form.lyrics_url.data if form.lyrics_url.data and form.lyrics_url.data != "None" else None
+        _track.lyrics_annotated = form.lyrics_annotated.data if form.lyrics_annotated.data and form.lyrics_annotated.data != "None" else None
         db.session.add(_track)
         db.session.commit()
         if not _track.lyrics_annotated:
@@ -222,9 +222,7 @@ def render_class(model: db.Model, template: str, endpoint: str):
     date = request.args.get('date') or ""
     offset, start_page, end_page = pagination(request)
     if date and model == Album:
-        date_cleaned = SpotUtils.clean_up_date(date)
-        print(date_cleaned)
-        instances = model.query.filter(model.name.ilike(f"%{q}%")).filter(model.release_date == date_cleaned).order_by(model.id).limit(100).offset(offset)
+        instances = model.query.filter(model.name.ilike(f"%{q}%")).filter(model.release_date_string == date).order_by(model.id).limit(100).offset(offset)
     else:
         instances = model.query.filter(model.name.ilike(f"%{q}%")).order_by(model.id).limit(100).offset(offset)
     count = model.query.count()
