@@ -323,3 +323,11 @@ a.geni-button>img {
 .h5>a {
     color: #3399FF
 }
+
+.red {
+    background-color: red;
+}
+
+.red.run-album-release-date {
+    cursor: pointer;
+}

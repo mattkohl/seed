@@ -8,7 +8,17 @@
         <div class="example">
             <div class="tag">&lt;example <span class="attribute-key">id="<span class="attribute-value">{{result.create_example_id(result.filter_lyrics(query))}}</span>"</span>&gt;</div>
             <div class="indentTag">
+                {% if "01-01" in result.album.release_date_string %}
+                <span class="tag">&lt;date&gt;</span>
+                    {% if result.album.dbp_uri %}
+                    <span id="{{result.album.spot_uri}}" class="red run-album-release-date">{{ result.album.release_date_string }}</span><a href="{{result.album.dbp_uri}}" target="_blank" style="color: darkgray; font-style: italic"> [{{ result.album.dbp_uri }}]</a>
+                    {% else %}
+                    <span class="red">{{ result.album.release_date_string }}</span>
+                    {% endif %}
+                <span class="tag">&lt;/date&gt;</span>
+                {% else %}
                 <span class="tag">&lt;date&gt;</span>{{ result.album.release_date_string }}<span class="tag">&lt;/date&gt;</span>
+                {% endif %}
             </div>
             <div class="indentTag">
                 {% for artist in result.album.artists %}
@@ -34,4 +44,29 @@
 
     {% endfor %}
 </div>
+{% endblock %}
+
+
+{% block scripts %}
+    <script>
+  function runReleaseDate(s) {
+      let uri = $(s).attr('id');
+      let endpoint = `/api/v1/albums/${uri}/release-date/run?update=True`;
+        $.get(endpoint)
+         .done(function(album) {
+          console.log(`Successfully run release date update for ${uri}`);
+          let releaseDate = album.release_date_string;
+          console.log(releaseDate);
+          $(s).html(`<span>${releaseDate}</span>`);
+          $(s).removeClass("red");
+          $(s).removeClass("run-album-release-date");
+          $(s).next().remove("a");
+      }).fail(function() { console.log(`Failed to run ${uri}`); });
+  }
+
+  $("span.run-album-release-date")
+     .click(function(){
+       runReleaseDate(this);
+     });
+     </script>
 {% endblock %}
