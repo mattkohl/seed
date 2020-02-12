@@ -13,3 +13,27 @@
 
 </div>
 {% endblock %}
+
+{% block scripts %}
+    <script>
+  function runReleaseDate(s) {
+      let uri = $(s).attr('id');
+      let endpoint = `/api/v1/albums/${uri}/release-date/run?update=True`;
+        $.get(endpoint)
+         .done(function(album) {
+          console.log(`Successfully run release date update for ${uri}`);
+          let releaseDate = album.release_date_string;
+          console.log(releaseDate);
+          $(s).html(`<span>${releaseDate}</span>`);
+          $(s).removeClass("red");
+          $(s).removeClass("run-album-release-date");
+          $(s).next().remove("a");
+      }).fail(function() { console.log(`Failed to run ${uri}`); });
+  }
+
+  $("a.run-album-release-date")
+     .click(function(){
+       runReleaseDate(this);
+     });
+     </script>
+{% endblock %}

@@ -6,7 +6,7 @@
     <div class="h1">{{ results|length }} results found for <span class="query">{{ query }}</span></div>
     {% for result in results %}
         <div class="example">
-            <div class="tag">&lt;example <span class="attribute-key">id="<span class="attribute-value">{{result.create_example_id(result.filter_lyrics(query))}}</span>"</span>&gt;</div>
+            <div class="tag">&lt;example <span class="attribute-key">id="<span class="attribute-value">{{result.create_example_id(result.filter_lyrics(query))}}</span>"</span> <span class="attribute-key">spotUri="<span class="attribute-value">{{result.spot_uri}}</span>"</span>&gt;</div>
             <div class="indentTag">
                 {% if "01-01" in result.album.release_date_string %}
                 <span class="tag">&lt;date&gt;</span>
