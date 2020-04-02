@@ -23,7 +23,7 @@ class Spotlight:
         url = "https://api.dbpedia-spotlight.org/en/annotate"
         try:
             params = {"text": text, "types": TYPE_WHITELIST}
-            response = requests.get(url=url, params=params)
+            response = requests.get(url=url, params=params, timeout=5)
             assert response.status_code == 200
             cleaned = DbpUtils.strip_html(response.text)
             done = AnnotationTuple(cleaned)
@@ -38,7 +38,7 @@ class Spotlight:
         url = "https://api.dbpedia-spotlight.org/en/annotate"
         try:
             params = {"text": text}
-            response = requests.get(url=url, params=params, headers={"accept": "application/json"})
+            response = requests.get(url=url, params=params, headers={"accept": "application/json"}, timeout=5)
             assert response.status_code == 200
             done = CandidatesTuple(**{Utils.clean_key(k): v for k, v in response.json().items()})
         except Exception as e:
