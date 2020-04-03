@@ -10,7 +10,7 @@
                 {% for artist in result.primary_artists %}
                     <span class="artist">{{ artist.name }}</span>
                 {% endfor %}
-                <span class="song-title"><a href="{{ url_for('ui.get_track', track_id=result.id) }}?q={{ query }}" target="_blank">"{{result.name}}"</a></span>
+                <span class="song-title"><a href="{{ url_for('ui.get_track', track_id=result.id) }}?q={{ query }}" target="_blank">"{{result.render()}}"</a></span>
                 {% if result.featured_artists %}
                     feat.
                     {% for f in result.featured_artists %}

@@ -310,6 +310,12 @@ class Track(db.Model):
     def get_img(self):
         return self.album.img
 
+    def render(self):
+        if "feat." in self.name and len(self.adjusted_featured_artists()) == 0:
+            return self.name.replace('&', '&amp;')
+        else:
+            return self.name.replace('&', '&amp;').split(" (feat.")[0]
+
 
 class Section(db.Model):
     __tablename__ = "sections"

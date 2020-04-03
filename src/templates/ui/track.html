@@ -76,7 +76,7 @@
         </div>
         {% for f in result.adjusted_featured_artists() %}
             <div class="indentTag">
-                <span class="tag">&lt;feat&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=f.id) }}">{{ f.name.replace('&', '&amp;') }}</a><span class="tag">&lt;/feat&gt;</span>
+                <span class="tag">&lt;feat&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=f.id) }}">{{ f.render() }}</a><span class="tag">&lt;/feat&gt;</span>
             </div>
         {% endfor %}
         <div class="indentTag">

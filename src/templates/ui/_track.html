@@ -11,7 +11,7 @@
             {% endif %}
         {% endfor %}
         <a href="{{ url_for('ui.get_track', track_id=track.id) }}">
-            <span class="track-title">"{{ track.name }}"</span>
+            <span class="track-title">"{{ track.render() }}"</span>
         </a>
         {% if track.adjusted_featured_artists() %}
             <span class="track-feat">feat. </span>
