@@ -9,11 +9,11 @@ class Sparql:
 
     @staticmethod
     def release_date(dbp_uri: str) -> Optional[ReleaseDateTuple]:
+        cleaned_uri = dbp_uri.replace('https://', 'http://').replace('%26', '&').replace("%27", "'")
         query = """
                 SELECT DISTINCT ?releaseDate
                 WHERE { ?subject <http://dbpedia.org/ontology/releaseDate> ?releaseDate }
-                """.replace("?subject", f"<{dbp_uri.replace('https://', 'http://').replace('%26', '&')}>")
-        print(query)
+                """.replace("?subject", f"<{cleaned_uri}>")
         return Sparql.execute_release_date_query(query)
 
     @staticmethod

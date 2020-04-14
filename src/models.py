@@ -111,6 +111,9 @@ class Artist(db.Model):
     def get_img(self):
         return self.img
 
+    def render(self):
+        return self.name.replace('&', '&amp;')
+
 
 class Location(db.Model):
     __tablename__ = "locations"

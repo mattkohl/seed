@@ -11,6 +11,7 @@ class GenUtils:
         slug = re.sub(r"ma\$e", "ma-e", slug)
         slug = re.sub(r"a\$ap", "a-ap", slug)
         slug = re.sub(r"curren\$y", "curren-y", slug)
+        slug = re.sub(r"à", "a", slug)
         slug = re.sub(r"\$", "s", slug)
         slug = re.sub(r"^[\-']]", "", slug)
         slug = re.sub(r"/", "-", slug)
@@ -110,6 +111,7 @@ class GenUtils:
         _name = "Rob Base and DJ E-Z Rock" if name == "Rob Base & DJ EZ Rock" else _name
         _name = "Just-Ice Rap" if name == "Just-Ice" else _name
         _name = "Treacherous Three" if name == "The Treacherous Three" else _name
+        _name = "Dayton Family" if name == "The Dayton Family" else _name
         _name = "Sugarhill Gang" if name == "The Sugarhill Gang" else _name
         _name = "Masta Ace" if name.lower() == "masta ace incorporated" else _name
         _name = "2Pac" if name.lower() == "makaveli" else _name
@@ -126,11 +128,13 @@ class GenUtils:
         title = title.replace("N****", "Nigga")
         title = title.replace("N***a", "Nigga")
         title = title.replace("N!@@a", "Nigga")
+        title = title.replace("N!$$@", "Nigga")
         title = title.replace("N*gga", "Nigga")
         title = title.replace("N**ga", "Nigga")
         title = title.replace("N**gas", "Niggas")
         title = title.replace("N*ggas", "Niggas")
         title = title.replace("Ni---z", "Niggaz")
+        title = title.replace("Ni**azz", "Niggaz")
         title = title.replace("N**gaz", "Niggaz")
         title = title.replace("N***az", "Niggaz")
         title = title.replace("N*****", "Niggas")
@@ -141,6 +145,7 @@ class GenUtils:
         title = title.replace("F------", "Fucking")
         title = title.replace("F--k", "Fuck")
         title = title.replace("F---", "Fuck")
+        title = title.replace("D**n", "Damn")
         title = title.replace("D**k", "Dick")
         title = title.replace("A*s", "Ass")
         title = title.replace("A**", "Ass")
