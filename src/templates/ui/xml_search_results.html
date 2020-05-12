@@ -20,7 +20,7 @@
             </div>
             <div class="indentTag">
                 {% for artist in result.album.artists %}
-                <span class="tag">&lt;artist&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}" class="track-artist">{{ artist.name.replace('&', '&amp;') }}</a><span class="tag">&lt;/artist&gt;</span>
+                <span class="tag">&lt;artist&gt;</span><a href="{{ url_for('ui.get_artist', artist_id=artist.id) }}" class="track-artist">{{ artist.render_search_result() }}</a><span class="tag">&lt;/artist&gt;</span>
                 {% endfor %}
             </div>
             <div class="indentTag">

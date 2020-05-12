@@ -114,6 +114,9 @@ class Artist(db.Model):
     def render(self):
         return self.name.replace('&', '&amp;')
 
+    def render_search_result(self):
+        return Utils.move_definite_article_to_end(self.name.replace('&', '&amp;'))
+
 
 class Location(db.Model):
     __tablename__ = "locations"
