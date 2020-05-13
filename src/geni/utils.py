@@ -39,7 +39,7 @@ class GenUtils:
     def extract_artist(artist_dict: Dict) -> ArtistTuple:
         return ArtistTuple(
             name=artist_dict["name"],
-            header_image_url=artist_dict["header_image_url"],
+            images=[{"url": artist_dict["header_image_url"]}, {"url": artist_dict["header_image_url"]}],
             url=["url"]
         )
 
@@ -56,7 +56,7 @@ class GenUtils:
                 name=_album_dict["name"],
                 release_date_string=_release_date_string,
                 release_date=_release_date,
-                header_image_url=_album_dict["header_image_url"],
+                images=[{"url": _album_dict["header_image_url"]}, {"url": _album_dict["cover_art_thumbnail_url"]}],
                 url=_album_dict["url"],
                 artist=GenUtils.extract_artist(_artist_dict)
             )

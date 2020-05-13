@@ -15,7 +15,7 @@ class Persistence:
     @staticmethod
     def persist_track(track_tuple: TrackTuple) -> None:
         try:
-            Persist.persist_track_tuple(track_tuple)
+            Persist.persist_spot_track_tuple(track_tuple)
         except Exception as e:
             print(f"Unable to persist track {track_tuple}")
             traceback.print_tb(e.__traceback__)
@@ -24,7 +24,7 @@ class Persistence:
     @staticmethod
     def persist_album(album_tuple: AlbumTuple) -> None:
         try:
-            Persist.persist_album_tuple(album_tuple)
+            Persist.persist_spot_album_tuple(album_tuple)
         except Exception as e:
             print(f"Unable to persist album {album_tuple}")
             traceback.print_tb(e.__traceback__)
@@ -42,7 +42,7 @@ class Persistence:
     @staticmethod
     def persist_artist(artist_tuple: ArtistTuple) -> None:
         try:
-            Persist.persist_artist_tuple(artist_tuple)
+            Persist.persist_spot_artist_tuple(artist_tuple)
         except Exception as e:
             print(f"Unable to persist artist {artist_tuple.id}")
             traceback.print_tb(e.__traceback__)

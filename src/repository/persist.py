@@ -5,7 +5,7 @@ from src.geni.models import SectionTuple
 from src import create_app, db
 from src.dbp.models import LocationTuple
 from src.models import Artist, Track, Album, Location, Genre, Section
-from src.spot.models import TrackTuple, AlbumTuple, GenreTuple, ArtistTuple
+from src.spot.models import TrackTuple as SpotTrackTuple, AlbumTuple as SpotAlbumTuple, GenreTuple, ArtistTuple as SpotArtistTuple
 
 
 class Persist:
@@ -40,7 +40,7 @@ class Persist:
                 db.session.close()
 
     @staticmethod
-    def persist_artist_tuple(artist: ArtistTuple):
+    def persist_spot_artist_tuple(artist: SpotArtistTuple):
         current = create_app('docker')
         with current.app_context():
             try:
@@ -88,7 +88,7 @@ class Persist:
                 db.session.close()
 
     @staticmethod
-    def persist_track_tuple(track: TrackTuple):
+    def persist_spot_track_tuple(track: SpotTrackTuple):
         current = create_app('docker')
         with current.app_context():
             try:
@@ -128,7 +128,7 @@ class Persist:
                 db.session.close()
 
     @staticmethod
-    def persist_album_tuple(album: AlbumTuple):
+    def persist_spot_album_tuple(album: SpotAlbumTuple):
         try:
             current = create_app('docker')
             with current.app_context():
