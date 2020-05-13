@@ -8,6 +8,7 @@ from src.dbp.annotation import Spotlight
 from src.dbp.models import CandidatesTuple, AnnotationTuple
 from src.dbp.sparql import Sparql
 from src.geni import parser
+from src.geni.albums import GeniAlbum
 from src.geni.utils import GenUtils
 from src.mb import metadata
 from src.mb.models import MbArtistTuple, MbAlbumTuple
@@ -90,6 +91,19 @@ class Fetch:
             else:
                 print(f"Cannot resolve MB id for {result}: missing mb_id for {[result.artists]}")
         return _album
+
+    @staticmethod
+    def geni_album_tracks(artist_slug: str, album_slug: str) -> List[TrackTuple]:
+        g = "genius"
+        url = f"https://{g}.com/albums/{artist_slug}/{album_slug}"
+        try:
+            response = GeniAlbum.download_album(url)
+            track_tuples = parser.GenParser.extract_album_tracks(response)
+        except Exception as e:
+            print(e)
+            raise
+        else:
+            return track_tuples
 
     @staticmethod
     def album_tracks(uri: str):

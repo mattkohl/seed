@@ -86,3 +86,9 @@ class Tasks:
         _ = Fetch.album_mb_metadata(album_uri)
         Persist.update(Album, _album['id'], {})
         return Fetch.album(album_uri)
+
+    @staticmethod
+    def run_geni_album(artist_slug: str, album_slug: str):
+        track_tuples = Fetch.geni_album_tracks(artist_slug, album_slug)
+
+

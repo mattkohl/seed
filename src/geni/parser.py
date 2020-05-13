@@ -1,12 +1,11 @@
-import traceback
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Dict
 import re
+import json
 from bs4 import BeautifulSoup
 import requests
 
-
 from src.geni import utils
-from src.geni.models import SectionTuple
+from src.geni.models import SectionTuple, TrackTuple
 
 
 class GenParser:
@@ -30,7 +29,6 @@ class GenParser:
             if len(urls) >= 1:
                 return GenParser.download(urls)
             else:
-                # traceback.print_tb(e.__traceback__)
                 return None, url
         return lyrics, url
 
@@ -49,6 +47,13 @@ class GenParser:
             raise e
         else:
             return lyrics
+
+    @staticmethod
+    def extract_album_tracks(page: requests.Response) -> List[TrackTuple]:
+        html = BeautifulSoup(page.text, 'html.parser')
+        content = html.find(content=re.compile("quot"))["content"]
+        _dict = json.loads(content)
+        return utils.GenUtils.extract_album_tracks(_dict)
 
     @staticmethod
     def extract_sections(text: str) -> List[SectionTuple]:

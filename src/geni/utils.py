@@ -1,8 +1,72 @@
 import re
-from typing import List
+import traceback
+from copy import deepcopy
+from typing import List, Dict, Optional
+
+from src.geni.models import TrackTuple, AlbumTuple, ArtistTuple
+from src.spot.utils import SpotUtils
 
 
 class GenUtils:
+
+    @staticmethod
+    def tuplify_tracks(track_dicts: List[Dict], album: AlbumTuple) -> List[TrackTuple]:
+        return [GenUtils.tuplify_track(track_dict["song"], album) for track_dict in track_dicts]
+
+    @staticmethod
+    def tuplify_track(d: Dict, album: AlbumTuple) -> Optional[TrackTuple]:
+        try:
+            _track = GenUtils.extract_track(d, album)
+        except Exception as e:
+            print(f"Unable to tuplify track")
+            print(d)
+            traceback.print_tb(e.__traceback__)
+            return None
+        else:
+            return _track
+
+    @staticmethod
+    def extract_track(track_dict: Dict, album: AlbumTuple):
+        return TrackTuple(
+            title=track_dict["title"],
+            url=track_dict["url"],
+            album=album,
+            primary_artists=[GenUtils.extract_artist(track_dict["primary_artist"])],
+            featured_artists=[GenUtils.extract_artist(feat) for feat in track_dict["featured_artists"]]
+        )
+
+    @staticmethod
+    def extract_artist(artist_dict: Dict) -> ArtistTuple:
+        return ArtistTuple(
+            name=artist_dict["name"],
+            header_image_url=artist_dict["header_image_url"],
+            url=["url"]
+        )
+
+    @staticmethod
+    def extract_album_tracks(raw: Dict) -> List[TrackTuple]:
+        _dict = deepcopy(raw)
+        _album_dict = _dict["album"]
+        _track_dicts = _dict["album_appearances"]
+        _release_date_string = _album_dict["release_date"]
+        _release_date = SpotUtils.clean_up_date(_release_date_string)
+        _artist_dict = _album_dict["artist"]
+        try:
+            _album_tuple = AlbumTuple(
+                name=_album_dict["name"],
+                release_date_string=_release_date_string,
+                release_date=_release_date,
+                header_image_url=_album_dict["header_image_url"],
+                url=_album_dict["url"],
+                artist=GenUtils.extract_artist(_artist_dict)
+            )
+        except Exception as e:
+            print(f"Exception when trying to extract album")
+            print(raw)
+            traceback.print_tb(e.__traceback__)
+            raise
+        else:
+            return GenUtils.tuplify_tracks(_track_dicts, _album_tuple)
 
     @staticmethod
     def slugify(text: str) -> str:

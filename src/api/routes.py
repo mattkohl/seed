@@ -34,6 +34,11 @@ def album(uri):
     return jsonify(Fetch.album(uri))
 
 
+@api.route("/albums/<artist_slug>/<album_slug>/geni/run")
+def album_geni(artist_slug, album_slug):
+    return jsonify(Fetch.geni_album_tracks(artist_slug, album_slug))
+
+
 @api.route("/albums/<_id>/delete", methods=['GET', 'POST'])
 def album_delete(_id):
     return jsonify(Deletion.delete_album(_id))
