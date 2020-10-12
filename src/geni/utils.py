@@ -187,6 +187,7 @@ class GenUtils:
     def adjust_song_title(song_title: str) -> str:
         title = song_title.replace("H-E", "Hoe")
         title = title.replace("H*es", "Hoes")
+        title = title.replace("JU$T", "JU-T")
         title = title.replace("Mother ******", "Mother Fucker")
         title = title.replace("N____", "Nigga")
         title = title.replace("N****", "Nigga")
@@ -229,6 +230,7 @@ class GenUtils:
         title = title.replace("P****", "Pussy")
         title = title.replace("P***y", "Pussy")
         title = title.replace("Bulls**t", "Bullshit")
+        title = title.replace("SH*T", "SHIT")
         title = title.replace("Sh*t", "Shit")
         title = title.replace("S**t", "Shit")
         title = title.replace("Sh!t", "Shit")

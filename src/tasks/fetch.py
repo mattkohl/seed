@@ -330,13 +330,16 @@ class Fetch:
     @staticmethod
     def dbp_uri(instance_id: int, instance_name: str, model: db.Model, uri: str, wikipedia_uri: Optional[str], fetch_candidates: Callable) -> Optional[str]:
         try:
-            candidates = fetch_candidates(uri)
-            first = candidates.Resources[0]
-            offset_is_zero = int(first["@offset"]) == 0
-            local_name = first["@URI"].split("/")[-1].replace("_", " ")
-            fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
-            dbp_uri = first["@URI"] if ((offset_is_zero and fuzzy_match_score > 85) or fuzzy_match_score == 100) else None
-            if wikipedia_uri and not dbp_uri:
+            # 27 Aug 2020 - Spotlight API seems to be broken
+
+            # candidates = fetch_candidates(uri)
+            # first = candidates.Resources[0]
+            # offset_is_zero = int(first["@offset"]) == 0
+            # local_name = first["@URI"].split("/")[-1].replace("_", " ")
+            # fuzzy_match_score = Utils.fuzzy_match(instance_name, local_name)
+            # dbp_uri = first["@URI"] if ((offset_is_zero and fuzzy_match_score > 85) or fuzzy_match_score == 100) else None
+            dbp_uri = None
+            if wikipedia_uri:  # and not dbp_uri:
                 print(f"Attempting to manufacture DBP URI using Wikipedia")
                 local_name = wikipedia_uri.split("/")[-1]
                 candidate = f"http://dbpedia.org/resource/{local_name}"
@@ -353,7 +356,7 @@ class Fetch:
             traceback.print_tb(e.__traceback__)
         else:
             if dbp_uri is None:
-                print(f"DBP resolution rejected for this candidate {instance_name}: {first}; Fuzzy match score was {fuzzy_match_score} using {local_name}")
+                print(f"DBP resolution rejected for this candidate {instance_name}")
             return dbp_uri
 
     @staticmethod

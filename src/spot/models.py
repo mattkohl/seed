@@ -7,7 +7,7 @@ TrackTuple = namedtuple("TrackTuple", _track_fields, defaults=(None,) * len(_tra
 
 _album_fields = ['album_type', 'album_group', 'artists', 'copyrights', 'external_ids', 'external_urls', 'genres',
                  'href', 'id', 'images', 'label', 'name', 'popularity', 'release_date', 'release_date_string',
-                 'release_date_precision', 'tracks', 'total_tracks', 'type', 'uri', 'wikipedia_uri']
+                 'release_date_precision', 'tracks', 'total_tracks', 'type', 'uri', 'wikipedia_uri', 'geni_uri']
 AlbumTuple = namedtuple("AlbumTuple", _album_fields, defaults=(None,) * len(_album_fields))
 
 _artist_fields = ['external_urls', 'followers', 'genres', 'href', 'id', 'images', 'name', 'popularity', 'type', 'uri']

@@ -45,7 +45,7 @@ class Tasks:
     def run_track(track_uri: str) -> Dict:
         _track = Fetch.track(track_uri)
         _ = Fetch.track_lyrics(track_uri, force_update=True)
-        _ = Fetch.track_lyrics_annotate(track_uri)
+        # _ = Fetch.track_lyrics_annotate(track_uri)
         _ = Fetch.track_sections(track_uri)
         Persist.update(Track, _track['id'], {})
         return Fetch.track(track_uri)
@@ -64,10 +64,10 @@ class Tasks:
         [Persistence.persist_album(a) for a in album_tuples]
         _artist = Fetch.artist_mb_metadata(artist_uri)
         print(_artist)
-        _ = Fetch.artist_dbp_uri(artist_uri, True)
-        print("dbp fetched")
         _ = Fetch.artist_wikipedia_uri(artist_uri, True)
         print("wiki fetched")
+        _ = Fetch.artist_dbp_uri(artist_uri, True)
+        print("dbp fetched")
         _ = Fetch.artist_hometown(artist_uri)
         print("hometown fetched")
         _ = Fetch.artist_birthplace(artist_uri)
@@ -81,8 +81,8 @@ class Tasks:
     def run_album(album_uri: str) -> Dict:
         track_tuples = Fetch.album_tracks(album_uri)
         [Persistence.persist_track(t) for t in track_tuples]
-        _album = Fetch.album_dbp_uri(album_uri)
-        _ = Fetch.album_wikipedia_uri(album_uri, True)
+        _album = Fetch.album_wikipedia_uri(album_uri, True)
+        # _album = Fetch.album_dbp_uri(album_uri)
         _ = Fetch.album_mb_metadata(album_uri)
         Persist.update(Album, _album['id'], {})
         return Fetch.album(album_uri)

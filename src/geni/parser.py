@@ -39,11 +39,14 @@ class GenParser:
 
     @staticmethod
     def extract_lyrics_text(page: requests.Response) -> str:
+        html = BeautifulSoup(page.text, "html.parser")
         try:
-            html = BeautifulSoup(page.text, "html.parser")
             lyrics = html.find("div", class_="lyrics").get_text()
+            if lyrics is None:
+                lyrics = html.select_one('div[class*="Lyrics__Container-"]').get_text()
         except Exception as e:
             print(f"No lyrics found at {page.url}")
+            print(html)
             raise e
         else:
             return lyrics
