@@ -3,6 +3,7 @@ import re
 import json
 from bs4 import BeautifulSoup
 import requests
+from requests_futures.sessions import FuturesSession
 
 from src.geni import utils
 from src.geni.models import SectionTuple, TrackTuple
@@ -17,12 +18,15 @@ class GenParser:
 
     @staticmethod
     def download(urls: List[str]) -> Tuple[Optional[str], str]:
+        session = FuturesSession()
         assert len(urls) > 0
         url = urls.pop()
         lyrics = None
         try:
-            page = requests.get(url)
-            raw = GenParser.extract_lyrics_text(page)
+            import time
+            page = session.get(url, headers={'User-Agent': 'Mozilla/5.0'}, stream=False)
+            response = page.result()
+            raw = GenParser.extract_lyrics_text(response)
             lyrics = GenParser.clean(raw)
         except Exception as e:
             print(f"Lyric extraction error: {e}")
@@ -43,7 +47,7 @@ class GenParser:
         try:
             lyrics = html.find("div", class_="lyrics").get_text()
             if lyrics is None:
-                lyrics = html.select_one('div[class*="Lyrics__Container-"]').get_text()
+                lyrics = "\n".join([e.get_text() for e in html.select('div[class*="Lyrics__Container-"]')])
         except Exception as e:
             print(f"No lyrics found at {page.url}")
             print(html)
