@@ -12,7 +12,11 @@ class Sparql:
         cleaned_uri = dbp_uri.replace('https://', 'http://').replace('%26', '&').replace("%27", "'")
         query = """
                 SELECT DISTINCT ?releaseDate
-                WHERE { ?subject <http://dbpedia.org/ontology/releaseDate> ?releaseDate }
+                WHERE { 
+                    { ?subject <http://dbpedia.org/ontology/releaseDate> ?releaseDate }
+                    UNION 
+                    { ?subject <http://dbpedia.org/property/released> ?releaseDate }
+                }
                 """.replace("?subject", f"<{cleaned_uri}>")
         return Sparql.execute_release_date_query(query)
 
@@ -45,7 +49,8 @@ class Sparql:
 
     @staticmethod
     def execute_location_query(query: str) -> Optional[LocationTuple]:
-        endpoint = SPARQLWrapper2("http://dbpedia.org/sparql")
+        endpoint = SPARQLWrapper2("https://dbpedia.org/sparql")
+        print(query)
         endpoint.setQuery(query)
         results = endpoint.query()
         if results.bindings:
@@ -55,7 +60,8 @@ class Sparql:
 
     @staticmethod
     def execute_release_date_query(query: str) -> Optional[ReleaseDateTuple]:
-        endpoint = SPARQLWrapper2("http://dbpedia.org/sparql")
+        endpoint = SPARQLWrapper2("https://dbpedia.org/sparql")
+        print(query)
         endpoint.setQuery(query)
         results = endpoint.query()
         if results.bindings:
